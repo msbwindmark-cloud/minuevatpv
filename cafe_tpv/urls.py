@@ -1,14 +1,13 @@
 from django.urls import path, include
 from django.contrib import admin
 from django.views.generic import RedirectView
-from django.views.static import serve
 from django.conf.urls.static import static
 from django.conf import settings
 from tpv import views
 from tpv.admin import admin_enviar_informe_email, admin_enviar_pedidos_email, admin_enviar_cierre_email
 
 urlpatterns = [
-    path('favicon.ico', serve, {'path': 'favicon.ico', 'document_root': settings.STATICFILES_DIRS[0]}),
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=False)),
 
     # Admin Panel: Stock, Informe Semanal, Previsión Compras (ANTES del admin porcatch-all)
     path('admin/gerencia/', views.admin_gerencia_dashboard, name='admin_gerencia_dashboard'),
