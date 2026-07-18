@@ -528,7 +528,7 @@ git push -u origin main
 
 https://github.com/msbwindmark-cloud/minuevatpv.git
 
-
+minuevatpv.pythonanywhere.com 
 
 -------------------------------------------------------------------------------
 
