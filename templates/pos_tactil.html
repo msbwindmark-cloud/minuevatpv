@@ -641,8 +641,11 @@
                         title: 'Cobro completado',
                         html: '<div style="font-size:0.9rem;color:#94a3b8;margin-bottom:5px;">Ticket #' + d.ticket_id + ' | ' + nombreMesa + '</div><div style="font-size:1.2rem;margin:10px 0;">' + icono + ' ' + metodo + '</div><div style="font-size:2rem;font-weight:900;color:#00ff88;">' + d.total.toFixed(2) + ' \u20ac</div>' + descHtml + ptsHtml + pdfLink + qrLink,
                         confirmButtonColor: '#10b981',
+                        confirmButtonText: 'Aceptar',
                         background: '#1e293b',
                         color: '#e2e8f0'
+                    }).then(function() {
+                        preguntarSatisfaccion(d.ticket_id);
                     });
                     if (d.alertas && d.alertas.length > 0) {
                         for (var j = 0; j < d.alertas.length; j++) {
@@ -669,7 +672,6 @@
                     document.getElementById('ticket-mesa-info').textContent = '';
                     actualizarGraficosTicket();
                     actualizarBadgesMesas();
-                    setTimeout(function(){ preguntarSatisfaccion(d.ticket_id); }, 3000);
                 } else {
                     Swal.fire({ icon: 'error', title: 'Error', text: d.error || 'Error', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
                 }

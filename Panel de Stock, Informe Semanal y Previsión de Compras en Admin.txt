@@ -537,6 +537,39 @@ python manage.py collectstatic --noinput
 
 
 
+-----------------------------------------------------------
+
+
+
+Excelente. Resumen de todo lo hecho hoy:
+
+### Email (5 funcionalidades)
+- Alerta stock bajo automática
+- Reserva confirmada automática
+- Informe semanal por email (botón 1 clic)
+- Pedido a proveedor por email (botón 1 clic)
+- Cierre de caja por email (botón 1 clic)
+
+### Admin Panel
+- 3 botones con SweetAlert en el Panel de Gestión
+- Logs de email en `/admin/`
+- Botones en change lists (Pedidos, Turnos)
+
+### Smartlook
+- Heatmaps activos en toda la app + admin
+
+### Bugs corregidos
+- Logout `NoneType` error
+- Email `admin@cafeteria.local` → `msb.windmark@gmail.com`
+- Favicon en admin
+
+### Despliegue
+- PythonAnywhere: `minuevatpv.pythonanywhere.com`
+- Static files configurados
+- Smartlook funcionando
+
+Si necesitas algo más, me dices.
+
 -------------------------------------------------------------------------------
 
 javier

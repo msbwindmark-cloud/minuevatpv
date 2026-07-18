@@ -543,7 +543,6 @@ def api_top_vendidos(request):
 
 
 def _generar_ticket_pdf(venta):
-    from reportlab.lib.pagesizes import roll
     from reportlab.pdfgen import canvas
     from reportlab.lib.units import mm
     import io
@@ -551,7 +550,8 @@ def _generar_ticket_pdf(venta):
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=(80*mm, 200*mm))
     w = 80*mm
-    y = 10*mm
+    h = 200*mm
+    y = h - 10*mm
 
     def text_center(txt, size=10, bold=False):
         nonlocal y
@@ -590,8 +590,12 @@ def _generar_ticket_pdf(venta):
     y -= 3*mm
     text_line('-' * 35, 8)
     text_center('Gracias por su compra!', 9)
-    y -= 3*mm
-    text_center(f'Hash: {venta.hash_seguridad[:20]}...', 6)
+    y -= 5*mm
+    text_line('-' * 35, 8)
+    text_center('Comprobante verificado', 7)
+    y -= 2*mm
+    short_hash = venta.hash_seguridad[-8:].upper()
+    text_center(f'Cod: {short_hash}', 7)
 
     c.save()
     buffer.seek(0)
@@ -941,7 +945,6 @@ def api_estado_pedido_cliente(request):
 
 
 def pdf_ticket_con_qr(request, venta_id):
-    from reportlab.lib.pagesizes import roll
     from reportlab.pdfgen import canvas
     from reportlab.lib.units import mm
     import io
@@ -952,7 +955,8 @@ def pdf_ticket_con_qr(request, venta_id):
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=(80*mm, 200*mm))
     w = 80*mm
-    y = 10*mm
+    h = 200*mm
+    y = h - 10*mm
 
     def text_center(txt, size=10, bold=False):
         nonlocal y
@@ -991,8 +995,12 @@ def pdf_ticket_con_qr(request, venta_id):
     y -= 3*mm
     text_line('-' * 35, 8)
     text_center('Gracias por su compra!', 9)
-    y -= 3*mm
-    text_center(f'Hash: {venta.hash_seguridad[:20]}...', 6)
+    y -= 5*mm
+    text_line('-' * 35, 8)
+    text_center('Comprobante verificado', 7)
+    y -= 2*mm
+    short_hash = venta.hash_seguridad[-8:].upper()
+    text_center(f'Cod: {short_hash}', 7)
 
     y -= 8*mm
     qr_data = f'TPV#{venta.id}|{venta.total_facturado}|{venta.forma_pago}|{venta.fecha_registro.strftime("%d%m%Y%H%M")}|{venta.hash_seguridad[:16]}'
