@@ -639,6 +639,49 @@ Nada se rompe, todo funciona igual hasta que descomentes.
 
 --------------------------------------------------------------
 
+Para abrir la caja registradora automaticamente al cobrar en efectivo, necesitas un **interface** entre tu codigo y la maquina fisica. Las opciones:
+
+### 1. **Impresora EPSON (la mas comun)**
+La caja registradora se conecta a traves de una impresora termica EPSON (TM-T20, TM-T88, etc.). La impresora tiene un puerto que envia la senal de "abrir cajon".
+
+```
+Tu TPV → Impresora EPSON → Signal → Cajon se abre automaticamente
+```
+
+Comando para abrir el cajon: ` ESC p \x00 \x14 \x01` (trama EPSON)
+
+### 2. **Cajon directo por USB/Serial**
+Algunos cajones se conectan directamente al PC por USB o puerto serie. Se abren con un comando simple al puerto.
+
+### 3. **Red (TCP/IP)**
+Cajas registradoras modernas接受 comandos por red.
+
+### Lo que necesitas:
+
+1. **Saber que modelo de caja registradora tienes** (EPSON, Citizen, Bixolon, etc.)
+2. **Que interface usa** (USB, Serial, Red)
+3. **La libreria Python** para ese modelo:
+   - EPSON → `pip install python-escpos`
+   - Generic serial → `pip install pyserial`
+   - OPOS → `pip install pyOPOS`
+
+### Ejemplo basico con EPSON:
+
+```python
+from escpos.printer import Usb
+
+def abrir_cajon():
+    p = Usb(0x04b8, 0x0202)  # VendorID y ProductID de EPSON
+    p.cashdraw(2)  # Abrir cajon
+    p.close()
+```
+
+**¿Que modelo de caja registradora tienes?** Con eso te digo exactamente que libreria instalar y como conectarlo al cobro de efectivo.
+
+
+----------------------------------------------------------------------
+
+
 
 
 javier
