@@ -29,6 +29,9 @@ def es_empleado(user):
 def es_gerente(user):
     return user.is_superuser
 
+def es_admin_panel(user):
+    return user.is_superuser or (user.is_authenticated and user.is_staff)
+
 def es_cocina(user):
     if user.is_superuser:
         return True
@@ -2341,7 +2344,7 @@ def api_sheets_sync(request):
 # ==================== ADMIN PANEL: STOCK, INFORME SEMANAL, PREVISION ====================
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_stock_dashboard(request):
     """Dashboard de gestión de stock accesible desde el admin"""
     from decimal import Decimal
@@ -2394,7 +2397,7 @@ def admin_stock_dashboard(request):
 
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_informe_semanal(request):
     """Informe semanal de gastos y ventas accesible desde el admin"""
     from decimal import Decimal
@@ -2496,7 +2499,7 @@ def admin_informe_semanal(request):
 
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_prevision_compras(request):
     """Previsión de compras del lunes basada en la semana anterior"""
     from decimal import Decimal
@@ -2600,7 +2603,7 @@ def admin_prevision_compras(request):
 # ==================== EXPORTACIONES EXCEL/PDF PARA ADMIN ====================
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_exportar_stock_excel(request):
     """Exporta el estado del stock actual a Excel"""
     import openpyxl
@@ -2659,7 +2662,7 @@ def admin_exportar_stock_excel(request):
 
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_exportar_informe_semanal_excel(request):
     """Exporta el informe semanal a Excel"""
     import openpyxl
@@ -2771,7 +2774,7 @@ def admin_exportar_informe_semanal_excel(request):
 
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_exportar_prevision_excel(request):
     """Exporta la previsión de compras a Excel"""
     import openpyxl
@@ -2868,7 +2871,7 @@ def admin_exportar_prevision_excel(request):
 
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_exportar_informe_semanal_pdf(request):
     """Exporta el informe semanal a PDF"""
     from reportlab.lib.pagesizes import A4
@@ -2982,7 +2985,7 @@ def admin_exportar_informe_semanal_pdf(request):
 
 
 @login_required
-@user_passes_test(es_gerente)
+@user_passes_test(es_admin_panel)
 def admin_exportar_prevision_pdf(request):
     """Exporta la previsión de compras a PDF"""
     from reportlab.lib.pagesizes import A4
@@ -3082,3 +3085,195 @@ def admin_exportar_prevision_pdf(request):
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="prevision_compras_{fecha_inicio_semana.strftime("%Y%m%d")}.pdf"'
     return response
+
+
+# ==================== DASHBOARD DE GERENCIA ====================
+
+@login_required
+@user_passes_test(es_admin_panel)
+def admin_gerencia_dashboard(request):
+    """Dashboard principal de gerencia con KPIs, gráficos y estadísticas"""
+    import json
+    from decimal import Decimal
+    from django.db.models.functions import TruncHour
+
+    hoy = timezone.now().date()
+    mes_actual = hoy.month
+    anyo_actual = hoy.year
+
+    # ===== KPIs PRINCIPALES =====
+    # Hoy
+    ventas_hoy = OperacionVenta.objects.filter(fecha_registro__date=hoy)
+    ingresos_hoy = ventas_hoy.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    tickets_hoy = ventas_hoy.count()
+    ticket_medio_hoy = (ingresos_hoy / tickets_hoy) if tickets_hoy > 0 else Decimal('0.00')
+
+    # Ayer
+    ayer = hoy - timedelta(days=1)
+    ingresos_ayer = OperacionVenta.objects.filter(fecha_registro__date=ayer).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    tickets_ayer = OperacionVenta.objects.filter(fecha_registro__date=ayer).count()
+
+    # Semana (lunes a hoy)
+    lunes = hoy - timedelta(days=hoy.weekday())
+    ingresos_semana = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=lunes, fecha_registro__date__lte=hoy
+    ).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    tickets_semana = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=lunes, fecha_registro__date__lte=hoy
+    ).count()
+
+    # Mes
+    ingresos_mes = OperacionVenta.objects.filter(
+        fecha_registro__month=mes_actual, fecha_registro__year=anyo_actual
+    ).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    tickets_mes = OperacionVenta.objects.filter(
+        fecha_registro__month=mes_actual, fecha_registro__year=anyo_actual
+    ).count()
+
+    # Mes anterior (para comparar)
+    if mes_actual == 1:
+        mes_ant = 12
+        anyo_ant = anyo_actual - 1
+    else:
+        mes_ant = mes_actual - 1
+        anyo_ant = anyo_actual
+    ingresos_mes_anterior = OperacionVenta.objects.filter(
+        fecha_registro__month=mes_ant, fecha_registro__year=anyo_ant
+    ).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+
+    variacion_mes = 0
+    if ingresos_mes_anterior > 0:
+        variacion_mes = round(((float(ingresos_mes) - float(ingresos_mes_anterior)) / float(ingresos_mes_anterior)) * 100, 1)
+
+    # ===== GRÁFICO: Ventas últimos 7 días =====
+    ventas_7dias = []
+    nombres_dias = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom']
+    for i in range(7):
+        dia = hoy - timedelta(days=6-i)
+        total = OperacionVenta.objects.filter(fecha_registro__date=dia).aggregate(t=Sum('total_facturado'))['t'] or 0
+        ventas_7dias.append({
+            'dia': nombres_dias[dia.weekday()],
+            'fecha': dia.strftime('%d/%m'),
+            'total': float(total)
+        })
+
+    # ===== GRÁFICO: Ventas por hora (hoy) =====
+    ventas_por_hora = []
+    for h in range(8, 22):  # 8am a 9pm
+        total = ventas_hoy.filter(
+            fecha_registro__hour=h
+        ).aggregate(t=Sum('total_facturado'))['t'] or 0
+        ventas_por_hora.append({'hora': f'{h}:00', 'total': float(total)})
+
+    # ===== TOP 10 PRODUCTOS (mes) =====
+    top_productos_mes = (
+        LineaVenta.objects
+        .filter(venta__fecha_registro__month=mes_actual, venta__fecha_registro__year=anyo_actual)
+        .values('articulo__nombre')
+        .annotate(unidades=Sum('unidades'), ingresos=Sum('precio_aplicado_con_iva'))
+        .order_by('-ingresos')[:10]
+    )
+
+    # ===== TOP 10 PRODUCTOS (hoy) =====
+    top_productos_hoy = (
+        LineaVenta.objects
+        .filter(venta__fecha_registro__date=hoy)
+        .values('articulo__nombre')
+        .annotate(unidades=Sum('unidades'), ingresos=Sum('precio_aplicado_con_iva'))
+        .order_by('-ingresos')[:10]
+    )
+
+    # ===== RANKING EMPLEADOS (mes) =====
+    ranking_empleados = (
+        OperacionVenta.objects
+        .filter(fecha_registro__month=mes_actual, fecha_registro__year=anyo_actual)
+        .values('empleado_caja__username')
+        .annotate(
+            total_ventas=Sum('total_facturado'),
+            num_tickets=Count('id')
+        )
+        .order_by('-total_ventas')[:10]
+    )
+
+    # ===== MÉTODOS DE PAGO =====
+    efectivo_mes = OperacionVenta.objects.filter(
+        fecha_registro__month=mes_actual, fecha_registro__year=anyo_actual, forma_pago='EFECTIVO'
+    ).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    tarjeta_mes = OperacionVenta.objects.filter(
+        fecha_registro__month=mes_actual, fecha_registro__year=anyo_actual, forma_pago='TARJETA'
+    ).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+
+    # ===== GASTOS MES =====
+    gastos_mes = RegistroGasto.objects.filter(
+        fecha_gasto__month=mes_actual, fecha_gasto__year=anyo_actual
+    ).aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+    balance_mes = ingresos_mes - gastos_mes
+
+    # ===== STOCK BAJO =====
+    stock_bajo = InsumoMateriaPrima.objects.filter(
+        cantidad_actual__lte=F('cantidad_minima')
+    ).count()
+
+    # ===== SATISFACCIÓN =====
+    from django.db.models import CharField
+    from django.db.models.functions import Substr
+    satisfaccion_stats = OperacionVenta.objects.filter(
+        fecha_registro__month=mes_actual, fecha_registro__year=anyo_actual,
+        satisfaccion__gt=''
+    ).values('satisfaccion').annotate(total=Count('id')).order_by('-total')
+
+    # ===== MESA MÁS POPULAR =====
+    mesa_popular = (
+        OperacionVenta.objects
+        .filter(fecha_registro__month=mes_actual, fecha_registro__year=anyo_actual, mesa__isnull=False)
+        .values('mesa__numero')
+        .annotate(ventas=Count('id'))
+        .order_by('-ventas')[:5]
+    )
+
+    context = {
+        **admin.site.each_context(request),
+        'titulo': 'Dashboard de Gerencia',
+        'hoy': hoy,
+
+        # KPIs
+        'ingresos_hoy': ingresos_hoy,
+        'tickets_hoy': tickets_hoy,
+        'ticket_medio_hoy': ticket_medio_hoy,
+        'ingresos_ayer': ingresos_ayer,
+        'tickets_ayer': tickets_ayer,
+        'ingresos_semana': ingresos_semana,
+        'tickets_semana': tickets_semana,
+        'ingresos_mes': ingresos_mes,
+        'tickets_mes': tickets_mes,
+        'variacion_mes': variacion_mes,
+
+        # Gráficos (JSON)
+        'ventas_7dias_json': json.dumps(ventas_7dias),
+        'ventas_por_hora_json': json.dumps(ventas_por_hora),
+
+        # Tablas
+        'top_productos_mes': top_productos_mes,
+        'top_productos_hoy': top_productos_hoy,
+        'ranking_empleados': ranking_empleados,
+
+        # Pagos
+        'efectivo_mes': efectivo_mes,
+        'tarjeta_mes': tarjeta_mes,
+
+        # Gastos
+        'gastos_mes': gastos_mes,
+        'balance_mes': balance_mes,
+
+        # Stock
+        'stock_bajo': stock_bajo,
+
+        # Satisfacción
+        'satisfaccion_stats': satisfaccion_stats,
+
+        # Mesas
+        'mesa_popular': mesa_popular,
+
+        'app_list': admin.site.get_app_list(request),
+    }
+    return render(request, 'admin/gerencia_dashboard.html', context)

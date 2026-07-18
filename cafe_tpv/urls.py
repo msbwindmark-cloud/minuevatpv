@@ -9,6 +9,7 @@ urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=False)),
 
     # Admin Panel: Stock, Informe Semanal, Previsión Compras (ANTES del admin porcatch-all)
+    path('admin/gerencia/', views.admin_gerencia_dashboard, name='admin_gerencia_dashboard'),
     path('admin/stock-dashboard/', views.admin_stock_dashboard, name='admin_stock_dashboard'),
     path('admin/informe-semanal/', views.admin_informe_semanal, name='admin_informe_semanal'),
     path('admin/prevision-compras/', views.admin_prevision_compras, name='admin_prevision_compras'),

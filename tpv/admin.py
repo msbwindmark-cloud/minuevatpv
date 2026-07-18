@@ -331,3 +331,14 @@ class ComboItemAdmin(admin.ModelAdmin):
 
 # Template personalizado para el admin index con enlaces a gestiones
 admin.site.index_template = 'admin/custom_index.html'
+
+
+# Ocultar Users y Groups para staff (no-superuser)
+class CustomAdminSite(admin.AdminSite):
+    def get_app_list(self, request, app_label=None):
+        app_list = super().get_app_list(request, app_label)
+        if not request.user.is_superuser:
+            app_list = [app for app in app_list if app['app_label'] != 'auth']
+        return app_list
+
+admin.site.__class__ = CustomAdminSite

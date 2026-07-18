@@ -219,3 +219,50 @@ También hay enlaces de navegación rápida en el lateral derecho de cada págin
 
 
 
+----------------------------------------------------------------------------------------
+
+
+
+Todo listo. Django check: **0 errores**.
+
+Ahora en el panel admin (`/admin/`) verás **4 tarjetas**:
+
+| Tarjeta | URL | Contenido |
+|---------|-----|-----------|
+| 🏢 **Dashboard de Gerencia** | `/admin/gerencia/` | Panel principal completo |
+| 📦 Dashboard Stock | `/admin/stock-dashboard/` | Gestión de stock |
+| 📊 Informe Semanal | `/admin/informe-semanal/` | Gastos y ventas semanales |
+| 🛒 Previsión Compras | `/admin/prevision-compras/` | Qué comprar el lunes |
+
+### El Dashboard de Gerencia incluye:
+
+**KPIs principales:**
+- Ingresos hoy, semana, mes
+- Ticket medio
+- Gastos y balance del mes
+- Variación vs mes anterior
+- Stock bajo
+
+**Gráficos (Chart.js):**
+- 📈 Ingresos últimos 7 días (barras)
+- 🕐 Ingresos por hora hoy (línea)
+
+**Tablas:**
+- 🏆 Top 10 productos del mes
+- ⭐ Top 10 productos de hoy
+- 👥 Ranking de empleados
+- 🪑 Mesas más populares
+
+**Extras:**
+- 💳 Métodos de pago (efectivo vs tarjeta)
+- 😊 Satisfacción de clientes
+
+**Recarga** `http://127.0.0.1:8000/admin/` y prueba el nuevo botón.
+
+
+
+----------------------------------------------------------------
+
+javier
+Javier@2025
+

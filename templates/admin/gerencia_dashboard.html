@@ -1,0 +1,485 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{{ titulo }} | {{ site_title }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    :root {
+        --primary: #8B4513;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --info: #17a2b8;
+        --purple: #6f42c1;
+    }
+    body { background: #0f1117; color: #e0e0e0; }
+    .gerencia-header {
+        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        color: white;
+        padding: 20px 30px;
+        margin: -20px -20px 25px -20px;
+        border-radius: 0 0 15px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .gerencia-header h1 { margin: 0; font-size: 24px; }
+    .gerencia-header p { margin: 5px 0 0; opacity: 0.7; font-size: 13px; }
+    .btn-volver {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+    .btn-volver:hover { background: rgba(255,255,255,0.25); color: white; text-decoration: none; }
+
+    /* KPI Cards */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .kpi-card {
+        background: #1a1d23;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #2a2d35;
+        position: relative;
+        overflow: hidden;
+    }
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+    }
+    .kpi-card.green::before { background: var(--success); }
+    .kpi-card.blue::before { background: var(--info); }
+    .kpi-card.orange::before { background: var(--warning); }
+    .kpi-card.red::before { background: var(--danger); }
+    .kpi-card.purple::before { background: var(--purple); }
+    .kpi-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+    .kpi-value { font-size: 32px; font-weight: bold; margin: 8px 0 5px; }
+    .kpi-sub { font-size: 12px; color: #666; }
+    .kpi-variation { font-size: 12px; font-weight: bold; }
+    .kpi-variation.up { color: var(--success); }
+    .kpi-variation.down { color: var(--danger); }
+
+    /* Charts */
+    .charts-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    .chart-card {
+        background: #1a1d23;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #2a2d35;
+    }
+    .chart-card h3 {
+        margin: 0 0 15px;
+        font-size: 15px;
+        color: #ccc;
+    }
+    .chart-container { position: relative; height: 280px; }
+
+    /* Tables */
+    .tables-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    .table-card {
+        background: #1a1d23;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #2a2d35;
+    }
+    .table-card h3 {
+        margin: 0 0 15px;
+        font-size: 15px;
+        color: #ccc;
+    }
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .data-table th {
+        text-align: left;
+        padding: 8px 10px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+        border-bottom: 1px solid #2a2d35;
+    }
+    .data-table td {
+        padding: 10px;
+        border-bottom: 1px solid #1f2228;
+        font-size: 13px;
+    }
+    .data-table tr:hover td { background: #22252d; }
+    .data-table .rank { color: #888; font-weight: bold; width: 30px; }
+    .data-table .rank.gold { color: #ffd700; }
+    .data-table .rank.silver { color: #c0c0c0; }
+    .data-table .rank.bronze { color: #cd7f32; }
+    .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+    .badge-green { background: rgba(40,167,69,0.2); color: var(--success); }
+    .badge-red { background: rgba(220,53,69,0.2); color: var(--danger); }
+    .badge-blue { background: rgba(23,162,184,0.2); color: var(--info); }
+
+    /* Full width sections */
+    .full-section {
+        background: #1a1d23;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #2a2d35;
+        margin-bottom: 25px;
+    }
+    .full-section h3 {
+        margin: 0 0 15px;
+        font-size: 15px;
+        color: #ccc;
+    }
+
+    /* Payment split */
+    .payment-split {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+    .payment-bar {
+        flex: 1;
+        height: 30px;
+        border-radius: 15px;
+        overflow: hidden;
+        display: flex;
+    }
+    .payment-efectivo { background: var(--success); }
+    .payment-tarjeta { background: var(--info); }
+    .payment-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+        .charts-row, .tables-row { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="gerencia-header">
+    <div>
+        <h1>🏢 {{ titulo }}</h1>
+        <p>{{ hoy|date:"l d \d\e F \d\e Y" }}</p>
+    </div>
+    <a href="/admin/" class="btn-volver">⬅️ Volver al Admin</a>
+</div>
+
+<!-- KPIs PRINCIPALES -->
+<div class="kpi-grid">
+    <div class="kpi-card green">
+        <div class="kpi-label">Ingresos Hoy</div>
+        <div class="kpi-value" style="color: var(--success);">{{ ingresos_hoy|floatformat:2 }}€</div>
+        <div class="kpi-sub">{{ tickets_hoy }} tickets · Ticket medio {{ ticket_medio_hoy|floatformat:2 }}€</div>
+    </div>
+    <div class="kpi-card blue">
+        <div class="kpi-label">Ingresos Semana</div>
+        <div class="kpi-value" style="color: var(--info);">{{ ingresos_semana|floatformat:2 }}€</div>
+        <div class="kpi-sub">{{ tickets_semana }} tickets desde el lunes</div>
+    </div>
+    <div class="kpi-card purple">
+        <div class="kpi-label">Ingresos Mes</div>
+        <div class="kpi-value" style="color: var(--purple);">{{ ingresos_mes|floatformat:2 }}€</div>
+        <div class="kpi-variation {% if variacion_mes > 0 %}up{% elif variacion_mes < 0 %}down{% endif %}">
+            {% if variacion_mes > 0 %}↑{% elif variacion_mes < 0 %}↓{% endif %} {{ variacion_mes|floatformat:1 }}% vs mes anterior
+        </div>
+    </div>
+    <div class="kpi-card orange">
+        <div class="kpi-label">Gastos Mes</div>
+        <div class="kpi-value" style="color: var(--warning);">{{ gastos_mes|floatformat:2 }}€</div>
+        <div class="kpi-sub">Balance: <span style="color: {% if balance_mes >= 0 %}var(--success){% else %}var(--danger){% endif %}; font-weight: bold;">{{ balance_mes|floatformat:2 }}€</span></div>
+    </div>
+    <div class="kpi-card red">
+        <div class="kpi-label">Stock Bajo</div>
+        <div class="kpi-value" style="color: var(--danger);">{{ stock_bajo }}</div>
+        <div class="kpi-sub">insumos necesitan reposición</div>
+    </div>
+</div>
+
+<!-- GRÁFICOS -->
+<div class="charts-row">
+    <div class="chart-card">
+        <h3>📈 Ingresos Últimos 7 Días</h3>
+        <div class="chart-container">
+            <canvas id="chart7dias"></canvas>
+        </div>
+    </div>
+    <div class="chart-card">
+        <h3>🕐 Ingresos por Hora (Hoy)</h3>
+        <div class="chart-container">
+            <canvas id="chartHoras"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- MÉTODOS DE PAGO -->
+<div class="chart-card" style="margin-bottom: 25px;">
+    <h3>💳 Métodos de Pago del Mes</h3>
+    <div class="payment-split">
+        {% widthratio efectivo_mes ingresos_mes 100 as pct_efectivo %}
+        <div class="payment-bar">
+            <div class="payment-efectivo" style="width: {% widthratio efectivo_mes ingresos_mes 100 %}%;"></div>
+            <div class="payment-tarjeta" style="width: {% widthratio tarjeta_mes ingresos_mes 100 %}%;"></div>
+        </div>
+    </div>
+    <div class="payment-labels">
+        <span>💵 Efectivo: <strong>{{ efectivo_mes|floatformat:2 }}€</strong> ({% widthratio efectivo_mes ingresos_mes 100 %}%)</span>
+        <span>💳 Tarjeta: <strong>{{ tarjeta_mes|floatformat:2 }}€</strong> ({% widthratio tarjeta_mes ingresos_mes 100 %}%)</span>
+    </div>
+</div>
+
+<!-- TABLAS -->
+<div class="tables-row">
+    <div class="table-card">
+        <h3>🏆 Top 10 Productos (Mes)</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Unidades</th>
+                    <th>Ingresos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in top_productos_mes %}
+                <tr>
+                    <td class="rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">{{ forloop.counter }}</td>
+                    <td>{{ p.articulo__nombre }}</td>
+                    <td>{{ p.unidades }}</td>
+                    <td style="color: var(--success);">{{ p.ingresos|floatformat:2 }}€</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align:center; color:#666;">Sin datos este mes</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-card">
+        <h3>⭐ Top 10 Productos (Hoy)</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Unidades</th>
+                    <th>Ingresos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in top_productos_hoy %}
+                <tr>
+                    <td class="rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">{{ forloop.counter }}</td>
+                    <td>{{ p.articulo__nombre }}</td>
+                    <td>{{ p.unidades }}</td>
+                    <td style="color: var(--success);">{{ p.ingresos|floatformat:2 }}€</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align:center; color:#666;">Sin ventas hoy</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- RANKING EMPLEADOS -->
+<div class="tables-row">
+    <div class="table-card">
+        <h3>👥 Ranking Empleados (Mes)</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Empleado</th>
+                    <th>Tickets</th>
+                    <th>Total Ventas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in ranking_empleados %}
+                <tr>
+                    <td class="rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">{{ forloop.counter }}</td>
+                    <td>{{ e.empleado_caja__username }}</td>
+                    <td>{{ e.num_tickets }}</td>
+                    <td style="color: var(--success);">{{ e.total_ventas|floatformat:2 }}€</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align:center; color:#666;">Sin datos de empleados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-card">
+        <h3>🪑 Mesas Más Populares (Mes)</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mesa</th>
+                    <th>Ventas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in mesa_popular %}
+                <tr>
+                    <td class="rank {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">{{ forloop.counter }}</td>
+                    <td>Mesa {{ m.mesa__numero }}</td>
+                    <td>{{ m.ventas }} ventas</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" style="text-align:center; color:#666;">Sin datos de mesas</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- SATISFACCIÓN -->
+{% if satisfaccion_stats %}
+<div class="chart-card" style="margin-bottom: 25px;">
+    <h3>😊 Satisfacción de Clientes (Mes)</h3>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        {% for s in satisfaccion_stats %}
+        <div style="text-align: center; padding: 10px 20px; background: #22252d; border-radius: 10px;">
+            <div style="font-size: 24px;">
+                {% if s.satisfaccion == 'EXCELENTE' %}😍
+                {% elif s.satisfaccion == 'BUENA' %}🙂
+                {% elif s.satisfaccion == 'NORMAL' %}😐
+                {% elif s.satisfaccion == 'MALA' %}😠
+                {% endif %}
+            </div>
+            <div style="font-size: 20px; font-weight: bold; color: white;">{{ s.total }}</div>
+            <div style="font-size: 11px; color: #888;">{{ s.satisfaccion }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var chartColors = {
+        green: 'rgba(40, 167, 69, 0.8)',
+        greenFill: 'rgba(40, 167, 69, 0.1)',
+        blue: 'rgba(23, 162, 184, 0.8)',
+        blueFill: 'rgba(23, 162, 184, 0.1)',
+    };
+
+    // Gráfico 7 días
+    var data7dias = {{ ventas_7dias_json|safe }};
+    new Chart(document.getElementById('chart7dias'), {
+        type: 'bar',
+        data: {
+            labels: data7dias.map(d => d.dia + ' ' + d.fecha),
+            datasets: [{
+                label: 'Ingresos €',
+                data: data7dias.map(d => d.total),
+                backgroundColor: data7dias.map(function(d, i) {
+                    return i === data7dias.length - 1 ? chartColors.green : chartColors.blue;
+                }),
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#888', callback: function(v) { return v + '€'; } },
+                    grid: { color: '#2a2d35' }
+                },
+                x: {
+                    ticks: { color: '#888' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Gráfico por horas
+    var dataHoras = {{ ventas_por_hora_json|safe }};
+    new Chart(document.getElementById('chartHoras'), {
+        type: 'line',
+        data: {
+            labels: dataHoras.map(d => d.hora),
+            datasets: [{
+                label: 'Ingresos €',
+                data: dataHoras.map(d => d.total),
+                borderColor: chartColors.green,
+                backgroundColor: chartColors.greenFill,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: chartColors.green,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#888', callback: function(v) { return v + '€'; } },
+                    grid: { color: '#2a2d35' }
+                },
+                x: {
+                    ticks: { color: '#888' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+<div style="padding: 10px;">
+    <h3 style="color: #ccc;">Navegación</h3>
+    <ul>
+        <li><a href="/admin/gerencia/">📊 Dashboard Gerencia</a></li>
+        <li><a href="/admin/stock-dashboard/">📦 Dashboard Stock</a></li>
+        <li><a href="/admin/informe-semanal/">📊 Informe Semanal</a></li>
+        <li><a href="/admin/prevision-compras/">🛒 Previsión Compras</a></li>
+    </ul>
+</div>
+{% endblock %}
