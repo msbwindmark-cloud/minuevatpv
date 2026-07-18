@@ -62,6 +62,15 @@
         .cobro-btn-tarjeta{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.3)}
         .cobro-btn-tarjeta:hover{box-shadow:0 6px 30px rgba(59,130,246,0.5);transform:translateY(-2px)}
         .reloj{font-size:0.8rem;color:#64748b;font-weight:600;font-variant-numeric:tabular-nums}
+        .user-badge{display:flex;align-items:center;gap:8px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);border-radius:50px;padding:5px 14px 5px 8px;font-size:0.75rem;font-weight:700;color:#00ff88;animation:badgePulse 3s ease-in-out infinite}
+        .user-badge .user-dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 8px rgba(0,255,136,0.6);animation:dotPulse 2s ease-in-out infinite}
+        .user-badge .user-icon{font-size:1rem}
+        .temp-badge{display:flex;align-items:center;gap:6px;background:rgba(23,162,184,0.08);border:1px solid rgba(23,162,184,0.25);border-radius:50px;padding:5px 12px;font-size:0.75rem;font-weight:700;color:#17a2b8}
+        .temp-badge .temp-icon{font-size:1rem}
+        .temp-badge .temp-value{font-size:0.85rem;font-weight:900;color:#e2e8f0}
+        .temp-badge .temp-desc{font-size:0.65rem;color:#64748b;font-weight:600}
+        @keyframes badgePulse{0%,100%{border-color:rgba(0,255,136,0.25)}50%{border-color:rgba(0,255,136,0.5)}}
+        @keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.8)}}
         .empty-ticket{flex-grow:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#475569}
         .empty-ticket .icon{font-size:3rem;margin-bottom:10px;opacity:0.4}
         .mesa-card{border-radius:16px;padding:14px;text-align:center;cursor:pointer;border:2px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(10px);transition:all 0.3s;position:relative;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -72,15 +81,23 @@
         .mesa-card .mesa-num{font-weight:900;font-size:1.2rem;color:#e2e8f0}
         .mesa-card .mesa-sillas{font-size:0.7rem;color:#64748b}
         .mesa-badge{position:absolute;top:-6px;right:-6px;background:linear-gradient(135deg,var(--neon-orange),#ea580c);color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;padding:0 4px;border-radius:10px;display:none;text-align:center;line-height:18px}
-        .search-box{position:relative;max-width:320px}
+        .search-box{position:relative;min-width:280px;max-width:400px}
         .search-box input{width:100%;padding:10px 16px 10px 40px;border-radius:50px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e2e8f0;font-size:0.85rem;font-weight:600;outline:none;transition:border-color 0.3s}
         .search-box input:focus{border-color:var(--neon-blue);box-shadow:0 0 15px rgba(0,212,255,0.2)}
         .search-box .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:0.9rem;pointer-events:none}
-        .search-results{position:absolute;top:100%;left:0;right:0;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:16px;margin-top:6px;max-height:260px;overflow-y:auto;z-index:100;display:none;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+        .search-results{position:absolute;top:calc(100% + 6px);left:0;min-width:350px;max-width:450px;background:#1e293b;border:1px solid rgba(255,255,255,0.12);border-radius:16px;max-height:320px;overflow-y:auto;z-index:1000;display:none;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(20px)}
         .search-results.show{display:block}
-        .search-result-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background 0.2s;border-bottom:1px solid rgba(255,255,255,0.04)}
-        .search-result-item:last-child{border-bottom:none}
-        .search-result-item:hover{background:rgba(0,212,255,0.1)}
+        .search-results .search-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background 0.15s}
+        .search-results .search-item:last-child{border-bottom:none}
+        .search-results .search-item:hover{background:rgba(0,212,255,0.1)}
+        .search-results .search-item .si-icon{font-size:1.4rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border-radius:10px;flex-shrink:0}
+        .search-results .search-item .si-info{flex-grow:1;min-width:0}
+        .search-results .search-item .si-nombre{font-weight:700;font-size:0.85rem;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .search-results .search-item .si-cat{font-size:0.7rem;color:#64748b;margin-top:2px}
+        .search-results .search-item .si-precio{font-weight:900;font-size:0.9rem;color:var(--neon-green);white-space:nowrap}
+        .search-results .search-item .si-add{width:30px;height:30px;border-radius:50%;border:2px solid rgba(0,255,136,0.3);background:rgba(0,255,136,0.1);color:var(--neon-green);font-size:1rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+        .search-results .search-item .si-add:hover{background:var(--neon-green);color:#0a0e1a;border-color:var(--neon-green);transform:scale(1.1)}
+        .search-results .search-empty{padding:20px;text-align:center;color:#64748b;font-size:0.85rem}
         .top-vendido-chip{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#94a3b8;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.3s;white-space:nowrap}
         .top-vendido-chip:hover{border-color:var(--neon-orange);color:var(--neon-orange);background:rgba(249,115,22,0.1)}
         .cupon-input{display:flex;gap:6px;align-items:center}
@@ -178,6 +195,15 @@
                         </div>
                         <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="Comando de voz">&#127908;</button>
                         <button class="voice-btn" onclick="abrirScanner()" title="Escanear codigo de barras" style="font-size:0.8rem;">&#128270;</button>
+                        <div class="user-badge">
+                            <span class="user-dot"></span>
+                            <span class="user-icon">&#128100;</span>
+                            <span>{{ request.user.username|upper }}</span>
+                        </div>
+                        <div class="temp-badge" id="temp-badge-top">
+                            <span class="temp-icon">&#127777;</span>
+                            <span class="temp-value" id="temp-value-top">--°C</span>
+                        </div>
                         <div class="reloj" id="reloj"></div>
                     </div>
                 </div>
@@ -291,7 +317,7 @@
                         <div class="col-2"><a href="/cierre-caja/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Caja</a></div>
                         <div class="col-2"><a href="/empleados/" class="btn btn-outline-light btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Empl.</a></div>
                         <div class="col-2"><a href="/pantalla-cliente/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Display</a></div>
-                        {% if request.user.is_superuser %}
+                        {% if request.user.is_staff %}
                         <div class="col-2"><a href="/api/dashboard-gerencia/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Dash</a></div>
                         <div class="col-2"><a href="/reservas/" class="btn btn-outline-secondary btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Reserv.</a></div>
                         <div class="col-2"><a href="/plano/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Plano</a></div>
@@ -659,13 +685,21 @@
         fetch('/api/buscar-productos/?q=' + encodeURIComponent(q))
             .then(function(r){ return r.json(); })
             .then(function(items) {
-                if (items.length === 0) { box.classList.remove('show'); return; }
+                if (items.length === 0) {
+                    box.innerHTML = '<div class="search-empty">&#128269; No se encontraron productos</div>';
+                    box.classList.add('show');
+                    return;
+                }
                 var html = '';
                 for (var i = 0; i < items.length; i++) {
-                    html += '<div class="search-result-item" onclick="agregarPorId(' + items[i].id + ')">';
-                    html += '<span style="font-size:1.2rem;">' + items[i].icono + '</span>';
-                    html += '<span style="flex:1;font-weight:600;color:#e2e8f0;font-size:0.85rem;">' + items[i].nombre + '</span>';
-                    html += '<span style="font-weight:700;color:var(--neon-green);font-size:0.85rem;">' + items[i].precio.toFixed(2) + ' &euro;</span>';
+                    html += '<div class="search-item" onclick="agregarPorId(' + items[i].id + ')">';
+                    html += '<div class="si-icon">' + items[i].icono + '</div>';
+                    html += '<div class="si-info">';
+                    html += '<div class="si-nombre">' + items[i].nombre + '</div>';
+                    html += '<div class="si-cat">' + (items[i].categoria || '') + '</div>';
+                    html += '</div>';
+                    html += '<div class="si-precio">' + items[i].precio.toFixed(2) + ' &euro;</div>';
+                    html += '<div class="si-add" title="Añadir">+</div>';
                     html += '</div>';
                 }
                 box.innerHTML = html;
@@ -935,6 +969,10 @@
                 html += '</span>';
             }
             badge.innerHTML = html;
+            var topBadge = document.getElementById('temp-badge-top');
+            if (topBadge) {
+                topBadge.innerHTML = '<span class="temp-icon">' + d.emoji + '</span> <span class="temp-value">' + d.temp + '°C</span> <span class="temp-desc">' + d.desc + '</span>';
+            }
         });
     }
     cargarClima();
