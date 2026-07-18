@@ -525,6 +525,11 @@ git branch -M main
 git remote add origin https://github.com/msbwindmark-cloud/minuevatpv.git
 git push -u origin main
 
+
+https://github.com/msbwindmark-cloud/minuevatpv.git
+
+
+
 -------------------------------------------------------------------------------
 
 javier
