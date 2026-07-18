@@ -1,6 +1,7 @@
 asgiref==3.12.1
 charset-normalizer==3.4.9
 colorama==0.4.6
+cryptography==45.0.4
 Django==6.0.7
 django-livereload-server==0.5.1
 et_xmlfile==2.0.0

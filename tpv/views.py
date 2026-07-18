@@ -3285,3 +3285,132 @@ def admin_gerencia_dashboard(request):
         'app_list': admin.site.get_app_list(request),
     }
     return render(request, 'admin/gerencia_dashboard.html', context)
+
+
+# =============================================================================
+# REDSYS - TPV Virtual (CaixaBank)
+# Descomentar cuando tengas las credenciales de CaixaBank
+# =============================================================================
+#
+# import time as _time
+# from django.http import HttpResponseRedirect
+#
+#
+# @login_required
+# def api_redsys_iniciar_pago(request):
+#     """
+#     API que inicia un pago con Redsys.
+#     Recibe los items del pedido y redirige al TPV de Redsys.
+#
+#     POST body: { items: [...], mesa_id: N }
+#     Retorna: HTML con formulario que redirige a Redsys
+#     """
+#     if request.method != 'POST':
+#         return JsonResponse({'error': 'Method not allowed'}, status=405)
+#
+#     from .redsys import crear_cliente_redsys
+#
+#     try:
+#         datos = json.loads(request.body)
+#         items_pedido = datos.get('items', [])
+#         mesa_id = datos.get('mesa_id', None)
+#
+#         if not items_pedido:
+#             return JsonResponse({'error': 'Pedido vacio'}, status=400)
+#
+#         # Calcular total
+#         total_cents = 0
+#         for item in items_pedido:
+#             articulo = Articulo.objects.get(id=item['id'])
+#             total_cents += int(articulo.precio_con_iva * 100 * item['cantidad'])
+#
+#         # Crear numero de orden unico (8 digitos)
+#         order_num = f"TPV{int(_time.time()) % 100000000:08d}"
+#
+#         # Crear cliente Redsys y generar pago
+#         client = crear_cliente_redsys()
+#         base_url = request.build_absolute_uri('/').rstrip('/')
+#
+#         form_data = client.crear_pago(
+#             order_number=order_num,
+#             amount_cents=total_cents,
+#             titular=request.user.username,
+#             descripcion=f'Cafe - Pedido {order_num}',
+#             ok_url=f'{base_url}/redsys/ok/?order={order_num}',
+#             ko_url=f'{base_url}/redsys/ko/?order={order_num}',
+#             callback_url=f'{base_url}/redsys/callback/',
+#         )
+#
+#         # Devolver los datos para que el frontend abra la ventana de Redsys
+#         return JsonResponse({
+#             'status': 'ok',
+#             'redsys_url': form_data['url'],
+#             'form_data': form_data,
+#             'order_number': order_num,
+#         })
+#
+#     except Exception as e:
+#         return JsonResponse({'error': str(e)}, status=500)
+#
+#
+# def redsys_callback(request):
+#     """
+#     Webhook que Redsys llama cuando el pago se procesa.
+#     Aqui se valida la firma y se confirma/rechaza la venta.
+#     """
+#     from .redsys import RedsysClient
+#
+#     if request.method != 'POST':
+#         return HttpResponse('Metodo no permitido', status=405)
+#
+#     try:
+#         # Recibir todos los campos Ds_*
+#         response_params = {
+#             'Ds_Order': request.POST.get('Ds_Order', ''),
+#             'Ds_Response': request.POST.get('Ds_Response', ''),
+#             'Ds_Signature': request.POST.get('Ds_Signature', ''),
+#         }
+#         for key in request.POST:
+#             if key.startswith('Ds_') and key not in response_params:
+#                 response_params[key] = request.POST[key]
+#
+#         # Validar firma
+#         if not RedsysClient.validar_respuesta(response_params, settings.REDSYS_SHARED_SECRET):
+#             return HttpResponse('Firma no valida', status=400)
+#
+#         # Interpretar respuesta
+#         exito, mensaje = RedsysClient.interpretar_respuesta(response_params.get('Ds_Response', ''))
+#
+#         logger.info(f'Redsys callback - Order: {response_params.get("Ds_Order")} - {mensaje}')
+#
+#         # Responder 200 a Redsys
+#         return HttpResponse('OK')
+#
+#     except Exception as e:
+#         logger.error(f'Redsys callback error: {e}')
+#         return HttpResponse('Error interno', status=500)
+#
+#
+# def redsys_ok(request):
+#     """
+#     Pagina de exito - Redsys redirige aqui cuando el pago es correcto.
+#     Muestra pantalla de confirmacion al cliente.
+#     """
+#     order = request.GET.get('order', '')
+#     return render(request, 'redsys/resultado.html', {
+#         'exito': True,
+#         'mensaje': 'Pago realizado correctamente',
+#         'order': order,
+#     })
+#
+#
+# def redsys_ko(request):
+#     """
+#     Pagina de error - Redsys redirige aqui cuando el pago falla.
+#     """
+#     order = request.GET.get('order', '')
+#     return render(request, 'redsys/resultado.html', {
+#         'exito': False,
+#         'mensaje': 'El pago no pudo completarse',
+#         'order': order,
+#     })

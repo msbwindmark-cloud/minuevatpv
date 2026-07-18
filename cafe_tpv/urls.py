@@ -114,4 +114,13 @@ urlpatterns = [
     path('api/reviews/crear/', views.api_crear_review, name='api_crear_review'),
     path('api/sheets-sync/', views.api_sheets_sync, name='api_sheets_sync'),
     path('accounts/', include('django.contrib.auth.urls')),
+
+    # ==========================================================================
+    # REDSYS - TPV Virtual (CaixaBank)
+    # Descomentar cuando tengas las credenciales de CaixaBank
+    # ==========================================================================
+    # path('api/redsys/iniciar-pago/', views.api_redsys_iniciar_pago, name='redsys_iniciar_pago'),
+    # path('redsys/callback/', views.redsys_callback, name='redsys_callback'),
+    # path('redsys/ok/', views.redsys_ok, name='redsys_ok'),
+    # path('redsys/ko/', views.redsys_ko, name='redsys_ko'),
 ]

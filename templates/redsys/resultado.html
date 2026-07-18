@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if exito %}Pago Confirmado{% else %}Pago No Completado{% endif %} - TPV Cafeteria</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e2e8f0;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .icon { font-size: 5rem; margin-bottom: 20px; }
+        .title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
+        .title.ok { color: #00ff88; }
+        .title.ko { color: #f43f5e; }
+        .msg { color: #94a3b8; font-size: 1rem; margin-bottom: 30px; }
+        .order { color: #64748b; font-size: 0.85rem; margin-bottom: 25px; }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            color: #fff;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn.ok { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn.ko { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">{% if exito %}&#10004;&#65039;{% else %}&#10060;{% endif %}</div>
+        <div class="title {% if exito %}ok{% else %}ko{% endif %}">
+            {% if exito %}Pago Confirmado{% else %}Pago No Completado{% endif %}
+        </div>
+        <div class="msg">{{ mensaje }}</div>
+        {% if order %}
+        <div class="order">Pedido: {{ order }}</div>
+        {% endif %}
+        {% if exito %}
+        <a href="/" class="btn ok">Volver al TPV</a>
+        {% else %}
+        <a href="/" class="btn ko">Volver al TPV</a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -134,3 +134,14 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', f'TPV Cafeteria <{EMAIL_HOST_USER}>')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# =============================================================================
+# REDSYS - TPV Virtual (CaixaBank)
+# Descomentar cuando tengas las credenciales de CaixaBank
+# =============================================================================
+# REDSYS_MERCHANT_CODE = os.getenv('REDSYS_MERCHANT_CODE', '')      # Codigo FUC de CaixaBank
+# REDSYS_TERMINAL = os.getenv('REDSYS_TERMINAL', '1')               # Numero de terminal
+# REDSYS_SHARED_SECRET = os.getenv('REDSYS_SHARED_SECRET', '')      # Clave de encriptacion (ver pasos abajo)
+# REDSYS_ENVIRONMENT = os.getenv('REDSYS_ENVIRONMENT', 'test')      # 'test' o 'real'
+# REDSYS_URL_OK = os.getenv('REDSYS_URL_OK', 'http://127.0.0.1:8000/redsys/ok/')
+# REDSYS_URL_KO = os.getenv('REDSYS_URL_KO', 'http://127.0.0.1:8000/redsys/ko/')

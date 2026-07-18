@@ -484,6 +484,90 @@
         showStep();
     }
 
+    // =========================================================================
+    // REDSYS (CaixaBank) - Descomentar cuando tengas credenciales
+    // Abre el TPV Virtual de Redsys en una nueva ventana para cobro real
+    // =========================================================================
+    /*
+    function redsysPago(items, total, mesaId) {
+        Swal.fire({
+            title: 'Iniciando pago con tarjeta...',
+            html: '<div style="text-align:center;"><div class="spinner" style="width:40px;height:40px;border:4px solid rgba(255,255,255,0.1);border-top:4px solid #3b82f6;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div><div style="margin-top:15px;color:#94a3b8;">Conectando con Redsys...</div></div>',
+            showConfirmButton: false,
+            background: '#1e293b', color: '#e2e8f0',
+            allowOutsideClick: false
+        });
+
+        fetch('/api/redsys/iniciar-pago/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ items: items, mesa_id: mesaId })
+        }).then(function(r){ return r.json(); }).then(function(d) {
+            if (d.status === 'ok') {
+                // Abrir ventana de Redsys
+                var redsysWindow = window.open('', '_blank', 'width=800,height=600');
+                redsysWindow.document.write(
+                    '<html><head><title>Pago con Tarjeta - Redsys</title></head><body style="display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f2f5;">' +
+                    '<form id="redsysForm" method="POST" action="' + d.redsys_url + '">' +
+                    '<input type="hidden" name="Ds_SignatureVersion" value="' + d.form_data.Ds_SignatureVersion + '">' +
+                    '<input type="hidden" name="Ds_MerchantData" value="' + d.form_data.Ds_MerchantData + '">' +
+                    '<input type="hidden" name="Ds_Signature" value="' + d.form_data.Ds_Signature + '">' +
+                    '</form></body></html>'
+                );
+                redsysWindow.document.getElementById('redsysForm').submit();
+
+                // Cerrar el SweetAlert del POS
+                Swal.close();
+
+                // Abrir modal de espera en el POS
+                Swal.fire({
+                    title: 'Esperando pago...',
+                    html: '<div style="text-align:center;"><div style="font-size:2rem;margin:10px;">💳</div><div style="color:#94a3b8;margin:10px 0;">El cliente esta realizando el pago en la ventana de Redsys</div><div style="font-size:0.8rem;color:#64748b;">Ventana abierta para el cliente</div></div>',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Pago completado',
+                    confirmButtonColor: '#10b981',
+                    background: '#1e293b', color: '#e2e8f0'
+                }).then(function() {
+                    // Cuando el cajero confirma, registrar el cobro localmente
+                    fetch('/api/registrar-cobro/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                        body: JSON.stringify({ items: items, forma_pago: 'TARJETA', mesa_id: mesaId })
+                    }).then(function(res){ return res.json(); }).then(function(d2) {
+                        if (d2.status === 'success') {
+                            sonidoCobro();
+                            lanzarConfetti();
+                            Swal.fire({
+                                icon: 'success', title: 'Pago confirmado',
+                                html: '<div style="font-size:1.5rem;color:#00ff88;">' + d2.total.toFixed(2) + ' &euro;</div>',
+                                confirmButtonColor: '#10b981',
+                                confirmButtonText: 'Aceptar',
+                                background: '#1e293b', color: '#e2e8f0'
+                            });
+                            // Resetear el POS igual que en efectivo
+                            mesaActual = null;
+                            ordenActual = {};
+                            cuponAplicado = null;
+                            descuentoGlobal = 0;
+                            document.getElementById('cupon-form').style.display = 'flex';
+                            document.getElementById('cupon-activo').style.display = 'none';
+                            document.getElementById('cupon-codigo').value = '';
+                            document.getElementById('mesa-actual-label').textContent = 'Selecciona mesa';
+                            document.getElementById('ticket-mesa-info').textContent = '';
+                            actualizarGraficosTicket();
+                            actualizarBadgesMesas();
+                        }
+                    });
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: d.error || 'No se pudo iniciar el pago', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+            }
+        }).catch(function() {
+            Swal.fire({ icon: 'error', title: 'Sin conexion', text: 'No se pudo contactar con Redsys.', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+        });
+    }
+    */
+
     function crearParticulas() {
         var c = document.getElementById('particles-container');
         if (!c) return;
@@ -723,6 +807,15 @@
             var payload = { items: lista, forma_pago: metodo, mesa_id: (mesaActual > 0) ? mesaActual : null, cupon: cuponAplicado || '', cliente_id: clienteActual ? clienteActual.id : null };
 
             if (metodo === 'TARJETA') {
+                // =========================================================================
+                // REDSYS (CaixaBank) - Descomentar cuando tengas credenciales
+                // Esto redirige al TPV Virtual de Redsys para cobro real con tarjeta
+                // =========================================================================
+                // redsysPago(lista, total + propinaMonto, mesaActual);
+                // return;
+                // =========================================================================
+
+                // Animacion de terminal (simulacion actual - comentar al activar Redsys)
                 terminalAnimacion(payload, total + propinaMonto, nombreMesa, metodo, icono);
                 return;
             }

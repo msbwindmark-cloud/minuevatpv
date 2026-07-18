@@ -572,6 +572,75 @@ Si necesitas algo más, me dices.
 
 -------------------------------------------------------------------------------
 
+
+
+Para cobros reales necesitas integrar una pasarela de pago. Las opciones principales:
+
+1. **Stripe** — API moderna, documentación excelente, ideal para empezar. Creas cuenta, usas su SDK, cobras desde el POS.
+
+2. **Redsys (Sabadell/BBVA/La Caixa)** — El estándar bancario español. Más complejo pero necesario si usas TPV físico de banco español.
+
+3. **SumUp / Zettle (PayPal)** — Terminales físicos Bluetooth que se conectan a la app por API. Más sencillo que Redsys.
+
+**Pasos generales:**
+- Crear cuenta en el proveedor de pagos
+- Obtener API keys (public + secret)
+- Instalar su SDK (`pip install stripe`, etc.)
+- Reemplazar la función `registrarCobro()` del backend con una llamada al SDK del proveedor
+- La animación del terminal se mantiene, pero el resultado real viene del webhook del proveedor
+
+¿Te interesa alguno en concreto?
+
+
+
+Entonces será **Redsys** — el gateway que usa CaixaBank (y casi todos los bancos españoles).
+
+**Lo que necesitas:**
+1. Pedir a CaixaBank la **pasarela de pagos Redsys** (te dan credenciales: `FUC`, `terminal`, `clave encriptación`)
+2. `pip install cryptography` (Redsys firma las peticiones con SHA256/HMAC)
+3. Tu backend envía los datos del cobro a Redsys → Redsys redirige al TPV virtual del banco → cliente paga → Redsys te devuelve `KO/OK` con webhook
+
+**No es trivial** — Redsys usa encriptación propia y firmas complejas. Hay librerías Python que lo facilitan:
+
+- `redsys-python` → `pip install redsys-python`
+- `django-redsys` → integración directa con Django
+
+¿Quieres que prepare el código para cuando tengas las credenciales de CaixaBank, o prefieres dejarlo para después?
+
+
+-------------------------------------------------------------------
+
+
+
+
+Todo listo. Resumen de lo creado:
+
+**Archivos nuevos:**
+- `tpv/redsys.py` — Modulo completo de integracion Redsys (HMAC SHA256, 3DES, firma/validacion)
+- `templates/redsys/resultado.html` — Pagina de resultado (OK/KO) con estilo cyberpunk
+- `REDSYS_GUIA.md` — Documentacion paso a paso con 7 pasos claros
+
+**Archivos modificados (comentados, sin romper nada):**
+- `cafe_tpv/settings.py` — Settings REDSYS al final
+- `cafe_tpv/urls.py` — 4 URLs al final
+- `tpv/views.py` — 4 vistas al final
+- `templates/pos_tactil.html` — Bloque Redsys + funcion `redsysPago()` comentada
+- `.env` — Variables REDSYS comentadas
+- `requirements.txt` — Incluye `cryptography`
+
+**Para activar cuando tengas credenciales:**
+1. Rellenar `.env` con FUC, terminal y clave de CaixaBank
+2. Descomentar settings, urls, views, frontend (todo indicado en `REDSYS_GUIA.md`)
+
+Nada se rompe, todo funciona igual hasta que descomentes.
+
+
+
+
+--------------------------------------------------------------
+
+
+
 javier
 Javier@2025
 
