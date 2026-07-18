@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.contrib import messages
 from django.db.models import Sum, F, Count, DecimalField, ExpressionWrapper
 from django.utils import timezone
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
 from datetime import timedelta, date
+from .views import es_admin_panel
 from .models import (
     InsumoMateriaPrima, CategoriaProducto, Articulo,
     ComposicionReceta, OperacionVenta, LineaVenta, RegistroGasto, Mesa,
@@ -385,6 +388,139 @@ class EmailLogAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+# ── Views de envio de email por boton ──────────────────────────────────────
+
+@login_required
+@user_passes_test(es_admin_panel)
+def admin_enviar_informe_email(request):
+    """Genera y envia el informe semanal al email del usuario conectado."""
+    from decimal import Decimal
+    from .models import OperacionVenta, RegistroGasto, LineaVenta
+    from .emails import enviar_informe_semanal_email
+
+    if not request.user.email:
+        messages.error(request, 'Tu usuario no tiene email configurado. Anade tu email en tu perfil.')
+        return redirect('/admin/')
+
+    hoy = timezone.now().date()
+    fecha_inicio = hoy - timedelta(days=hoy.weekday())
+    fecha_fin = fecha_inicio + timedelta(days=6)
+
+    ventas = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio,
+        fecha_registro__date__lte=fecha_fin
+    )
+    gastos = RegistroGasto.objects.filter(
+        fecha_gasto__date__gte=fecha_inicio,
+        fecha_gasto__date__lte=fecha_fin
+    )
+
+    total_ventas = ventas.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    total_gastos = gastos.aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+    total_tickets = ventas.count()
+
+    dias_nombres = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo']
+    desglose_diario = []
+    for i in range(7):
+        dia = fecha_inicio + timedelta(days=i)
+        v_dia = ventas.filter(fecha_registro__date=dia).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+        t_dia = ventas.filter(fecha_registro__date=dia).count()
+        desglose_diario.append({'nombre': dias_nombres[i], 'ventas': float(v_dia), 'tickets': t_dia})
+
+    top_raw = (
+        LineaVenta.objects
+        .filter(venta__fecha_registro__date__gte=fecha_inicio, venta__fecha_registro__date__lte=fecha_fin)
+        .values('articulo__nombre')
+        .annotate(total=Sum('unidades'))
+        .order_by('-total')[:10]
+    )
+    top_productos = [{'nombre': t['articulo__nombre'], 'total': t['total']} for t in top_raw]
+
+    comparativa = None
+    fecha_inicio_ant = fecha_inicio - timedelta(days=7)
+    fecha_fin_ant = fecha_fin - timedelta(days=7)
+    total_ant = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio_ant,
+        fecha_registro__date__lte=fecha_fin_ant
+    ).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    if total_ant > 0:
+        comparativa = {'pct': float((total_ventas - total_ant) / total_ant * 100)}
+
+    context = {
+        'fecha_inicio': fecha_inicio.strftime('%d/%m/%Y'),
+        'fecha_fin': fecha_fin.strftime('%d/%m/%Y'),
+        'total_ventas': float(total_ventas),
+        'total_tickets': total_tickets,
+        'total_gastos': float(total_gastos),
+        'desglose_diario': desglose_diario,
+        'top_productos': top_productos,
+        'comparativa': comparativa,
+    }
+
+    enviado = enviar_informe_semanal_email(context)
+    if enviado:
+        messages.success(request, f'Informe semanal enviado a {request.user.email}')
+    else:
+        messages.error(request, 'Error al enviar el informe. Comprueba la configuracion SMTP.')
+    return redirect('/admin/informe-semanal/')
+
+
+@login_required
+@user_passes_test(es_admin_panel)
+def admin_enviar_pedidos_email(request):
+    """Envia por email todos los pedidos pendientes al proveedor."""
+    from .emails import enviar_pedido_proveedor_email
+
+    if not request.user.email:
+        messages.error(request, 'Tu usuario no tiene email configurado. Anade tu email en tu perfil.')
+        return redirect('/admin/')
+
+    pendientes = PedidoProveedor.objects.filter(estado='PENDIENTE')
+    if not pendientes.exists():
+        messages.warning(request, 'No hay pedidos pendientes para enviar.')
+        return redirect('/admin/tpv/pedidoproveedor/')
+
+    enviados = 0
+    sin_email = 0
+    for pedido in pendientes:
+        if pedido.email_proveedor:
+            pedido.estado = 'ENVIADO'
+            pedido.save()
+            enviar_pedido_proveedor_email(pedido)
+            enviados += 1
+        else:
+            sin_email += 1
+
+    if enviados > 0:
+        messages.success(request, f'{enviados} pedido(s) enviado(s) por email. {f"({sin_email} sin email de proveedor)" if sin_email else ""}')
+    else:
+        messages.warning(request, f'Ningun pedido tenia email de proveedor configurado.')
+    return redirect('/admin/tpv/pedidoproveedor/')
+
+
+@login_required
+@user_passes_test(es_admin_panel)
+def admin_enviar_cierre_email(request):
+    """Envia el ultimo turno cerrado por email al usuario conectado."""
+    from .emails import enviar_cierre_caja_email
+
+    if not request.user.email:
+        messages.error(request, 'Tu usuario no tiene email configurado. Anade tu email en tu perfil.')
+        return redirect('/admin/')
+
+    turno = TurnoCaja.objects.filter(cerrado=True).order_by('-fecha_cierre').first()
+    if not turno:
+        messages.warning(request, 'No hay turnos cerrados para enviar.')
+        return redirect('/admin/tpv/turnocaja/')
+
+    enviado = enviar_cierre_caja_email(turno)
+    if enviado:
+        messages.success(request, f'Cierre de caja #{turno.id} enviado a {request.user.email}')
+    else:
+        messages.error(request, 'Error al enviar el cierre. Comprueba la configuracion SMTP.')
+    return redirect('/admin/tpv/turnocaja/')
 
 
 # Template personalizado para el admin index con enlaces a gestiones

@@ -4,6 +4,7 @@ from django.views.generic import RedirectView
 from django.conf.urls.static import static
 from django.conf import settings
 from tpv import views
+from tpv.admin import admin_enviar_informe_email, admin_enviar_pedidos_email, admin_enviar_cierre_email
 
 urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=False)),
@@ -20,6 +21,11 @@ urlpatterns = [
     path('admin/informe-semanal/pdf/', views.admin_exportar_informe_semanal_pdf, name='admin_exportar_informe_semanal_pdf'),
     path('admin/prevision-compras/excel/', views.admin_exportar_prevision_excel, name='admin_exportar_prevision_excel'),
     path('admin/prevision-compras/pdf/', views.admin_exportar_prevision_pdf, name='admin_exportar_prevision_pdf'),
+
+    # Envio de email por boton
+    path('admin/email/enviar-informe/', admin_enviar_informe_email, name='admin_enviar_informe_email'),
+    path('admin/email/enviar-pedidos/', admin_enviar_pedidos_email, name='admin_enviar_pedidos_email'),
+    path('admin/email/enviar-cierre/', admin_enviar_cierre_email, name='admin_enviar_cierre_email'),
 
     path('admin/', admin.site.urls),
     path('', views.vista_terminal_pos, name='pos_home'),

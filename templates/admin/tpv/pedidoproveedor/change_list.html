@@ -3,7 +3,40 @@
 {% block content_title %}
 <div style="background: #A0522D; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
     <span style="font-weight: bold;">📋 Pedidos al Proveedor</span>
-    <a href="/admin/stock-dashboard/" style="background: rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold;">⬅️ Volver al Dashboard Stock</a>
+    <div style="display: flex; gap: 10px;">
+        <button type="button" style="background: rgba(0,212,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; border: 1px solid rgba(0,212,255,0.5); cursor: pointer;" onclick="enviarPedidosEmail()">📧 Enviar Pendientes por Email</button>
+        <a href="/admin/stock-dashboard/" style="background: rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold;">⬅️ Volver al Dashboard Stock</a>
+    </div>
 </div>
 {{ block.super }}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function enviarPedidosEmail() {
+    Swal.fire({
+        title: 'Enviar Pedidos al Proveedor',
+        html: 'Se enviaran por email todos los pedidos pendientes al proveedor.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#00d4ff',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Si, enviar',
+        cancelButtonText: 'Cancelar',
+        background: '#1e293b',
+        color: '#e2e8f0'
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Enviando...',
+                html: 'Procesando pedidos pendientes',
+                allowOutsideClick: false,
+                background: '#1e293b',
+                color: '#e2e8f0',
+                didOpen: function() { Swal.showLoading(); }
+            });
+            window.location.href = '/admin/email/enviar-pedidos/';
+        }
+    });
+}
+</script>
 {% endblock %}

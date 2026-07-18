@@ -401,6 +401,90 @@ Cada domingo a las 23:00
 
 ------------------------------------------------------------------
 
+Perfecto, ya tengo toda la foto. Aquí va el plan:
+
+---
+
+## Plan: Botones de email en el Admin Panel
+
+### Dónde encajaría cada uno
+
+| Botón | Ubicación | Qué hace |
+|-------|-----------|----------|
+| **Informe semanal** | Admin index → junto a la card "Informe Semanal" | Genera y envía el informe de la semana actual al email del usuario conectado |
+| **Pedido a proveedor** | Admin → change list de `PedidoProveedor` | Botón que envía por email TODOS los pedidos pendientes (o los seleccionados) |
+| **Cierre de caja** | Admin → change list de `TurnoCaja` | Botón que envía el resumen del último turno cerrado al email del usuario conectado |
+
+### Cómo funcionaría (1 clic cada uno)
+
+1. **Informe semanal**: Botón "📧 Enviar informe por email" → Click → Se genera el resumen de la semana → Se envía a `request.user.email` → Mensaje de éxito "Informe enviado a tu email"
+
+2. **Pedido a proveedor**: Botón "📧 Enviar pedidos pendientes por email" → Click → Se envía cada pedido pendiente al email del proveedor + copia al usuario conectado → Mensaje "3 pedidos enviados"
+
+3. **Cierre de caja**: Botón "📧 Enviar último cierre por email" → Click → Se envía el resumen del turno cerrado más reciente → Mensaje "Cierre enviado a tu email"
+
+### Archivos a modificar
+
+| Archivo | Cambio |
+|---------|--------|
+| `tpv/admin.py` | +3 views independientes (`enviar_informe_email`, `enviar_pedidos_email`, `enviar_cierre_email`) + URLs |
+| `cafe_tpv/urls.py` | +3 URLs para las views de envío |
+| `templates/admin/custom_index.html` | Botón junto a la card de Informe Semanal |
+| `templates/admin/tpv/pedidoproveedor/change_list.html` | Botón "Enviar pedidos pendientes" |
+| `templates/admin/tpv/turnocaja/change_list.html` | Botón "Enviar último cierre" |
+
+### Detalle técnico
+
+- Cada view es `@login_required` + `@user_passes_test(es_admin_panel)` (staff o superuser)
+- Usa `request.user.email` como destinatario
+- Redirige de vuelta con `messages.success`
+- No toca nada existente — solo añade
+
+### Lo que NO se toca
+
+- Los signals de stock bajo y reserva (siguen automáticos)
+- Las actions existentes de admin (siguen funcionando)
+- Ninguna vista o template existente se modifica
+
+---
+
+¿Te parece bien este plan? ¿Quieres que proceda?
+
+
+
+-------------------------------------------------------------------------------
+
+Todo hecho y verificado. Ahora tienes 3 botones de 1 clic:
+
+### Dónde está cada botón
+
+| Botón | Ubicación | Qué hace |
+|-------|-----------|----------|
+| 📧 **Enviar Informe por Email** | Admin index → junto a card "Informe Semanal" | Envía el resumen de la semana a tu email |
+| 📧 **Enviar Pendientes por Email** | Admin → Pedidos al Proveedor → arriba a la derecha | Envía todos los pedidos pendientes al proveedor |
+| 📧 **Enviar Ultimo Cierre por Email** | Admin → Turnos de Caja → arriba a la derecha | Envía el último turno cerrado a tu email |
+
+### Flujo
+
+1. Haces clic en el botón
+2. Se te pide confirmación ("¿Enviar informe semanal a tu email?")
+3. Se envía a `request.user.email` (tu email de usuario)
+4. Aparece mensaje de éxito/error
+5. Redirige de vuelta a la página
+
+**Recarga** `http://127.0.0.1:8000/admin/` y verás los botones. Si tu usuario no tiene email configurado, te avisará con un mensaje de error.
+
+
+-------------------------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+
 javier
 Javier@2025
 

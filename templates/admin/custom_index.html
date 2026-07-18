@@ -58,6 +58,18 @@
     .gestion-card.stock .icon { background: linear-gradient(135deg, #8B4513, #A0522D); }
     .gestion-card.informe .icon { background: linear-gradient(135deg, #228B22, #2d9e2d); }
     .gestion-card.compras .icon { background: linear-gradient(135deg, #DC143C, #e8456a); }
+    .gestion-card.email-btn {
+        background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,255,136,0.15));
+        border: 1px solid rgba(0,212,255,0.3);
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .gestion-card.email-btn:hover {
+        background: linear-gradient(135deg, rgba(0,212,255,0.3), rgba(0,255,136,0.3));
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,212,255,0.2);
+    }
+    .gestion-card.email-btn .icon { background: linear-gradient(135deg, #0ea5e9, #06b6d4); }
     .gestion-card .text h3 {
         margin: 0;
         font-size: 15px;
@@ -82,7 +94,7 @@
             <div class="icon" style="background: linear-gradient(135deg, #6f42c1, #17a2b8); width: 65px; height: 65px; font-size: 36px;">🏢</div>
             <div class="text">
                 <h3 style="font-size: 18px;">Dashboard de Gerencia</h3>
-                <p style="font-size: 13px;">Panel principal con KPIs, gráficos, ranking de empleados y estadísticas del negocio</p>
+                <p style="font-size: 13px;">Panel principal con KPIs, graficos, ranking de empleados y estadisticas del negocio</p>
             </div>
         </a>
         <a href="/admin/stock-dashboard/" class="gestion-card stock">
@@ -99,6 +111,13 @@
                 <p>Gastos, ventas y balance de la semana</p>
             </div>
         </a>
+        <button type="button" class="gestion-card email-btn" onclick="enviarInformeEmail()">
+            <div class="icon">📧</div>
+            <div class="text">
+                <h3>Enviar Informe por Email</h3>
+                <p>Recibe el resumen de la semana en tu correo</p>
+            </div>
+        </button>
         <a href="/admin/prevision-compras/" class="gestion-card compras">
             <div class="icon">🛒</div>
             <div class="text">
@@ -109,7 +128,34 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+function enviarInformeEmail() {
+    Swal.fire({
+        title: 'Enviar Informe Semanal',
+        html: 'Se generara el informe de la semana actual y se enviara a tu email.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#00d4ff',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Si, enviar',
+        cancelButtonText: 'Cancelar',
+        background: '#1e293b',
+        color: '#e2e8f0'
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Enviando...',
+                html: 'Generando informe semanal',
+                allowOutsideClick: false,
+                background: '#1e293b',
+                color: '#e2e8f0',
+                didOpen: function() { Swal.showLoading(); }
+            });
+            window.location.href = '/admin/email/enviar-informe/';
+        }
+    });
+}
 document.addEventListener('DOMContentLoaded', function() {
     var panel = document.getElementById('gestion-panel');
     var content = document.getElementById('content-main');
