@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Gerencia</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body { background-color: #0f172a; }
+        .stat-card {
+            border-radius: 16px;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-number { font-size: 2rem; font-weight: 800; }
+    </style>
+</head>
+<body class="text-white">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
+    <span class="navbar-brand fw-bold">Panel de Gerencia</span>
+    <div class="ms-auto d-flex gap-2 flex-wrap">
+        <span class="text-muted small align-self-center"> {{ hoy|date:"d/m/Y" }}</span>
+        <a href="/" class="btn btn-sm btn-outline-info rounded-3">TPV</a>
+        <a href="/cierre-caja/" class="btn btn-sm btn-outline-success rounded-3">Cierre de Caja</a>
+        <a href="/cocina/" class="btn btn-sm btn-outline-warning rounded-3">Cocina</a>
+        <a href="/reservas/" class="btn btn-sm btn-outline-secondary rounded-3">Reservas</a>
+        <a href="/menu-dia/" class="btn btn-sm btn-outline-primary rounded-3">Menu del Dia</a>
+        <a href="/bitacora/" class="btn btn-sm btn-outline-secondary rounded-3">Bitacora</a>
+        <a href="/empleados/" class="btn btn-sm btn-outline-light rounded-3">Empleados</a>
+        <a href="/pdf/reporte-diario/" class="btn btn-sm btn-outline-warning rounded-3" target="_blank">PDF Diario</a>
+        <a href="/heatmap/" class="btn btn-sm btn-outline-danger rounded-3">Heatmap</a>
+    </div>
+</nav>
+
+<div class="container-fluid p-4">
+
+    <!-- TARJETAS RESUMEN -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-success bg-opacity-25 border-success border">
+                <div class="card-body text-center">
+                    <div class="text-success small fw-bold text-uppercase">Ingresos Hoy</div>
+                    <div class="stat-number text-success">{{ ingresos_hoy }}&euro;</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-info bg-opacity-25 border-info border">
+                <div class="card-body text-center">
+                    <div class="text-info small fw-bold text-uppercase">Tickets Hoy</div>
+                    <div class="stat-number text-info">{{ tickets_hoy }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-warning bg-opacity-25 border-warning border">
+                <div class="card-body text-center">
+                    <div class="text-warning small fw-bold text-uppercase">Ticket Medio</div>
+                    <div class="stat-number text-warning">{{ ticket_medio }}&euro;</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-danger bg-opacity-25 border-danger border">
+                <div class="card-body text-center">
+                    <div class="text-danger small fw-bold text-uppercase">Gastos Hoy</div>
+                    <div class="stat-number text-danger">0.00&euro;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BALANCE GLOBAL -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary stat-card">
+                <div class="card-body text-center">
+                    <div class="text-muted small fw-bold text-uppercase">Ingresos Totales</div>
+                    <div class="stat-number text-success">{{ ingresos_total }}&euro;</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary stat-card">
+                <div class="card-body text-center">
+                    <div class="text-muted small fw-bold text-uppercase">Gastos Totales</div>
+                    <div class="stat-number text-danger">{{ gastos_total }}&euro;</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary stat-card">
+                <div class="card-body text-center">
+                    <div class="text-muted small fw-bold text-uppercase">Balance Neto</div>
+                    <div class="stat-number {% if balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        {{ balance }}&euro;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GRAFICOS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-8">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Ventas Ultimos 7 Dias</div>
+                <div class="card-body">
+                    <canvas id="chartVentas" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Efectivo vs Tarjeta (Hoy)</div>
+                <div class="card-body d-flex justify-content-center">
+                    <canvas id="chartPago" height="200" style="max-height:220px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Top Productos</div>
+                <div class="card-body">
+                    <canvas id="chartTop" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Ventas por Hora (Hoy)</div>
+                <div class="card-body">
+                    <canvas id="chartHora" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <!-- IVA COBRADO HOY -->
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-header fw-bold border-secondary">IVA Cobrado Hoy</div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Efectivo</span>
+                        <span class="fw-bold text-warning">{{ iva_efectivo }}&euro;</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Tarjeta</span>
+                        <span class="fw-bold text-warning">{{ iva_tarjeta }}&euro;</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-top border-secondary pt-2">
+                        <span class="fw-bold">Total IVA</span>
+                        <span class="fw-bold text-warning">{{ iva_efectivo|add:iva_tarjeta }}&euro;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP ARTICULOS -->
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-header fw-bold border-secondary">Top Productos (Unidades Vendidas)</div>
+                <div class="card-body">
+                    {% for art in top_articulos %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">{{ forloop.counter }}. {{ art.articulo__nombre }}</span>
+                        <span class="badge bg-warning text-dark">{{ art.total_vendido }} uds</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center my-3">Sin ventas registradas aun</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <!-- ULTIMAS VENTAS -->
+        <div class="col-md-7">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Ultimas Ventas</div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Fecha</th>
+                                    <th>Cajero</th>
+                                    <th>Pago</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for v in ultimas_ventas %}
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.fecha_registro|date:"d/m H:i" }}</td>
+                                    <td>{{ v.empleado_caja.username }}</td>
+                                    <td>
+                                        <span class="badge {% if v.forma_pago == 'EFECTIVO' %}bg-success{% else %}bg-info{% endif %}">
+                                            {{ v.forma_pago }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end fw-bold">{{ v.total_facturado }}&euro;</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No hay ventas registradas</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTAS STOCK -->
+        <div class="col-md-5">
+            <div class="card bg-dark border-danger">
+                <div class="card-header fw-bold border-danger text-danger">Alertas de Stock Critico</div>
+                <div class="card-body">
+                    {% for ins in insumos_criticos %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>{{ ins.nombre }}</span>
+                        <span class="badge bg-danger">{{ ins.cantidad_actual }} {{ ins.unidad_medida }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-success text-center my-3">Todos los stocks estan por encima del minimo</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS FINALES -->
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Tickets Totales Históricos</div>
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-info">{{ total_tickets }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Acciones</div>
+                <div class="card-body d-flex gap-2 flex-wrap">
+                    <a href="/admin/tpv/operacionventa/" class="btn btn-outline-light">Ver Todas las Ventas</a>
+                    <a href="/admin/tpv/registrogasto/" class="btn btn-outline-warning">Gestionar Gastos</a>
+                    <a href="/admin/tpv/insumomateriaprima/" class="btn btn-outline-info">Control de Stock</a>
+                    <a href="/bitacora/" class="btn btn-outline-secondary">Bitacora</a>
+                    <a href="/admin/" class="btn btn-outline-danger">Django Admin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = 'rgba(71,85,105,0.3)';
+
+// Ventas 7 dias
+new Chart(document.getElementById('chartVentas'), {
+    type: 'line',
+    data: {
+        labels: {{ dias_labels|safe }},
+        datasets: [{
+            label: 'Ingresos (EUR)',
+            data: {{ dias_values|safe }},
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16,185,129,0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 5,
+            pointBackgroundColor: '#10b981',
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Efectivo vs Tarjeta
+var pagoData = [{{ efectivo_hoy }}, {{ tarjeta_hoy }}];
+new Chart(document.getElementById('chartPago'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Efectivo', 'Tarjeta'],
+        datasets: [{ data: pagoData, backgroundColor: ['#10b981', '#3b82f6'], borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } }, cutout: '65%' }
+});
+
+// Top productos
+new Chart(document.getElementById('chartTop'), {
+    type: 'bar',
+    data: {
+        labels: {{ top_labels|safe }},
+        datasets: [{ label: 'Unidades', data: {{ top_values|safe }}, backgroundColor: '#f59e0b', borderRadius: 6 }]
+    },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+});
+
+// Ventas por hora
+var horaData = {{ ventas_por_hora|safe }};
+new Chart(document.getElementById('chartHora'), {
+    type: 'bar',
+    data: {
+        labels: horaData.map(function(d){ return d.hora; }),
+        datasets: [{ label: 'EUR', data: horaData.map(function(d){ return d.total; }), backgroundColor: '#8b5cf6', borderRadius: 4 }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+</script>
+
+</body>
+</html>

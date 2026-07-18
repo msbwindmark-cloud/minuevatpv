@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cola Digital</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Inter',system-ui,sans-serif;background:#0a0e1a;color:#e2e8f0;min-height:100vh;overflow:hidden}
+        .main{display:flex;flex-direction:column;height:100vh;padding:20px}
+        .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+        .top h1{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#00d4ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .llamando-box{text-align:center;padding:40px;background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,212,255,0.05));border:2px solid rgba(0,255,136,0.3);border-radius:24px;margin-bottom:20px;animation:pulseBorder 2s infinite}
+        @keyframes pulseBorder{0%,100%{border-color:rgba(0,255,136,0.3)}50%{border-color:rgba(0,255,136,0.7)}}
+        .llamando-box .num{font-size:5rem;font-weight:900;background:linear-gradient(135deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+        .llamando-box .label{font-size:1rem;color:#94a3b8;margin-top:10px}
+        .llamando-box .nombre{font-size:1.2rem;font-weight:700;color:#e2e8f0;margin-top:5px}
+        .esperando-area{flex:1;overflow-y:auto}
+        .esperando-title{font-size:0.8rem;color:#64748b;font-weight:700;text-transform:uppercase;margin-bottom:10px}
+        .esperando-grid{display:flex;flex-wrap:wrap;gap:10px}
+        .num-card{width:80px;height:80px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:1.5rem;color:#e2e8f0;transition:all 0.3s}
+        .num-card .nc-nombre{font-size:0.6rem;color:#64748b;font-weight:600;margin-top:2px}
+        .num-card:hover{border-color:var(--neon-blue);transform:scale(1.05)}
+        .stats-row{display:flex;gap:12px;margin-top:15px}
+        .stat-box{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);text-align:center}
+        .stat-box .sn{font-size:1.8rem;font-weight:900}
+        .stat-box .sl{font-size:0.65rem;color:#64748b;font-weight:600;text-transform:uppercase}
+        .reloj{font-size:2rem;font-weight:900;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    </style>
+</head>
+<body>
+<div class="main">
+    <div class="top">
+        <div style="display:flex;align-items:center;gap:10px">
+            <h1>Cola Digital</h1>
+            <a href="/" class="btn btn-sm btn-outline-info rounded-3" style="font-size:0.75rem;">TPV</a>
+        </div>
+        <div class="reloj" id="reloj"></div>
+    </div>
+    <div class="llamando-box" id="llamando-box">
+        <div class="num" id="llamando-num">--</div>
+        <div class="label">Ahora atendiendo</div>
+        <div class="nombre" id="llamando-nombre">Esperando...</div>
+    </div>
+    <div class="esperando-area">
+        <div class="esperando-title">En espera</div>
+        <div class="esperando-grid" id="esperando-grid"></div>
+    </div>
+    <div class="stats-row">
+        <div class="stat-box"><div class="sn text-info" id="stat-esperando">0</div><div class="sl">Esperando</div></div>
+        <div class="stat-box"><div class="sn text-success" id="stat-ultimo">0</div><div class="sl">Ultimo numero</div></div>
+        <div class="stat-box"><div class="sn text-warning" id="stat-hoy">0</div><div class="sl">Hoy</div></div>
+    </div>
+</div>
+<script>
+function actualizarReloj(){var n=new Date();document.getElementById('reloj').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0')}
+function cargarEstado(){
+    fetch('/api/cola/').then(function(r){return r.json()}).then(function(d){
+        var numEl=document.getElementById('llamando-num');
+        var nombreEl=document.getElementById('llamando-nombre');
+        var box=document.getElementById('llamando-box');
+        if(d.llamando){
+            numEl.textContent='#'+d.llamando;
+            nombreEl.textContent=d.llamando_nombre||'Cliente';
+            box.style.display='block';
+        }else{box.style.display='none'}
+        document.getElementById('stat-esperando').textContent=d.esperando;
+        document.getElementById('stat-ultimo').textContent=d.ultimo_numero;
+        var grid=document.getElementById('esperando-grid');
+        fetch('/api/cola/').then(function(){});
+        var html='';
+        for(var i=1;i<=d.ultimo_numero;i++){
+            if(d.llamando&&i===d.llamando)continue;
+            if(i>d.ultimo_numero-d.esperando)html+='<div class="num-card">'+i+'</div>';
+        }
+        grid.innerHTML=html;
+    });
+}
+actualizarReloj();setInterval(actualizarReloj,1000);
+cargarEstado();setInterval(cargarEstado,5000);
+</script>
+</body>
+</html>

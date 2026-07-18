@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu del Dia</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <style>
+        body { background-color: #0f172a; }
+        .promo-card { border: 2px solid transparent; transition: all 0.3s; }
+        .promo-card:hover { border-color: #f59e0b; transform: translateY(-5px); }
+        .promo-card.active { border-color: #10b981; }
+        .promo-badge { position: absolute; top: -10px; right: -10px; }
+    </style>
+</head>
+<body class="text-white">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
+    <span class="navbar-brand fw-bold">&#127860; Menu del Dia</span>
+    <div class="ms-auto d-flex gap-2">
+        <span class="badge bg-{% if franja_actual == 'MANANA' %}warning text-dark{% elif franja_actual == 'MEDIODIA' %}danger{% elif franja_actual == 'TARDE' %}info{% else %}secondary{% endif %} align-self-center">{{ franja_actual }}</span>
+        <a href="/" class="btn btn-sm btn-outline-info rounded-3">TPV</a>
+        <a href="/cocina/" class="btn btn-sm btn-outline-warning rounded-3">Cocina</a>
+    </div>
+</nav>
+<div class="container p-4">
+    {% if promos %}
+    <h4 class="fw-bold mb-3">Promociones Activas Ahora</h4>
+    <div class="row g-3 mb-5">
+        {% for promo in promos %}
+        <div class="col-md-4 col-lg-3">
+            <div class="card bg-dark promo-card active position-relative h-100">
+                <span class="promo-badge badge bg-success">PROMO</span>
+                <div class="card-body text-center p-4">
+                    <div class="display-4 mb-2">{{ promo.articulo.categoria.icono }}</div>
+                    <h5 class="fw-bold">{{ promo.nombre }}</h5>
+                    <p class="text-muted small">{{ promo.articulo.nombre }}</p>
+                    <div class="my-3">
+                        <span class="text-muted text-decoration-line-through me-2">{{ promo.articulo.precio_con_iva }}&euro;</span>
+                        <span class="fs-3 fw-900 text-success">{{ promo.precio_promo }}&euro;</span>
+                    </div>
+                    <div class="small text-warning">
+                        {% with desc=articulo.precio_con_iva|add:"-" %} Ahorra {{ promo.articulo.precio_con_iva|floatformat:2 }}{% endwith %}
+                    </div>
+                    <span class="badge bg-secondary mt-2">{{ promo.get_franja_display }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <h4 class="fw-bold mb-3">Todos los Menus</h4>
+    <div class="row g-3">
+        {% for m in todos %}
+        <div class="col-md-4 col-lg-3">
+            <div class="card bg-dark promo-card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="display-4 mb-2">{{ m.articulo.categoria.icono }}</div>
+                    <h5 class="fw-bold">{{ m.nombre }}</h5>
+                    <p class="text-muted small">{{ m.articulo.nombre }}</p>
+                    <div class="my-3">
+                        <span class="text-muted text-decoration-line-through me-2">{{ m.articulo.precio_con_iva }}&euro;</span>
+                        <span class="fs-3 fw-900 text-info">{{ m.precio_promo }}&euro;</span>
+                    </div>
+                    <span class="badge bg-secondary">{{ m.get_franja_display }}</span>
+                    {% if not m.activo %}<span class="badge bg-danger ms-1">Inactivo</span>{% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="display-1 mb-3">&#127869;</div>
+            <h4 class="text-muted">No hay menus configurados</h4>
+            <p class="text-muted">Anade menus del dia desde el <a href="/admin/tpv/menudeldia/add/" class="text-warning">admin</a></p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

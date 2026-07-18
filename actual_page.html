@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso TPV Cafeteria</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+<script src="http://127.0.0.1:35729/livereload.js"></script></head>
+<body class="bg-dark d-flex align-items-center justify-content-center vh-100">
+    <div class="card p-4 shadow-lg border border-secondary" style="max-width: 400px; width: 100%;">
+        <div class="text-center mb-4">
+            <span class="fs-1">&#9749;</span>
+            <h3 class="mt-2 fw-bold">TPV Cafeteria Pro</h3>
+            <p class="text-muted small">Introduce tus credenciales de caja</p>
+        </div>
+        
+        <form method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="uhDT89Njf24JoMGcBFmyfHgppbctE8rjnYInB35UeIMjHa1FmMQWPOXdPezf1zjO">
+            <div class="mb-3">
+                <label class="form-label small text-uppercase fw-bold text-muted">Usuario / Empleado</label>
+                <input type="text" name="username" class="form-control form-control-lg rounded-3"
+                       placeholder="Ej: carlos_caja" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label small text-uppercase fw-bold text-muted">Contrasena Pin</label>
+                <input type="password" name="password" class="form-control form-control-lg rounded-3"
+                       placeholder="****" required>
+            </div>
+            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold rounded-3">
+                ABRIR CAJA
+     

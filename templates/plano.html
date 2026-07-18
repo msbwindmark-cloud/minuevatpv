@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano del Restaurante</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <style>
+        body{background:#0a0e1a;color:#e2e8f0}
+        .plano-canvas{position:relative;background:rgba(255,255,255,0.02);border:2px dashed rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;cursor:crosshair;min-height:500px}
+        .mesa-node{position:absolute;width:64px;height:64px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:grab;transition:box-shadow 0.2s;user-select:none;z-index:10}
+        .mesa-node:hover{box-shadow:0 0 25px rgba(0,212,255,0.4);z-index:20}
+        .mesa-node:active{cursor:grabbing;transform:scale(1.1)}
+        .mesa-node .m-num{font-weight:900;font-size:1.1rem;color:#fff}
+        .mesa-node .m-sillas{font-size:0.6rem;color:rgba(255,255,255,0.7)}
+        .mesa-node .m-remove{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#f43f5e;color:#fff;font-size:0.6rem;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:30}
+        .mesa-node:hover .m-remove{display:flex}
+        .palette{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+        .palette-item{padding:8px 14px;border-radius:10px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;font-size:0.8rem;font-weight:700;transition:all 0.2s}
+        .palette-item:hover{border-color:var(--neon-blue)}
+        .palette-item.selected{background:rgba(0,212,255,0.15);border-color:#00d4ff;color:#00d4ff}
+    </style>
+</head>
+<body class="text-white">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
+    <span class="navbar-brand fw-bold">Plano del Restaurante</span>
+    <div class="ms-auto d-flex gap-2">
+        <button onclick="guardarPlano()" class="btn btn-sm btn-success rounded-3 fw-bold">Guardar</button>
+        <a href="/" class="btn btn-sm btn-outline-info rounded-3">TPV</a>
+    </div>
+</nav>
+<div class="container-fluid p-4">
+    <div class="row g-4">
+        <div class="col-md-9">
+            <div class="plano-canvas" id="plano" style="width:{{ plano.ancho }}px;height:{{ plano.alto }}px;max-width:100%;" onclick="colocarMesa(event)">
+                <div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(20,1fr);grid-template-rows:repeat(15,1fr);pointer-events:none;">
+                    {% for i in "x"|ljust:"300" %}<div style="border:1px solid rgba(255,255,255,0.015)"></div>{% endfor %}
+                </div>
+                {% for pos in posiciones %}
+                <div class="mesa-node" id="mesa-pos-{{ pos.mesa.id }}" style="left:{{ pos.x }}px;top:{{ pos.y }}px;background:{{ pos.color }};" data-mesa="{{ pos.mesa.id }}"
+                     onmousedown="startDrag(event,{{ pos.mesa.id }})">
+                    <span class="m-num">{{ pos.mesa.numero }}</span>
+                    <span class="m-sillas">{{ pos.mesa.sillas }}s</span>
+                    <div class="m-remove" onclick="event.stopPropagation();removeMesa({{ pos.mesa.id }})">&#10005;</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Mesas sin colocar</div>
+                <div class="card-body">
+                    <div class="palette" id="palette">
+                        {% for mesa in mesas %}
+                        {% if not mesa in posiciones_mesa %}
+                        <div class="palette-item" id="pal-{{ mesa.id }}" data-mesa="{{ mesa.id }}" data-sillas="{{ mesa.sillas }}" onclick="seleccionarMesa(this)">{{ mesa.numero }}</div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="mt-3">
+                        <label class="form-label small text-muted">Color</label>
+                        <div class="d-flex gap-2">
+                            <div onclick="setColor('#00d4ff')" style="width:28px;height:28px;border-radius:8px;background:#00d4ff;cursor:pointer;border:2px solid transparent" class="color-opt"></div>
+                            <div onclick="setColor('#a855f7')" style="width:28px;height:28px;border-radius:8px;background:#a855f7;cursor:pointer;border:2px solid transparent" class="color-opt"></div>
+                            <div onclick="setColor('#f97316')" style="width:28px;height:28px;border-radius:8px;background:#f97316;cursor:pointer;border:2px solid transparent" class="color-opt"></div>
+                            <div onclick="setColor('#10b981')" style="width:28px;height:28px;border-radius:8px;background:#10b981;cursor:pointer;border:2px solid transparent" class="color-opt"></div>
+                            <div onclick="setColor('#f43f5e')" style="width:28px;height:28px;border-radius:8px;background:#f43f5e;cursor:pointer;border:2px solid transparent" class="color-opt"></div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <h6 class="text-muted small">Leyenda</h6>
+                        <p class="small"><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#10b981;margin-right:6px;"></span>Disponible</p>
+                        <p class="small"><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#f97316;margin-right:6px;"></span>Con pedido</p>
+                        <p class="small"><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#f43f5e;margin-right:6px;"></span>Reservada</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function getCookie(n){var v=document.cookie.split('; ').find(function(r){return r.startsWith(n+'=')});return v?v.split('=')[1]:null}
+var selectedMesa=null, currentColor='#00d4ff';
+var posiciones={};
+{% for pos in posiciones %}posiciones[{{ pos.mesa.id }}]={x:{{ pos.x }},y:{{ pos.y }},color:'{{ pos.color }}'};{% endfor %}
+
+function seleccionarMesa(el){
+    document.querySelectorAll('.palette-item').forEach(function(p){p.classList.remove('selected')});
+    el.classList.add('selected');
+    selectedMesa={id:el.dataset.mesa,sillas:el.dataset.sillas};
+}
+function setColor(c){currentColor=c}
+function colocarMesa(e){
+    if(!selectedMesa)return;
+    var rect=document.getElementById('plano').getBoundingClientRect();
+    var x=e.clientX-rect.left-32;
+    var y=e.clientY-rect.top-32;
+    x=Math.max(0,Math.min(x,rect.width-64));
+    y=Math.max(0,Math.min(y,rect.height-64));
+    var node=document.createElement('div');
+    node.className='mesa-node';
+    node.id='mesa-pos-'+selectedMesa.id;
+    node.style.left=x+'px';node.style.top=y+'px';node.style.background=currentColor;
+    node.dataset.mesa=selectedMesa.id;
+    node.onmousedown=function(ev){startDrag(ev,parseInt(selectedMesa.id))};
+    node.innerHTML='<span class="m-num">'+selectedMesa.id+'</span><span class="m-sillas">'+selectedMesa.sillas+'s</span><div class="m-remove" onclick="event.stopPropagation();removeMesa('+selectedMesa.id+')">&#10005;</div>';
+    document.getElementById('plano').appendChild(node);
+    posiciones[selectedMesa.id]={x:x,y:y,color:currentColor};
+    var pal=document.getElementById('pal-'+selectedMesa.id);
+    if(pal)pal.remove();
+    selectedMesa=null;
+    document.querySelectorAll('.palette-item').forEach(function(p){p.classList.remove('selected')});
+}
+
+var dragId=null,dragOff={x:0,y:0};
+function startDrag(e,mesaId){
+    e.preventDefault();
+    dragId=mesaId;
+    var node=document.getElementById('mesa-pos-'+mesaId);
+    var rect=node.getBoundingClientRect();
+    dragOff.x=e.clientX-rect.left;
+    dragOff.y=e.clientY-rect.top;
+    document.onmousemove=function(ev){
+        var canvas=document.getElementById('plano').getBoundingClientRect();
+        var x=ev.clientX-canvas.left-dragOff.x;
+        var y=ev.clientY-canvas.top-dragOff.y;
+        x=Math.max(0,Math.min(x,canvas.width-64));
+        y=Math.max(0,Math.min(y,canvas.height-64));
+        node.style.left=x+'px';node.style.top=y+'px';
+        if(posiciones[mesaId]){posiciones[mesaId].x=Math.round(x);posiciones[mesaId].y=Math.round(y)}
+    };
+    document.onmouseup=function(){document.onmousemove=null;document.onmouseup=null;dragId=null};
+}
+function removeMesa(id){
+    var node=document.getElementById('mesa-pos-'+id);
+    if(node)node.remove();
+    delete posiciones[id];
+}
+function guardarPlano(){
+    fetch('/api/plano/guardar/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({posiciones:Object.keys(posiciones).map(function(id){return{mesa_id:parseInt(id),x:posiciones[id].x,y:posiciones[id].y,color:posiciones[id].color}})})})
+    .then(function(r){return r.json()}).then(function(d){
+        if(d.status==='success'){alert('Plano guardado!')}else{alert(d.error)}
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cierre de Caja</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <style>
+        body { background-color: #0f172a; }
+        .receipt { background: #1e293b; border: 1px dashed #475569; padding: 20px; font-family: monospace; max-width: 400px; margin: 0 auto; }
+        .receipt-line { border-bottom: 1px dashed #475569; padding: 4px 0; }
+        .receipt-total { font-size: 1.3rem; font-weight: 900; border-top: 2px solid #475569; margin-top: 10px; padding-top: 10px; }
+    </style>
+</head>
+<body class="text-white">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
+    <span class="navbar-brand fw-bold">Cierre de Caja</span>
+    <div class="ms-auto d-flex gap-2">
+        <a href="/" class="btn btn-sm btn-outline-info rounded-3">TPV</a>
+        <a href="/cocina/" class="btn btn-sm btn-outline-warning rounded-3">Cocina</a>
+        <a href="/empleados/" class="btn btn-sm btn-outline-light rounded-3">Empleados</a>
+        {% if request.user.is_superuser %}
+        <a href="/api/dashboard-gerencia/" class="btn btn-sm btn-outline-success rounded-3">Dashboard</a>
+        <a href="/pdf/reporte-diario/" class="btn btn-sm btn-outline-warning rounded-3" target="_blank">PDF</a>
+        {% endif %}
+    </div>
+</nav>
+<div class="container-fluid p-4">
+    {% if turno %}
+    <div class="row g-4">
+        <div class="col-md-8">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">Turno #{{ turno.id }} - {{ turno.cajero.username }}</span>
+                    <span class="badge bg-warning text-dark">ABIERTO desde {{ turno.fecha_apertura|date:"H:i" }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="text-center p-3 rounded bg-secondary bg-opacity-25">
+                                <div class="small text-muted">Saldo Inicial</div>
+                                <div class="fs-4 fw-bold">{{ turno.saldo_inicial }}&euro;</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 rounded bg-success bg-opacity-25">
+                                <div class="small text-muted">Efectivo</div>
+                                <div class="fs-4 fw-bold text-success">{{ total_ef }}&euro;</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 rounded bg-info bg-opacity-25">
+                                <div class="small text-muted">Tarjeta</div>
+                                <div class="fs-4 fw-bold text-info">{{ total_tj }}&euro;</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 rounded bg-danger bg-opacity-25">
+                                <div class="small text-muted">Gastos</div>
+                                <div class="fs-4 fw-bold text-danger">{{ total_gastos }}&euro;</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold mb-2">Ventas del turno ({{ ventas_turno.count }} tickets)</h6>
+                    <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+                        <table class="table table-dark table-sm table-striped mb-0">
+                            <thead><tr><th>#</th><th>Hora</th><th>Pago</th><th class="text-end">Total</th></tr></thead>
+                            <tbody>
+                                {% for v in ventas_turno %}
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.fecha_registro|date:"H:i" }}</td>
+                                    <td><span class="badge {% if v.forma_pago == 'EFECTIVO' %}bg-success{% else %}bg-info{% endif %}">{{ v.forma_pago }}</span></td>
+                                    <td class="text-end">{{ v.total_facturado }}&euro;</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if gastos_turno %}
+                    <h6 class="fw-bold mt-3 mb-2">Gastos del turno</h6>
+                    <div class="table-responsive" style="max-height:150px;overflow-y:auto;">
+                        <table class="table table-dark table-sm table-striped mb-0">
+                            <thead><tr><th>Concepto</th><th>Autoriza</th><th class="text-end">Importe</th></tr></thead>
+                            <tbody>
+                                {% for g in gastos_turno %}
+                                <tr>
+                                    <td>{{ g.concepto }}</td>
+                                    <td>{{ g.empleado_autoriza.username }}</td>
+                                    <td class="text-end text-danger">{{ g.importe_total }}&euro;</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark border-warning">
+                <div class="card-header fw-bold border-warning">Cerrar Turno</div>
+                <div class="card-body text-center">
+                    <div class="receipt mb-3">
+                        <div class="receipt-line d-flex justify-content-between"><span>Saldo Inicial</span><span>{{ turno.saldo_inicial }}&euro;</span></div>
+                        <div class="receipt-line d-flex justify-content-between"><span>+ Efectivo</span><span>{{ total_ef }}&euro;</span></div>
+                        <div class="receipt-line d-flex justify-content-between"><span>+ Tarjeta</span><span>{{ total_tj }}&euro;</span></div>
+                        <div class="receipt-line d-flex justify-content-between"><span>- Gastos</span><span>{{ total_gastos }}&euro;</span></div>
+                        <div class="receipt-total d-flex justify-content-between text-warning"><span>TEORICO</span><span>{{ total_teorico }}&euro;</span></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Conteo Real (efectivo en caja)</label>
+                        <input type="number" step="0.01" id="total-real" class="form-control text-center fs-4" value="{{ total_teorico }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Notas</label>
+                        <textarea id="notas-cierre" class="form-control bg-secondary border-secondary text-white" rows="2" placeholder="Observaciones..."></textarea>
+                    </div>
+                    <div id="diferencia-display" class="mb-3 fw-bold"></div>
+                    <button onclick="cerrarTurno()" class="btn btn-warning w-100 fw-bold">CERRAR TURNO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            <div class="card bg-dark border-secondary text-center p-5">
+                <div class="display-1 mb-3">&#128176;</div>
+                <h4 class="fw-bold mb-3">No hay turno abierto</h4>
+                <p class="text-muted">Abre un turno para empezar a registrar ventas del dia.</p>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Saldo inicial en caja</label>
+                    <input type="number" step="0.01" id="saldo-inicial" class="form-control text-center fs-4" value="0">
+                </div>
+                <button onclick="abrirTurno()" class="btn btn-success btn-lg fw-bold">ABRIR TURNO</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- HISTORIAL -->
+    {% if historial %}
+    <div class="card bg-dark border-secondary mt-4">
+        <div class="card-header fw-bold border-secondary">Historial de Turnos Cerrados</div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover table-striped mb-0">
+                    <thead>
+                        <tr><th>#</th><th>Cajero</th><th>Apertura</th><th>Cierre</th><th>Efectivo</th><th>Tarjeta</th><th>Gastos</th><th>Teorico</th><th>Real</th><th>Diff</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for h in historial %}
+                        <tr>
+                            <td>{{ h.id }}</td>
+                            <td><span class="badge bg-secondary">{{ h.cajero.username }}</span></td>
+                            <td>{{ h.fecha_apertura|date:"d/m H:i" }}</td>
+                            <td>{{ h.fecha_cierre|date:"d/m H:i" }}</td>
+                            <td>{{ h.total_efectivo }}&euro;</td>
+                            <td>{{ h.total_tarjeta }}&euro;</td>
+                            <td class="text-danger">{{ h.total_gastos }}&euro;</td>
+                            <td class="fw-bold">{{ h.total_teorico }}&euro;</td>
+                            <td class="fw-bold">{{ h.total_real|default:"-" }}&euro;</td>
+                            <td>
+                                {% if h.total_real %}
+                                    {% widthratio h.total_real 1 1 as real %}
+                                    {% with diff=h.total_real|add:"-"|add:h.total_teorico %}
+                                    <span class="{% if diff >= 0 %}text-success{% else %}text-danger{% endif %}">{{ diff }}&euro;</span>
+                                    {% endwith %}
+                                {% else %}-{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+function getCookie(n){var v=document.cookie.split('; ').find(function(r){return r.startsWith(n+'=')});return v?v.split('=')[1]:null}
+function abrirTurno(){
+    fetch('/api/turno/abrir/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({saldo_inicial:parseFloat(document.getElementById('saldo-inicial').value)||0})})
+    .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{alert(d.error)}});
+}
+function cerrarTurno(){
+    if(!confirm('Seguro que quieres cerrar el turno?'))return;
+    fetch('/api/turno/cerrar/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({total_real:parseFloat(document.getElementById('total-real').value)||0,notas:document.getElementById('notas-cierre').value})})
+    .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){alert('Turno cerrado correctamente');location.reload()}else{alert(d.error)}});
+}
+document.addEventListener('DOMContentLoaded',function(){
+    var tr=document.getElementById('total-real');
+    if(tr){
+        tr.addEventListener('input',function(){
+            var teorico={{ total_teorico }};
+            var real=parseFloat(this.value)||0;
+            var diff=(real-teorico).toFixed(2);
+            var el=document.getElementById('diferencia-display');
+            if(diff>=0){el.innerHTML='<span class="text-success">Cuadra: +'+diff+'&euro;</span>'}else{el.innerHTML='<span class="text-danger">FALTA: '+diff+'&euro;</span>'}
+        });
+    }
+});
+</script>
+</body>
+</html>

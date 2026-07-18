@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>TPV Cafeteria Premium</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9749;</text></svg>">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#00d4ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    {% load l10n %}
+    <style>
+        :root{--neon-green:#00ff88;--neon-blue:#00d4ff;--neon-purple:#a855f7;--neon-pink:#f43f5e;--neon-orange:#f97316;--glass-bg:rgba(15,23,42,0.7);--glass-border:rgba(255,255,255,0.08)}
+        *{box-sizing:border-box}body{font-family:'Inter',sans-serif;user-select:none;overflow:hidden;background:#0a0e1a}
+        .bg-animated{position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#0a0e1a 0%,#1a1040 25%,#0d2137 50%,#0a1628 75%,#0a0e1a 100%);background-size:400% 400%;animation:gradientShift 15s ease infinite}
+        @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        .particle{position:fixed;width:3px;height:3px;border-radius:50%;pointer-events:none;z-index:1;animation:floatUp linear infinite}
+        @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+        .main-container{position:relative;z-index:2;height:100vh}
+        .scroll-zona{height:calc(100vh - 130px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,212,255,0.3) transparent}
+        .scroll-zona::-webkit-scrollbar{width:5px}
+        .scroll-zona::-webkit-scrollbar-track{background:transparent}
+        .scroll-zona::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.3);border-radius:10px}
+        .cat-pill{padding:8px 20px;border-radius:50px;font-weight:700;font-size:0.85rem;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#94a3b8;cursor:pointer;transition:all 0.3s;white-space:nowrap}
+        .cat-pill:hover{border-color:var(--neon-blue);color:var(--neon-blue);background:rgba(0,212,255,0.1)}
+        .cat-pill.active{background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));color:#fff;border-color:transparent;box-shadow:0 0 20px rgba(0,212,255,0.4)}
+        .producto-card{position:relative;border-radius:20px;padding:16px 10px;text-align:center;cursor:pointer;border:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(10px);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden;min-height:130px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+        .producto-card::before{content:'';position:absolute;inset:-2px;border-radius:22px;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple),var(--neon-pink));z-index:-1;opacity:0;transition:opacity 0.3s}
+        .producto-card:hover::before{opacity:1}
+        .producto-card:hover{transform:translateY(-6px) scale(1.03);border-color:transparent;box-shadow:0 10px 40px rgba(0,212,255,0.2)}
+        .producto-card:active{transform:scale(0.95)}
+        .producto-card .icono-prod{font-size:2.2rem;margin-bottom:6px;filter:drop-shadow(0 0 8px rgba(0,212,255,0.3))}
+        .producto-card .nombre-prod{font-weight:700;font-size:0.8rem;color:#e2e8f0;margin-bottom:4px}
+        .producto-card .precio-prod{font-weight:900;font-size:1.1rem;background:linear-gradient(135deg,var(--neon-green),var(--neon-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .ripple{position:absolute;border-radius:50%;background:rgba(0,212,255,0.4);transform:scale(0);animation:rippleAnim 0.6s ease-out;pointer-events:none}
+        @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+        .ticket-panel{background:var(--glass-bg);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;padding:20px;height:100%;display:flex;flex-direction:column}
+        .ticket-header{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:12px}
+        .user-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;color:#fff}
+        .ticket-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);animation:slideIn 0.3s cubic-bezier(0.4,0,0.2,1)}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+        .qty-badge{background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));color:#fff;padding:2px 10px;border-radius:20px;font-weight:700;font-size:0.75rem;min-width:36px;text-align:center}
+        .item-subtotal{font-weight:700;color:var(--neon-green)}
+        .btn-remove-item{width:26px;height:26px;border-radius:50%;border:1px solid rgba(244,63,94,0.3);background:rgba(244,63,94,0.1);color:#f43f5e;font-size:0.7rem;font-weight:900;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+        .btn-remove-item:hover{background:#f43f5e;color:#fff;border-color:#f43f5e}
+        .total-section{background:rgba(0,0,0,0.3);border-radius:16px;padding:16px;margin:12px 0;border:1px solid rgba(255,255,255,0.05)}
+        .total-row{display:flex;justify-content:space-between;font-size:0.8rem;color:#94a3b8;margin-bottom:4px}
+        .total-grande{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);margin-top:8px}
+        .total-grande .label{font-size:1rem;font-weight:700;color:#e2e8f0}
+        .total-grande .cantidad{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--neon-green),var(--neon-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .total-grande .cantidad.pulse{animation:totalPulse 0.4s ease}
+        @keyframes totalPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+        .cobro-btn{border:none;border-radius:16px;padding:14px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden}
+        .cobro-btn:active{transform:scale(0.96)}
+        .cobro-btn-efectivo{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 20px rgba(16,185,129,0.3)}
+        .cobro-btn-efectivo:hover{box-shadow:0 6px 30px rgba(16,185,129,0.5);transform:translateY(-2px)}
+        .cobro-btn-tarjeta{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.3)}
+        .cobro-btn-tarjeta:hover{box-shadow:0 6px 30px rgba(59,130,246,0.5);transform:translateY(-2px)}
+        .reloj{font-size:0.8rem;color:#64748b;font-weight:600;font-variant-numeric:tabular-nums}
+        .empty-ticket{flex-grow:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#475569}
+        .empty-ticket .icon{font-size:3rem;margin-bottom:10px;opacity:0.4}
+        .mesa-card{border-radius:16px;padding:14px;text-align:center;cursor:pointer;border:2px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(10px);transition:all 0.3s;position:relative;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .mesa-card:hover{transform:translateY(-3px);border-color:var(--neon-blue);box-shadow:0 6px 25px rgba(0,212,255,0.15)}
+        .mesa-card:active{transform:scale(0.96)}
+        .mesa-card.mesa-seleccionada{border-color:var(--neon-blue)!important;box-shadow:0 0 25px rgba(0,212,255,0.4)!important;opacity:1!important;transform:translateY(-3px)}
+        .mesa-card.mesa-pendiente{border-color:var(--neon-orange)!important;box-shadow:0 0 15px rgba(249,115,22,0.25)!important}
+        .mesa-card .mesa-num{font-weight:900;font-size:1.2rem;color:#e2e8f0}
+        .mesa-card .mesa-sillas{font-size:0.7rem;color:#64748b}
+        .mesa-badge{position:absolute;top:-6px;right:-6px;background:linear-gradient(135deg,var(--neon-orange),#ea580c);color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;padding:0 4px;border-radius:10px;display:none;text-align:center;line-height:18px}
+        .search-box{position:relative;max-width:320px}
+        .search-box input{width:100%;padding:10px 16px 10px 40px;border-radius:50px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e2e8f0;font-size:0.85rem;font-weight:600;outline:none;transition:border-color 0.3s}
+        .search-box input:focus{border-color:var(--neon-blue);box-shadow:0 0 15px rgba(0,212,255,0.2)}
+        .search-box .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:0.9rem;pointer-events:none}
+        .search-results{position:absolute;top:100%;left:0;right:0;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:16px;margin-top:6px;max-height:260px;overflow-y:auto;z-index:100;display:none;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+        .search-results.show{display:block}
+        .search-result-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background 0.2s;border-bottom:1px solid rgba(255,255,255,0.04)}
+        .search-result-item:last-child{border-bottom:none}
+        .search-result-item:hover{background:rgba(0,212,255,0.1)}
+        .top-vendido-chip{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:50px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#94a3b8;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.3s;white-space:nowrap}
+        .top-vendido-chip:hover{border-color:var(--neon-orange);color:var(--neon-orange);background:rgba(249,115,22,0.1)}
+        .cupon-input{display:flex;gap:6px;align-items:center}
+        .cupon-input input{flex:1;padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e2e8f0;font-size:0.75rem;font-weight:600;text-transform:uppercase;outline:none}
+        .cupon-input input:focus{border-color:var(--neon-purple)}
+        .cupon-input button{padding:8px 14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--neon-purple),#7c3aed);color:#fff;font-weight:700;font-size:0.75rem;cursor:pointer}
+        .cupon-aplicado{padding:6px 12px;border-radius:10px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--neon-green);font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+        .descuento-row{color:var(--neon-green);font-weight:700}
+        @media(max-width:991px){.main-container .row{flex-direction:column}.col-md-7,.col-md-5{max-height:none;height:auto!important}.scroll-zona{height:auto;max-height:40vh}.ticket-panel{max-height:50vh}.mesas-container{flex-wrap:nowrap!important}}
+        @media(max-width:576px){.row-cols-2.row-cols-sm-3{--bs-gutter-x:0.5rem}.producto-card{padding:10px 6px;min-height:100px}.producto-card .icono-prod{font-size:1.6rem}.producto-card .nombre-prod{font-size:0.7rem}.producto-card .precio-prod{font-size:0.9rem}.cat-pill{padding:6px 12px;font-size:0.75rem}.cobro-btn{padding:10px;font-size:0.85rem}.total-grande .cantidad{font-size:1.4rem}}
+        .gamification-bar{background:rgba(0,0,0,0.3);border-radius:12px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(255,255,255,0.05)}
+        .gamification-bar .meta-label{font-size:0.7rem;color:#64748b;font-weight:600;margin-bottom:4px;display:flex;justify-content:space-between}
+        .gamification-bar .progress-track{height:8px;border-radius:10px;background:rgba(255,255,255,0.08);overflow:hidden;margin-bottom:6px}
+        .gamification-bar .progress-fill{height:100%;border-radius:10px;transition:width 1s cubic-bezier(0.4,0,0.2,1);background:linear-gradient(90deg,#00d4ff,#a855f7,#00ff88)}
+        .gamification-bar .badges-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+        .gamification-bar .badge-chip{font-size:0.65rem;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);white-space:nowrap}
+        .voice-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.3s;flex-shrink:0}
+        .voice-btn:hover{border-color:var(--neon-green);color:var(--neon-green);background:rgba(0,255,136,0.1)}
+        .voice-btn.listening{border-color:#f43f5e;background:rgba(244,63,94,0.15);color:#f43f5e;animation:voicePulse 1s infinite}
+        @keyframes voicePulse{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,0.4)}50%{box-shadow:0 0 0 10px rgba(244,63,94,0)}}
+        .voice-status{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:50px;background:rgba(244,63,94,0.15);border:1px solid rgba(244,63,94,0.4);color:#f43f5e;font-weight:700;font-size:0.85rem;z-index:999;display:none;backdrop-filter:blur(10px);animation:slideIn 0.3s}
+        .voice-status.show{display:flex;align-items:center;gap:8px}
+        .reco-section{background:rgba(0,0,0,0.2);border-radius:12px;padding:8px 12px;margin-top:6px;border:1px solid rgba(255,255,255,0.04)}
+        .reco-section .reco-title{font-size:0.65rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+        .reco-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+        .reco-chips::-webkit-scrollbar{display:none}
+        .reco-chip{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;border:1px solid rgba(168,85,247,0.25);background:rgba(168,85,247,0.08);color:#c084fc;font-size:0.7rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s}
+        .reco-chip:hover{background:rgba(168,85,247,0.2);border-color:var(--neon-purple)}
+        .kiosk-btn{position:fixed;top:8px;right:8px;z-index:200;width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.3s}
+        .kiosk-btn:hover{color:#00d4ff;border-color:var(--neon-blue)}
+        body.kiosk-mode .navbar,body.kiosk-mode footer{display:none}
+        body.kiosk-mode{overflow:hidden}
+        canvas.confetti-canvas{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;pointer-events:none;z-index:9999!important}
+        .split-bill-section{background:rgba(0,0,0,0.2);border-radius:12px;padding:10px;margin-top:8px;border:1px solid rgba(255,255,255,0.05)}
+        .split-bill-section .split-title{font-size:0.7rem;color:#64748b;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+        .split-person{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+        .split-person:last-child{border-bottom:none}
+        .split-person input{flex:1;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e2e8f0;font-size:0.8rem}
+        .split-person select{padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e2e8f0;font-size:0.75rem}
+        .split-person .monto{font-weight:700;color:var(--neon-green);font-size:0.85rem;min-width:60px;text-align:right}
+        .weather-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-size:0.75rem;color:#94a3b8;font-weight:600}
+        .weather-badge .temp{font-weight:900;color:#e2e8f0}
+        .loyalty-section{background:rgba(0,0,0,0.2);border-radius:12px;padding:10px;margin-top:6px;border:1px solid rgba(255,255,255,0.05)}
+        .loyalty-section .loyalty-title{font-size:0.7rem;color:#64748b;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+        .loyalty-customer{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2)}
+        .loyalty-customer .nivel-badge{padding:3px 10px;border-radius:20px;font-size:0.65rem;font-weight:700}
+        .nivel-BRONCE{background:rgba(180,120,60,0.2);color:#cd7f32;border:1px solid rgba(205,127,50,0.3)}
+        .nivel-PLATA{background:rgba(192,192,192,0.2);color:#c0c0c0;border:1px solid rgba(192,192,192,0.3)}
+        .nivel-ORO{background:rgba(255,215,0,0.2);color:#ffd700;border:1px solid rgba(255,215,0,0.3)}
+        .nivel-PLATINO{background:rgba(0,212,255,0.2);color:#00d4ff;border:1px solid rgba(0,212,255,0.3)}
+        .transfer-btn{padding:4px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#94a3b8;font-size:0.7rem;cursor:pointer;transition:all 0.2s}
+        .transfer-btn:hover{border-color:var(--neon-blue);color:var(--neon-blue)}
+        .social-proof{position:fixed;bottom:80px;left:20px;z-index:90;max-width:320px;pointer-events:none}
+        .social-proof-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;background:rgba(15,23,42,0.85);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);margin-bottom:8px;animation:proofSlide 0.5s cubic-bezier(0.4,0,0.2,1);opacity:0;transform:translateX(-30px);transition:all 0.4s}
+        .social-proof-item.show{opacity:1;transform:translateX(0)}
+        .social-proof-item.hide{opacity:0;transform:translateX(-30px)}
+        @keyframes proofSlide{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+        .social-proof-item .sp-icon{font-size:1.3rem}
+        .social-proof-item .sp-text{font-size:0.75rem;color:#94a3b8;font-weight:600}
+        .social-proof-item .sp-text strong{color:#e2e8f0}
+        .cinematic-overlay{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0;transition:opacity 2s}
+        .cinematic-overlay.active{opacity:1}
+        .rain-drop{position:absolute;width:1px;background:linear-gradient(180deg,transparent,rgba(0,212,255,0.3));animation:rain linear infinite}
+        @keyframes rain{0%{transform:translateY(-10vh)}100%{transform:translateY(110vh)}}
+        .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 2s infinite alternate}
+        @keyframes twinkle{from{opacity:0.2}to{opacity:1}}
+        .theme-indicator{position:fixed;top:10px;left:50%;transform:translateX(-50%);padding:4px 16px;border-radius:20px;font-size:0.7rem;font-weight:700;z-index:200;pointer-events:none;display:none}
+    </style>
+</head>
+<body class="h-100 text-white">
+    <div class="bg-animated"></div>
+    <div id="particles-container"></div>
+    <div class="cinematic-overlay" id="cinematic-overlay"></div>
+    <div class="theme-indicator" id="theme-indicator"></div>
+    <div class="social-proof" id="social-proof"></div>
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1060;" id="contenedor-toasts"></div>
+    <button class="kiosk-btn" onclick="toggleKiosk()" title="Modo Kiosco">⛶</button>
+    <div class="voice-status" id="voice-status"><span>&#127908;</span> <span id="voice-text">Escuchando...</span></div>
+
+    <div class="main-container container-fluid h-100 p-3">
+        <div class="row h-100 g-3">
+            <div class="col-md-7 d-flex flex-column h-100">
+                <div class="d-flex align-items-center justify-content-between mb-2 flex-shrink-0">
+                    <div class="d-flex gap-2 overflow-x-auto pb-1" id="cat-tabs">
+                        <button class="cat-pill active" onclick="filtrarCategoria('todas', this)">Todos</button>
+                        {% for cat in categorias %}
+                        <button class="cat-pill" onclick="filtrarCategoria('{{ cat.id }}', this)">{{ cat.icono }} {{ cat.nombre }}</button>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex align-items-center gap-2 ms-3">
+                        <div class="search-box">
+                            <span class="search-icon">&#128269;</span>
+                            <input type="text" id="search-input" placeholder="Buscar producto..." oninput="buscarProductos(this.value)" autocomplete="off">
+                            <div class="search-results" id="search-results"></div>
+                        </div>
+                        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="Comando de voz">&#127908;</button>
+                        <button class="voice-btn" onclick="abrirScanner()" title="Escanear codigo de barras" style="font-size:0.8rem;">&#128270;</button>
+                        <div class="reloj" id="reloj"></div>
+                    </div>
+                </div>
+                {% if top_ids %}
+                <div class="d-flex gap-2 overflow-x-auto pb-2 flex-shrink-0 mb-2">
+                    {% for t in top_vendidos %}
+                    <div class="top-vendido-chip" data-id="{{ t.articulo__id }}" onclick="agregarPorId('{{ t.articulo__id }}')">&#11088; {{ t.articulo__nombre|truncatechars:18 }} ({{ t.total }})</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="scroll-zona">
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 g-3" id="grid-productos">
+                        {% for prod in articulos %}
+                        <div class="col item-producto" data-categoria="{{ prod.categoria.id }}">
+                            <div class="producto-card"
+                                 data-id="{{ prod.id }}"
+                                 data-nombre="{{ prod.nombre|escapejs }}"
+                                 data-precio="{{ prod.precio_con_iva|unlocalize }}"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">{{ prod.categoria.icono }}</div>
+                                <div class="nombre-prod">{{ prod.nombre }}</div>
+                                <div class="precio-prod">{{ prod.precio_con_iva|unlocalize }}&euro;</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 d-flex flex-column h-100">
+                <div class="mb-2 flex-shrink-0">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span style="font-weight:700;font-size:0.85rem;color:#94a3b8;">MESAS</span>
+                        <span style="font-size:0.75rem;color:#64748b;" id="mesa-actual-label">Selecciona una mesa</span>
+                    </div>
+                    <div class="d-flex gap-2 overflow-x-auto pb-2" id="mesas-container">
+                        <div class="mesa-card" style="min-width:70px;" onclick="seleccionarMesa(0, this)">
+                            <div class="mesa-num">LLE</div>
+                            <div class="mesa-sillas">Para llevar</div>
+                        </div>
+                        {% for mesa in mesas %}
+                        <div class="mesa-card" style="min-width:70px;" id="mesa-{{ mesa.id }}" onclick="seleccionarMesa({{ mesa.id }}, this)">
+                            <div class="mesa-badge" id="mesa-badge-{{ mesa.id }}" style="display:none;">0</div>
+                            <div class="mesa-num">{{ mesa.numero }}</div>
+                            <div class="mesa-sillas">{{ mesa.sillas }} sillas</div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+                <div class="ticket-panel flex-grow-1" style="min-height:0;">
+                    <div class="ticket-header">
+                        <div class="user-avatar">{{ request.user.username|first|upper }}</div>
+                        <div style="flex-grow:1;">
+                            <div style="font-weight:700;font-size:0.85rem;">{{ request.user.username|upper }}</div>
+                            <div style="font-size:0.7rem;color:#64748b;" id="ticket-mesa-info">Sin mesa asignada</div>
+                        </div>
+                    </div>
+                    <div class="gamification-bar" id="gamification-bar">
+                        <div class="meta-label"><span id="meta-tickets-text">Cargando meta...</span><span id="meta-pct">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill" id="meta-progress" style="width:0%"></div></div>
+                        <div class="badges-row" id="badges-row"></div>
+                    </div>
+                    <div class="d-flex gap-2 mb-2">
+                        <div class="weather-badge" id="weather-badge"><span>&#9729;</span> <span>Cargando clima...</span></div>
+                        <button class="transfer-btn" onclick="abrirSplitBill()" title="Dividir cuenta">&#9876; Split</button>
+                    </div>
+                    <div class="loyalty-section" id="loyalty-section">
+                        <div class="loyalty-title">&#127942; Cliente Fidelidad</div>
+                        <div class="d-flex gap-2 align-items-center">
+                            <input type="text" id="cliente-search" placeholder="Buscar cliente..." style="flex:1;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e2e8f0;font-size:0.8rem" oninput="buscarClientes(this.value)" autocomplete="off">
+                            <button onclick="abrirModalNuevoCliente()" style="padding:6px 10px;border-radius:8px;border:none;background:var(--neon-purple);color:#fff;font-size:0.7rem;font-weight:700;cursor:pointer">+ Nuevo</button>
+                        </div>
+                        <div id="cliente-activo" style="display:none;margin-top:6px;"></div>
+                    </div>
+                    <div class="flex-grow-1 overflow-y-auto mb-2" id="caja-ticket" style="max-height:calc(100vh - 480px);">
+                        <div class="empty-ticket" id="ticket-vacio">
+                            <div class="icon">&#9749;</div>
+                            <div id="ticket-vacio-msg">Selecciona una mesa para empezar</div>
+                        </div>
+                    </div>
+                    <div class="total-section">
+                        <div class="total-row"><span>Base Imponible</span><span id="txt-base">0.00 &euro;</span></div>
+                        <div class="total-row"><span>I.V.A.</span><span id="txt-iva">0.00 &euro;</span></div>
+                        <div class="total-row descuento-row" id="fila-descuento" style="display:none;"><span>Descuento</span><span id="txt-descuento">-0.00 &euro;</span></div>
+                        <div class="total-grande">
+                            <span class="label">TOTAL</span>
+                            <span class="cantidad" id="txt-total">0.00 &euro;</span>
+                        </div>
+                    </div>
+                    <div class="mb-2" id="cupon-area">
+                        <div class="cupon-input" id="cupon-form">
+                            <input type="text" id="cupon-codigo" placeholder="Codigo cupon..." onkeydown="if(event.key==='Enter')aplicarCupon()">
+                            <button onclick="aplicarCupon()">Aplicar</button>
+                        </div>
+                        <div class="cupon-aplicado" id="cupon-activo" style="display:none;">
+                            <span id="cupon-info"></span>
+                            <button onclick="quitarCupon()" style="background:none;border:none;color:#f43f5e;font-weight:900;cursor:pointer;font-size:1rem;">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="reco-section" id="reco-section" style="display:none;">
+                        <div class="reco-title">&#10024; Tambien podrian gustarles</div>
+                        <div class="reco-chips" id="reco-chips"></div>
+                    </div>
+                    <button class="cobro-btn cobro-btn-efectivo mb-2" onclick="ejecutarTransaccion('EFECTIVO')">&#128176; COBRAR EFECTIVO</button>
+                    <button class="cobro-btn cobro-btn-tarjeta mb-2" onclick="ejecutarTransaccion('TARJETA')">&#128179; COBRAR TARJETA</button>
+                    <div class="row g-1 mt-auto pt-2" style="border-top:1px solid rgba(255,255,255,0.08);max-height:220px;overflow-y:auto;">
+                        <div class="col-2"><a href="/cocina/" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Cocina</a></div>
+                        <div class="col-2"><a href="/menu-dia/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Menu</a></div>
+                        <div class="col-2"><a href="/cierre-caja/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Caja</a></div>
+                        <div class="col-2"><a href="/empleados/" class="btn btn-outline-light btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Empl.</a></div>
+                        <div class="col-2"><a href="/pantalla-cliente/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Display</a></div>
+                        {% if request.user.is_superuser %}
+                        <div class="col-2"><a href="/api/dashboard-gerencia/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Dash</a></div>
+                        <div class="col-2"><a href="/reservas/" class="btn btn-outline-secondary btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Reserv.</a></div>
+                        <div class="col-2"><a href="/plano/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Plano</a></div>
+                        <div class="col-2"><a href="/cola/" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Cola</a></div>
+                        <div class="col-2"><a href="/heatmap/" class="btn btn-outline-danger btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Heat</a></div>
+                        <div class="col-2"><a href="/pdf/reporte-diario/" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">PDF</a></div>
+                        <div class="col-2"><a href="/admin/" class="btn btn-outline-danger btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Admin</a></div>
+                        <div class="col-2"><a href="/exportar-excel/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Excel</a></div>
+                        <div class="col-2"><a href="/escaparate/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">3D</a></div>
+                        <div class="col-2"><button class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="abrirChat()">Chat</button></div>
+                        <div class="col-2"><button class="btn btn-outline-secondary btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="verStockBajo()">Stock</button></div>
+                        <div class="col-2"><button class="btn btn-outline-primary btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="verCompeticion()">Rank</button></div>
+                        <div class="col-2"><button class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="verSugerencia()">Tip</button></div>
+                        <div class="col-2"><a href="/tv/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">TV</a></div>
+                        <div class="col-2"><a href="/kiosk/" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Kiosk</a></div>
+                        <div class="col-2"><button class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="backupUSB()">Backup</button></div>
+                        <div class="col-2"><button class="btn btn-outline-secondary btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="verHeatmapRT()">Live</button></div>
+                        <div class="col-2"><button class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="verMapaMesas()">Mesas</button></div>
+                        <div class="col-2"><button class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="verCumpleanos()">&#127874;</button></div>
+                        <div class="col-2"><button class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;" onclick="verCombos()">Combos</button></div>
+                        <div class="col-2"><a href="/reviews/" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Reviews</a></div>
+                        <div class="col-2"><a href="/api/sheets-sync/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Sheets</a></div>
+                        {% endif %}
+                        <div class="col-2">
+                            <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Salir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    var ordenActual = {};
+    var pedidosMesa = {};
+    var mesaActual = null;
+    var mesasInfo = {};
+    var cuponAplicado = null;
+    var descuentoGlobal = 0;
+
+    function getCookie(name) {
+        var v = document.cookie.split('; ').find(function(r){ return r.startsWith(name+'='); });
+        return v ? v.split('=')[1] : null;
+    }
+
+    function sonido(f, d, t) {
+        try {
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return;
+            var c = new AC(), o = c.createOscillator(), g = c.createGain();
+            o.type = t || 'sine';
+            o.frequency.setValueAtTime(f, c.currentTime);
+            g.gain.setValueAtTime(0.08, c.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + d);
+            o.connect(g); g.connect(c.destination);
+            o.start(); o.stop(c.currentTime + d);
+        } catch(e) {}
+    }
+    function sonidoAdd() { sonido(880, 0.08, 'sine'); setTimeout(function(){ sonido(1100, 0.08, 'sine'); }, 50); }
+    function sonidoRemove() { sonido(440, 0.1, 'triangle'); }
+    function sonidoCobro() {
+        sonido(523, 0.12, 'sine');
+        setTimeout(function(){ sonido(659, 0.12, 'sine'); }, 100);
+        setTimeout(function(){ sonido(784, 0.15, 'sine'); }, 200);
+        setTimeout(function(){ sonido(1047, 0.25, 'sine'); }, 320);
+    }
+    function sonidoAlerta() { sonido(300, 0.3, 'sawtooth'); }
+
+    function crearParticulas() {
+        var c = document.getElementById('particles-container');
+        if (!c) return;
+        var cols = ['#00d4ff','#a855f7','#00ff88','#f43f5e','#f97316'];
+        for (var i = 0; i < 25; i++) {
+            var p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (8 + Math.random() * 15) + 's';
+            p.style.animationDelay = (Math.random() * 10) + 's';
+            p.style.background = cols[Math.floor(Math.random() * cols.length)];
+            var s = (2 + Math.random() * 3) + 'px';
+            p.style.width = s; p.style.height = s;
+            c.appendChild(p);
+        }
+    }
+
+    function actualizarReloj() {
+        var el = document.getElementById('reloj');
+        if (!el) return;
+        var n = new Date();
+        var d = ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'];
+        var m = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        el.textContent = d[n.getDay()] + ' ' + n.getDate() + ' ' + m[n.getMonth()] + ' ' +
+            String(n.getHours()).padStart(2, '0') + ':' +
+            String(n.getMinutes()).padStart(2, '0') + ':' +
+            String(n.getSeconds()).padStart(2, '0');
+    }
+
+    function crearRipple(e, el) {
+        var r = document.createElement('span');
+        r.className = 'ripple';
+        var rect = el.getBoundingClientRect();
+        var s = Math.max(rect.width, rect.height);
+        r.style.width = s + 'px'; r.style.height = s + 'px';
+        r.style.left = (e.clientX - rect.left - s / 2) + 'px';
+        r.style.top = (e.clientY - rect.top - s / 2) + 'px';
+        el.appendChild(r);
+        setTimeout(function(){ r.remove(); }, 600);
+    }
+
+    function filtrarCategoria(catId, btn) {
+        var pills = document.querySelectorAll('.cat-pill');
+        for (var i = 0; i < pills.length; i++) pills[i].classList.remove('active');
+        btn.classList.add('active');
+        var items = document.querySelectorAll('.item-producto');
+        for (var j = 0; j < items.length; j++) {
+            items[j].style.display = (catId === 'todas' || items[j].getAttribute('data-categoria') === catId) ? '' : 'none';
+        }
+    }
+
+    function seleccionarMesa(id, el) {
+        if (mesaActual !== null) guardarPedidoMesaActual();
+        var cards = document.querySelectorAll('.mesa-card');
+        for (var i = 0; i < cards.length; i++) {
+            cards[i].style.opacity = '0.5';
+            cards[i].classList.remove('mesa-seleccionada');
+        }
+        el.style.opacity = '1';
+        el.classList.add('mesa-seleccionada');
+        mesaActual = id;
+        var nombre = (id === 0) ? 'Para llevar' : el.querySelector('.mesa-num').textContent;
+        mesasInfo[mesaActual] = { nombre: nombre, el: el };
+        document.getElementById('mesa-actual-label').textContent = (id === 0) ? 'Para llevar' : 'Mesa ' + nombre;
+        document.getElementById('ticket-mesa-info').textContent = (id === 0) ? 'Pedido para llevar' : 'Mesa ' + nombre;
+        if (pedidosMesa[mesaActual]) {
+            ordenActual = JSON.parse(JSON.stringify(pedidosMesa[mesaActual]));
+        } else {
+            ordenActual = {};
+        }
+        actualizarGraficosTicket();
+        actualizarBadgesMesas();
+        sonidoAdd();
+    }
+
+    function guardarPedidoMesaActual() {
+        if (mesaActual !== null) pedidosMesa[mesaActual] = JSON.parse(JSON.stringify(ordenActual));
+    }
+
+    function actualizarBadgesMesas() {
+        var ids = Object.keys(pedidosMesa);
+        for (var i = 0; i < ids.length; i++) {
+            var mid = ids[i];
+            var items = pedidosMesa[mid];
+            var b = document.getElementById('mesa-badge-' + mid);
+            if (!b) continue;
+            var total = 0;
+            var k = Object.keys(items);
+            for (var j = 0; j < k.length; j++) total += items[k[j]].cantidad;
+            if (total > 0) {
+                b.style.display = 'block'; b.textContent = total;
+                var card = document.getElementById('mesa-' + mid);
+                if (card && mid != mesaActual) card.classList.add('mesa-pendiente');
+            } else {
+                b.style.display = 'none';
+                var card2 = document.getElementById('mesa-' + mid);
+                if (card2) card2.classList.remove('mesa-pendiente');
+            }
+        }
+    }
+
+    function agregarAlTicket(el) {
+        if (mesaActual === null) {
+            sonidoAlerta();
+            return Swal.fire({
+                icon: 'info',
+                title: 'Selecciona una mesa',
+                text: 'Debes elegir una mesa o "Para llevar" antes de anadir productos.',
+                confirmButtonColor: '#00d4ff',
+                background: '#1e293b',
+                color: '#e2e8f0'
+            });
+        }
+        var id = el.getAttribute('data-id');
+        var nombre = el.getAttribute('data-nombre');
+        var precio = parseFloat(el.getAttribute('data-precio'));
+        sonidoAdd();
+        crearRipple(event, el);
+        animacionAgregar({nombre: nombre});
+        if (ordenActual[id]) {
+            ordenActual[id].cantidad += 1;
+        } else {
+            ordenActual[id] = { nombre: nombre, precio: precio, cantidad: 1 };
+        }
+        actualizarGraficosTicket();
+        actualizarBadgeMesaActual();
+    }
+
+    function quitarDelTicket(id) {
+        sonidoRemove();
+        if (ordenActual[id]) {
+            if (ordenActual[id].cantidad > 1) { ordenActual[id].cantidad -= 1; }
+            else { delete ordenActual[id]; }
+            actualizarGraficosTicket();
+            actualizarBadgeMesaActual();
+        }
+    }
+
+    function actualizarBadgeMesaActual() {
+        if (mesaActual === null) return;
+        pedidosMesa[mesaActual] = JSON.parse(JSON.stringify(ordenActual));
+        actualizarBadgesMesas();
+    }
+
+    function actualizarGraficosTicket() {
+        var c = document.getElementById('caja-ticket');
+        var v = document.getElementById('ticket-vacio');
+        var keys = Object.keys(ordenActual);
+        if (v) v.style.display = keys.length === 0 ? 'flex' : 'none';
+        var html = '';
+        var ac = 0;
+        for (var i = 0; i < keys.length; i++) {
+            var id = keys[i];
+            var it = ordenActual[id];
+            var sub = it.precio * it.cantidad;
+            ac += sub;
+            html += '<div class="ticket-item"><div style="display:flex;align-items:center;gap:8px;"><button class="btn-remove-item" onclick="quitarDelTicket(\'' + id + '\')">&#10005;</button><span class="qty-badge">' + it.cantidad + 'x</span><span style="font-weight:600;font-size:0.85rem;color:#e2e8f0;">' + it.nombre + '</span></div><span class="item-subtotal">' + sub.toFixed(2) + ' \u20ac</span></div>';
+        }
+        c.innerHTML = html;
+        var base = ac / 1.10;
+        var iva = ac - base;
+        document.getElementById('txt-base').textContent = base.toFixed(2) + ' \u20ac';
+        document.getElementById('txt-iva').textContent = iva.toFixed(2) + ' \u20ac';
+        var filaDesc = document.getElementById('fila-descuento');
+        if (cuponAplicado && descuentoGlobal > 0) {
+            filaDesc.style.display = 'flex';
+            document.getElementById('txt-descuento').textContent = '-' + descuentoGlobal.toFixed(2) + ' \u20ac';
+        } else {
+            filaDesc.style.display = 'none';
+        }
+        var t = document.getElementById('txt-total');
+        t.textContent = (ac - descuentoGlobal).toFixed(2) + ' \u20ac';
+        t.classList.remove('pulse');
+        void t.offsetWidth;
+        t.classList.add('pulse');
+    }
+
+    function lanzarToastAlerta(msg) {
+        var c = document.getElementById('contenedor-toasts');
+        var id = 'toast' + Date.now();
+        c.insertAdjacentHTML('beforeend', '<div id="' + id + '" class="toast align-items-center text-bg-danger border-0 show mb-2" role="alert"><div class="d-flex"><div class="toast-body fw-bold">&#9888; ' + msg + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>');
+        setTimeout(function(){ var e = document.getElementById(id); if (e) e.remove(); }, 5000);
+    }
+
+    function ejecutarTransaccion(metodo) {
+        if (mesaActual === null) {
+            sonidoAlerta();
+            return Swal.fire({
+                icon: 'info',
+                title: 'Selecciona una mesa',
+                text: 'Elige una mesa o "Para llevar" antes de cobrar.',
+                confirmButtonColor: '#00d4ff',
+                background: '#1e293b',
+                color: '#e2e8f0'
+            });
+        }
+        if (Object.keys(ordenActual).length === 0) {
+            sonidoAlerta();
+            return Swal.fire({
+                icon: 'warning',
+                title: 'Ticket Vacio',
+                text: 'Anade productos primero.',
+                confirmButtonColor: '#f59e0b',
+                background: '#1e293b',
+                color: '#e2e8f0'
+            });
+        }
+        var total = 0;
+        var keys = Object.keys(ordenActual);
+        for (var i = 0; i < keys.length; i++) total += ordenActual[keys[i]].precio * ordenActual[keys[i]].cantidad;
+        var icono = metodo === 'EFECTIVO' ? '\uD83D\uDCB5' : '\uD83D\uDCB3';
+        var color = metodo === 'EFECTIVO' ? '#10b981' : '#3b82f6';
+        var nombreMesa = mesasInfo[mesaActual] ? mesasInfo[mesaActual].nombre : 'Mesa ' + mesaActual;
+        var propinaBtns = '<div style="margin:10px 0"><div style="color:#94a3b8;font-size:0.8rem;margin-bottom:6px">Propina (opcional):</div>' +
+            '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">' +
+            '<button class="propina-btn" data-pct="0" onclick="seleccionarPropina(0,this)" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,255,136,0.2);color:#00ff88;font-weight:700;cursor:pointer">0%</button>' +
+            '<button class="propina-btn" data-pct="10" onclick="seleccionarPropina(10,this)" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#fff;font-weight:700;cursor:pointer">10%</button>' +
+            '<button class="propina-btn active" data-pct="15" onclick="seleccionarPropina(15,this)" style="padding:6px 14px;border-radius:8px;border:1px solid #00ff88;background:rgba(0,255,136,0.3);color:#00ff88;font-weight:700;cursor:pointer">15%</button>' +
+            '<button class="propina-btn" data-pct="20" onclick="seleccionarPropina(20,this)" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#fff;font-weight:700;cursor:pointer">20%</button>' +
+            '</div></div>';
+        var propinaPct = 15;
+        var propinaMonto = total * 0.15;
+        Swal.fire({
+            title: 'Confirmar cobro',
+            html: '<div style="margin:10px 0;color:#94a3b8;">' + nombreMesa + '</div><div style="font-size:1.3rem;font-weight:700;margin:10px 0;">' + icono + ' ' + metodo + '</div><div style="font-size:1.8rem;font-weight:900;color:#94a3b8;text-decoration:line-through">' + total.toFixed(2) + ' &euro;</div>' + propinaBtns + '<div style="font-size:2.2rem;font-weight:900;color:#00ff88;">' + (total + propinaMonto).toFixed(2) + ' &euro;</div><div style="font-size:0.75rem;color:#a855f7" id="propina-label">Incluye propina 15%: ' + propinaMonto.toFixed(2) + ' &euro;</div>',
+            showCancelButton: true,
+            confirmButtonText: 'COBRAR',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: color,
+            cancelButtonColor: '#64748b',
+            background: '#1e293b',
+            color: '#e2e8f0'
+        }).then(function(r) {
+            if (!r.isConfirmed) return;
+            var lista = [];
+            for (var i = 0; i < keys.length; i++) lista.push({ id: keys[i], cantidad: ordenActual[keys[i]].cantidad });
+            fetch('/api/registrar-cobro/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ items: lista, forma_pago: metodo, mesa_id: (mesaActual > 0) ? mesaActual : null, cupon: cuponAplicado || '', cliente_id: clienteActual ? clienteActual.id : null })
+            }).then(function(res) { return res.json(); }).then(function(d) {
+                if (d.status === 'success') {
+                    sonidoCobro();
+                    lanzarConfetti();
+                    var pdfLink = '<a href="/pdf/ticket/' + d.ticket_id + '/" target="_blank" style="display:inline-block;margin-top:10px;padding:8px 18px;border-radius:12px;background:rgba(255,255,255,0.1);color:#00d4ff;font-weight:700;font-size:0.85rem;text-decoration:none;border:1px solid rgba(0,212,255,0.3);">&#128196; Ver Ticket PDF</a>';
+                    var qrLink = '<a href="/pdf/ticket-qr/' + d.ticket_id + '/" target="_blank" style="display:inline-block;margin-top:5px;margin-left:6px;padding:8px 18px;border-radius:12px;background:rgba(168,85,247,0.15);color:#a855f7;font-weight:700;font-size:0.85rem;text-decoration:none;border:1px solid rgba(168,85,247,0.3);">&#128270; Ticket QR</a>';
+                    var descHtml = d.descuento > 0 ? '<div style="font-size:0.85rem;color:var(--neon-green);margin:5px 0;">Descuento: -' + d.descuento.toFixed(2) + ' &euro;</div>' : '';
+                    var ptsHtml = d.puntos_ganados > 0 ? '<div style="font-size:0.85rem;color:#a855f7;margin:5px 0;">+' + d.puntos_ganados + ' puntos fidelidad &#127942;</div>' : '';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cobro completado',
+                        html: '<div style="font-size:0.9rem;color:#94a3b8;margin-bottom:5px;">Ticket #' + d.ticket_id + ' | ' + nombreMesa + '</div><div style="font-size:1.2rem;margin:10px 0;">' + icono + ' ' + metodo + '</div><div style="font-size:2rem;font-weight:900;color:#00ff88;">' + d.total.toFixed(2) + ' \u20ac</div>' + descHtml + ptsHtml + pdfLink + qrLink,
+                        confirmButtonColor: '#10b981',
+                        background: '#1e293b',
+                        color: '#e2e8f0'
+                    });
+                    if (d.alertas && d.alertas.length > 0) {
+                        for (var j = 0; j < d.alertas.length; j++) {
+                            var a = d.alertas[j];
+                            lanzarToastAlerta('REPOSICION: Quedan ' + a.restante + ' ' + a.unidad + ' de ' + a.ingrediente);
+                        }
+                    }
+                    var cobroMesaId = mesaActual;
+                    delete pedidosMesa[cobroMesaId];
+                    var badgeCobro = document.getElementById('mesa-badge-' + cobroMesaId);
+                    if (badgeCobro) { badgeCobro.style.display = 'none'; badgeCobro.textContent = '0'; }
+                    var elMesa = document.getElementById('mesa-' + cobroMesaId);
+                    if (elMesa) { elMesa.classList.remove('mesa-seleccionada', 'mesa-pendiente'); elMesa.style.opacity = '1'; }
+                    var cards = document.querySelectorAll('.mesa-card');
+                    for (var c = 0; c < cards.length; c++) cards[c].style.opacity = '1';
+                    mesaActual = null;
+                    ordenActual = {};
+                    cuponAplicado = null;
+                    descuentoGlobal = 0;
+                    document.getElementById('cupon-form').style.display = 'flex';
+                    document.getElementById('cupon-activo').style.display = 'none';
+                    document.getElementById('cupon-codigo').value = '';
+                    document.getElementById('mesa-actual-label').textContent = 'Selecciona mesa';
+                    document.getElementById('ticket-mesa-info').textContent = '';
+                    actualizarGraficosTicket();
+                    actualizarBadgesMesas();
+                    setTimeout(function(){ preguntarSatisfaccion(d.ticket_id); }, 3000);
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: d.error || 'Error', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+                }
+            }).catch(function() {
+                Swal.fire({ icon: 'error', title: 'Sin conexion', text: 'No se pudo contactar con el servidor.', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+            });
+        });
+    }
+
+    function buscarProductos(q) {
+        var box = document.getElementById('search-results');
+        if (q.length < 1) { box.classList.remove('show'); return; }
+        fetch('/api/buscar-productos/?q=' + encodeURIComponent(q))
+            .then(function(r){ return r.json(); })
+            .then(function(items) {
+                if (items.length === 0) { box.classList.remove('show'); return; }
+                var html = '';
+                for (var i = 0; i < items.length; i++) {
+                    html += '<div class="search-result-item" onclick="agregarPorId(' + items[i].id + ')">';
+                    html += '<span style="font-size:1.2rem;">' + items[i].icono + '</span>';
+                    html += '<span style="flex:1;font-weight:600;color:#e2e8f0;font-size:0.85rem;">' + items[i].nombre + '</span>';
+                    html += '<span style="font-weight:700;color:var(--neon-green);font-size:0.85rem;">' + items[i].precio.toFixed(2) + ' &euro;</span>';
+                    html += '</div>';
+                }
+                box.innerHTML = html;
+                box.classList.add('show');
+            });
+    }
+
+    function agregarPorId(id) {
+        if (mesaActual === null) {
+            sonidoAlerta();
+            return Swal.fire({ icon: 'info', title: 'Selecciona una mesa', text: 'Debes elegir una mesa o "Para llevar" antes.', confirmButtonColor: '#00d4ff', background: '#1e293b', color: '#e2e8f0' });
+        }
+        var card = document.querySelector('.producto-card[data-id="' + id + '"]');
+        if (card) { agregarAlTicket(card); return; }
+        fetch('/api/buscar-productos/?q=' + id).then(function(r){ return r.json(); }).then(function(items) {
+            if (items.length > 0) {
+                sonidoAdd();
+                animacionAgregar({nombre: items[0].nombre});
+                var it = items[0];
+                if (ordenActual[it.id]) { ordenActual[it.id].cantidad += 1; }
+                else { ordenActual[it.id] = { nombre: it.nombre, precio: it.precio, cantidad: 1 }; }
+                actualizarGraficosTicket();
+                actualizarBadgeMesaActual();
+            }
+        });
+        var box = document.getElementById('search-results');
+        if (box) { box.classList.remove('show'); box.innerHTML = ''; }
+        var inp = document.getElementById('search-input');
+        if (inp) inp.value = '';
+    }
+
+    function aplicarCupon() {
+        var cod = document.getElementById('cupon-codigo').value.trim();
+        if (!cod) return;
+        var total = 0;
+        var keys = Object.keys(ordenActual);
+        for (var i = 0; i < keys.length; i++) total += ordenActual[keys[i]].precio * ordenActual[keys[i]].cantidad;
+        fetch('/api/cupon/validar/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ codigo: cod, subtotal: total })
+        }).then(function(r){ return r.json(); }).then(function(d) {
+            if (d.status === 'success') {
+                cuponAplicado = cod;
+                descuentoGlobal = d.descuento;
+                document.getElementById('cupon-form').style.display = 'none';
+                document.getElementById('cupon-activo').style.display = 'flex';
+                document.getElementById('cupon-info').textContent = d.descripcion + ' (-' + d.descuento.toFixed(2) + ' EUR)';
+                sonidoAdd();
+                actualizarTotalConDescuento(total);
+            } else {
+                sonidoAlerta();
+                Swal.fire({ icon: 'error', title: 'Cupon invalido', text: d.error, confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+            }
+        });
+    }
+
+    function quitarCupon() {
+        cuponAplicado = null;
+        descuentoGlobal = 0;
+        document.getElementById('cupon-form').style.display = 'flex';
+        document.getElementById('cupon-activo').style.display = 'none';
+        document.getElementById('cupon-codigo').value = '';
+        var total = 0;
+        var keys = Object.keys(ordenActual);
+        for (var i = 0; i < keys.length; i++) total += ordenActual[keys[i]].precio * ordenActual[keys[i]].cantidad;
+        actualizarGraficosTicket();
+    }
+
+    function actualizarTotalConDescuento(subtotal) {
+        var fila = document.getElementById('fila-descuento');
+        var txt = document.getElementById('txt-descuento');
+        if (descuentoGlobal > 0) {
+            fila.style.display = 'flex';
+            txt.textContent = '-' + descuentoGlobal.toFixed(2) + ' \u20ac';
+        } else {
+            fila.style.display = 'none';
+        }
+        var base = subtotal / 1.10;
+        var iva = subtotal - base;
+        document.getElementById('txt-base').textContent = base.toFixed(2) + ' \u20ac';
+        document.getElementById('txt-iva').textContent = iva.toFixed(2) + ' \u20ac';
+        var t = document.getElementById('txt-total');
+        t.textContent = (subtotal - descuentoGlobal).toFixed(2) + ' \u20ac';
+        t.classList.remove('pulse'); void t.offsetWidth; t.classList.add('pulse');
+    }
+
+    document.addEventListener('click', function(e) {
+        var box = document.getElementById('search-results');
+        var inp = document.getElementById('search-input');
+        if (box && inp && !box.contains(e.target) && e.target !== inp) box.classList.remove('show');
+    });
+
+    function cargarRecomendaciones() {
+        var artId = null;
+        var keys = Object.keys(ordenActual);
+        if (keys.length > 0) artId = keys[keys.length - 1];
+        var url = '/api/recomendaciones/' + (artId ? '?articulo_id=' + artId : '');
+        fetch(url).then(function(r){ return r.json(); }).then(function(items) {
+            var section = document.getElementById('reco-section');
+            var chips = document.getElementById('reco-chips');
+            if (!items || items.length === 0) { section.style.display = 'none'; return; }
+            section.style.display = 'block';
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                var it = items[i];
+                html += '<div class="reco-chip" onclick="agregarPorId(' + it.id + ')" title="' + it.motivo + '">';
+                html += it.icono + ' ' + it.nombre + ' <span style="opacity:0.6">' + it.precio.toFixed(2) + '&euro;</span></div>';
+            }
+            chips.innerHTML = html;
+        });
+    }
+    setInterval(cargarRecomendaciones, 15000);
+    cargarRecomendaciones();
+
+    function cargarMetas() {
+        fetch('/api/metas-hoy/').then(function(r){ return r.json(); }).then(function(d) {
+            var m = d.meta;
+            document.getElementById('meta-tickets-text').textContent = m.tickets_hoy + ' / ' + m.objetivo_tickets + ' tickets';
+            document.getElementById('meta-pct').textContent = m.porcentaje_total + '%';
+            document.getElementById('meta-progress').style.width = m.porcentaje_total + '%';
+            var badgesHtml = '';
+            for (var i = 0; i < m.badges.length; i++) {
+                badgesHtml += '<span class="badge-chip">' + m.badges[i].icono + ' ' + m.badges[i].nombre + '</span>';
+            }
+            document.getElementById('badges-row').innerHTML = badgesHtml;
+        });
+    }
+    cargarMetas();
+    setInterval(cargarMetas, 30000);
+
+    var voiceRecognition = null;
+    var isListening = false;
+    function toggleVoice() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            return Swal.fire({ icon: 'info', title: 'No soportado', text: 'Tu navegador no soporta reconocimiento de voz. Usa Chrome.', confirmButtonColor: '#00d4ff', background: '#1e293b', color: '#e2e8f0' });
+        }
+        if (isListening) { stopVoice(); return; }
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        voiceRecognition = new SR();
+        voiceRecognition.lang = 'es-ES';
+        voiceRecognition.continuous = true;
+        voiceRecognition.interimResults = false;
+        voiceRecognition.onstart = function() {
+            isListening = true;
+            document.getElementById('voice-btn').classList.add('listening');
+            var vs = document.getElementById('voice-status');
+            vs.classList.add('show');
+            document.getElementById('voice-text').textContent = 'Escuchando...';
+        };
+        voiceRecognition.onresult = function(e) {
+            var last = e.results[e.results.length - 1];
+            if (last.isFinal) {
+                var txt = last[0].transcript.trim().toLowerCase();
+                document.getElementById('voice-text').textContent = '"' + txt + '"';
+                processVoiceCommand(txt);
+            }
+        };
+        voiceRecognition.onerror = function(e) {
+            if (e.error !== 'no-speech') { stopVoice(); }
+        };
+        voiceRecognition.onend = function() {
+            if (isListening) { try { voiceRecognition.start(); } catch(ex) {} }
+        };
+        voiceRecognition.start();
+    }
+    function stopVoice() {
+        isListening = false;
+        if (voiceRecognition) { try { voiceRecognition.stop(); } catch(ex) {} }
+        document.getElementById('voice-btn').classList.remove('listening');
+        document.getElementById('voice-status').classList.remove('show');
+    }
+    function processVoiceCommand(txt) {
+        if (txt.indexOf('cobrar') !== -1 || txt.indexOf('cobro') !== -1) {
+            if (txt.indexOf('tarjeta') !== -1) ejecutarTransaccion('TARJETA');
+            else ejecutarTransaccion('EFECTIVO');
+        } else if (txt.indexOf('quitar') !== -1 || txt.indexOf('eliminar') !== -1) {
+            var keys = Object.keys(ordenActual);
+            if (keys.length > 0) quitarDelTicket(keys[keys.length - 1]);
+        } else if (txt.indexOf('limpiar') !== -1 || txt.indexOf('vaciar') !== -1) {
+           ordenActual = {}; actualizarGraficosTicket(); actualizarBadgeMesaActual();
+        } else {
+            fetch('/api/buscar-productos/?q=' + encodeURIComponent(txt)).then(function(r){ return r.json(); }).then(function(items) {
+                if (items.length > 0) { agregarPorId(items[0].id); }
+            });
+        }
+    }
+
+    function toggleKiosk() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().then(function() {
+                document.body.classList.add('kiosk-mode');
+            });
+        } else {
+            document.exitFullscreen().then(function() {
+                document.body.classList.remove('kiosk-mode');
+            });
+        }
+    }
+    document.addEventListener('fullscreenchange', function() {
+        if (!document.fullscreenElement) document.body.classList.remove('kiosk-mode');
+    });
+
+    function lanzarConfetti() {
+        var c = document.createElement('canvas');
+        c.className = 'confetti-canvas';
+        c.width = window.innerWidth;
+        c.height = window.innerHeight;
+        document.body.appendChild(c);
+        var ctx = c.getContext('2d');
+        var particles = [];
+        var cols = ['#00ff88','#00d4ff','#a855f7','#f43f5e','#f97316','#eab308','#22c55e'];
+        for (var i = 0; i < 120; i++) {
+            particles.push({
+                x: Math.random() * c.width,
+                y: -10 - Math.random() * 200,
+                w: 6 + Math.random() * 8,
+                h: 4 + Math.random() * 6,
+                vx: (Math.random() - 0.5) * 4,
+                vy: 2 + Math.random() * 4,
+                rot: Math.random() * Math.PI * 2,
+                rotV: (Math.random() - 0.5) * 0.2,
+                color: cols[Math.floor(Math.random() * cols.length)],
+                life: 1
+            });
+        }
+        var running = true;
+        function frame() {
+            if (!running) return;
+            ctx.clearRect(0, 0, c.width, c.height);
+            var alive = 0;
+            for (var i = 0; i < particles.length; i++) {
+                var p = particles[i];
+                p.x += p.vx;
+                p.vy += 0.05;
+                p.y += p.vy;
+                p.rot += p.rotV;
+                p.life -= 0.003;
+                if (p.life <= 0 || p.y > c.height + 20) continue;
+                alive++;
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.globalAlpha = Math.min(1, p.life * 2);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            }
+            if (alive > 0) requestAnimationFrame(frame);
+            else { c.remove(); running = false; }
+        }
+        frame();
+    }
+
+    var clienteActual = null;
+
+    function cargarClima() {
+        fetch('/api/clima-sugerencias/').then(function(r){ return r.json(); }).then(function(d) {
+            var badge = document.getElementById('weather-badge');
+            var html = '<span>' + d.emoji + '</span> <span class="temp">' + d.temp + '°C</span> <span>' + d.desc + '</span>';
+            if (d.sugerencias && d.sugerencias.length > 0) {
+                html += ' <span style="color:var(--neon-orange);margin-left:4px;">Tip: ';
+                for (var i = 0; i < d.sugerencias.length; i++) {
+                    html += d.sugerencias[i].icono + ' ' + d.sugerencias[i].nombre;
+                    if (i < d.sugerencias.length - 1) html += ', ';
+                }
+                html += '</span>';
+            }
+            badge.innerHTML = html;
+        });
+    }
+    cargarClima();
+    setInterval(cargarClima, 300000);
+
+    function buscarClientes(q) {
+        if (q.length < 1) return;
+        fetch('/api/clientes/?q=' + encodeURIComponent(q)).then(function(r){ return r.json(); }).then(function(items) {
+            if (items.length > 0) {
+                seleccionarCliente(items[0]);
+            }
+        });
+    }
+    function seleccionarCliente(cl) {
+        clienteActual = cl;
+        var box = document.getElementById('cliente-activo');
+        box.style.display = 'block';
+        box.innerHTML = '<div class="loyalty-customer"><span style="font-size:1.2rem;">👤</span><div style="flex:1;"><div style="font-weight:700;font-size:0.85rem;">' + cl.nombre + '</div><div style="font-size:0.7rem;color:#94a3b8;">' + cl.email + '</div></div><span class="nivel-badge nivel-' + cl.nivel + '">' + cl.nivel + '</span><span style="font-weight:700;color:var(--neon-green);font-size:0.75rem;">' + cl.puntos + ' pts</span><span style="font-size:0.65rem;color:#94a3b8;">-' + cl.descuento + '%</span><button onclick="quitarCliente()" style="background:none;border:none;color:#f43f5e;cursor:pointer;font-size:0.8rem;">&#10005;</button></div>';
+        document.getElementById('cliente-search').value = '';
+    }
+    function quitarCliente() {
+        clienteActual = null;
+        document.getElementById('cliente-activo').style.display = 'none';
+    }
+    function abrirModalNuevoCliente() {
+        Swal.fire({
+            title: 'Nuevo Cliente',
+            html: '<input id="swal-nombre" class="swal2-input" placeholder="Nombre completo"><input id="swal-email" class="swal2-input" placeholder="Email (opcional)" type="email"><input id="swal-tel" class="swal2-input" placeholder="Telefono (opcional)">',
+            confirmButtonText: 'Crear',
+            confirmButtonColor: '#a855f7',
+            background: '#1e293b', color: '#e2e8f0',
+            preConfirm: function() {
+                var n = document.getElementById('swal-nombre').value;
+                if (!n) { Swal.showValidationMessage('Nombre requerido'); return false; }
+                return { nombre: n, email: document.getElementById('swal-email').value, telefono: document.getElementById('swal-tel').value };
+            }
+        }).then(function(r) {
+            if (r.isConfirmed && r.value) {
+                fetch('/api/clientes/crear/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                    body: JSON.stringify(r.value)
+                }).then(function(res){ return res.json(); }).then(function(d) {
+                    if (d.status === 'success') {
+                        seleccionarCliente({ id: d.cliente_id, nombre: d.nombre, email: '', nivel: 'BRONCE', puntos: 0, descuento: 0 });
+                        sonidoAdd();
+                    }
+                });
+            }
+        });
+    }
+
+    function abrirSplitBill() {
+        if (Object.keys(ordenActual).length === 0) {
+            return Swal.fire({ icon: 'info', title: 'Ticket vacio', text: 'Anade productos primero.', confirmButtonColor: '#00d4ff', background: '#1e293b', color: '#e2e8f0' });
+        }
+        var html = '<div style="text-align:left;">';
+        html += '<p style="color:#94a3b8;font-size:0.85rem;margin-bottom:10px;">Divide la cuenta entre amigos:</p>';
+        html += '<div id="split-persons">';
+        html += '<div class="d-flex gap-2 mb-2"><input class="swal2-input" placeholder="Nombre persona 1" style="margin:0"><select class="swal2-input" style="margin:0;width:120px"><option value="EFECTIVO">Efectivo</option><option value="TARJETA">Tarjeta</option></select></div>';
+        html += '<div class="d-flex gap-2 mb-2"><input class="swal2-input" placeholder="Nombre persona 2" style="margin:0"><select class="swal2-input" style="margin:0;width:120px"><option value="EFECTIVO">Efectivo</option><option value="TARJETA">Tarjeta</option></select></div>';
+        html += '</div>';
+        html += '<button onclick="agregarPersonaSplit()" style="margin-top:8px;padding:6px 14px;border-radius:8px;border:1px dashed rgba(255,255,255,0.2);background:none;color:#94a3b8;cursor:pointer;font-size:0.8rem;">+ Añadir persona</button>';
+        html += '</div>';
+        var total = 0;
+        var keys = Object.keys(ordenActual);
+        for (var i = 0; i < keys.length; i++) total += ordenActual[keys[i]].precio * ordenActual[keys[i]].cantidad;
+        Swal.fire({
+            title: 'Dividir Cuenta',
+            html: html,
+            confirmButtonText: 'Calcular',
+            confirmButtonColor: '#a855f7',
+            background: '#1e293b', color: '#e2e8f0',
+            width: 500,
+        }).then(function(r) {
+            if (!r.isConfirmed) return;
+            var container = document.getElementById('split-persons');
+            var rows = container.querySelectorAll('.d-flex');
+            var participantes = [];
+            for (var i = 0; i < rows.length; i++) {
+                var inputs = rows[i].querySelectorAll('input,select');
+                var nombre = inputs[0].value || ('Persona ' + (i+1));
+                var metodo = inputs[1].value;
+                participantes.push({ nombre: nombre, metodo: metodo });
+            }
+            fetch('/api/split-bill/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ venta_id: 'temp', participantes: participantes })
+            }).then(function(res){ return res.json(); }).then(function(d) {
+                if (d.status === 'success') {
+                    var msg = '<div style="text-align:left;">';
+                    for (var j = 0; j < d.particiones.length; j++) {
+                        var p = d.particiones[j];
+                        var icono = p.metodo === 'EFECTIVO' ? '💵' : '💳';
+                        msg += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span>' + icono + ' ' + p.nombre + '</span><span style="font-weight:700;color:var(--neon-green);">' + p.monto.toFixed(2) + ' EUR</span></div>';
+                    }
+                    msg += '<div style="margin-top:10px;text-align:center;font-weight:900;color:#e2e8f0;font-size:1.1rem;">Total: ' + d.total.toFixed(2) + ' EUR</div></div>';
+                    Swal.fire({ title: 'Por Persona', html: msg, confirmButtonColor: '#a855f7', background: '#1e293b', color: '#e2e8f0', width: 500 });
+                }
+            });
+        });
+    }
+    function agregarPersonaSplit() {
+        var container = document.getElementById('split-persons');
+        var n = container.querySelectorAll('.d-flex').length + 1;
+        var div = document.createElement('div');
+        div.className = 'd-flex gap-2 mb-2';
+        div.innerHTML = '<input class="swal2-input" placeholder="Nombre persona ' + n + '" style="margin:0"><select class="swal2-input" style="margin:0;width:120px"><option value="EFECTIVO">Efectivo</option><option value="TARJETA">Tarjeta</option></select>';
+        container.appendChild(div);
+    }
+
+    function abrirScanner() {
+        Swal.fire({
+            title: 'Escanear Codigo de Barras',
+            html: '<input id="swal-codigo" class="swal2-input" placeholder="Introduce o escanea el codigo..." autofocus onkeydown="if(event.key===\'Enter\'){buscarPorCodigo(this.value);Swal.close();}">',
+            confirmButtonText: 'Buscar',
+            confirmButtonColor: '#00d4ff',
+            background: '#1e293b', color: '#e2e8f0',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+        }).then(function(r) {
+            if (r.isConfirmed) {
+                var codigo = document.getElementById('swal-codigo').value;
+                buscarPorCodigo(codigo);
+            }
+        });
+        setTimeout(function(){ var el = document.getElementById('swal-codigo'); if(el) el.focus(); }, 200);
+    }
+    function buscarPorCodigo(codigo) {
+        if (!codigo) return;
+        if (mesaActual === null) {
+            sonidoAlerta();
+            return Swal.fire({ icon: 'info', title: 'Selecciona una mesa', confirmButtonColor: '#00d4ff', background: '#1e293b', color: '#e2e8f0' });
+        }
+        fetch('/api/buscar-codigo-barras/?codigo=' + encodeURIComponent(codigo))
+            .then(function(r){ return r.json(); })
+            .then(function(d) {
+                if (d.id) {
+                    agregarPorId(d.id);
+                    sonidoAdd();
+                } else {
+                    sonidoAlerta();
+                    Swal.fire({ icon: 'error', title: 'No encontrado', text: d.error || 'Producto no encontrado', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+                }
+            });
+    }
+
+    function transferirMesa(origenId) {
+        var mesasDisponibles = document.querySelectorAll('.mesa-card:not(.mesa-seleccionada):not(#btn-add-mesa)');
+        if (mesasDisponibles.length === 0) {
+            return Swal.fire({ icon: 'info', title: 'Sin mesas disponibles', confirmButtonColor: '#00d4ff', background: '#1e293b', color: '#e2e8f0' });
+        }
+        var options = '';
+        for (var i = 0; i < mesasDisponibles.length; i++) {
+            var card = mesasDisponibles[i];
+            var num = card.querySelector('.mesa-num').textContent;
+            var mid = card.id.replace('mesa-', '');
+            if (mid && mid !== String(origenId)) {
+                options += '<option value="' + mid + '">Mesa ' + num + '</option>';
+            }
+        }
+        Swal.fire({
+            title: 'Transferir a otra mesa',
+            html: '<select id="swal-destino" class="swal2-input">' + options + '</select>',
+            confirmButtonText: 'Transferir',
+            confirmButtonColor: '#00d4ff',
+            background: '#1e293b', color: '#e2e8f0',
+        }).then(function(r) {
+            if (r.isConfirmed) {
+                var destinoId = document.getElementById('swal-destino').value;
+                fetch('/api/transferir-mesa/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                    body: JSON.stringify({ mesa_origen_id: origenId, mesa_destino_id: destinoId })
+                }).then(function(res){ return res.json(); }).then(function(d) {
+                    if (d.status === 'success') {
+                        sonidoAdd();
+                        Swal.fire({ icon: 'success', title: d.mensaje, timer: 1500, showConfirmButton: false, background: '#1e293b', color: '#e2e8f0' });
+                        location.reload();
+                    }
+                });
+            }
+        });
+    }
+
+    function cargarSocialProof() {
+        fetch('/api/social-proof/').then(function(r){ return r.json(); }).then(function(items) {
+            if (!items || items.length === 0) return;
+            var container = document.getElementById('social-proof');
+            container.innerHTML = '';
+            for (var i = 0; i < Math.min(items.length, 3); i++) {
+                var it = items[i];
+                var div = document.createElement('div');
+                div.className = 'social-proof-item';
+                div.innerHTML = '<span class="sp-icon">🛒</span><div class="sp-text"><strong>' + it.cliente + '</strong> pidió ' + it.productos.join(', ') + '</div>';
+                container.appendChild(div);
+                (function(d, delay) {
+                    setTimeout(function() { d.classList.add('show'); }, delay);
+                    setTimeout(function() { d.classList.remove('show'); d.classList.add('hide'); }, delay + 6000);
+                    setTimeout(function() { if (d.parentNode) d.remove(); }, delay + 7000);
+                })(div, i * 2500);
+            }
+        });
+    }
+    cargarSocialProof();
+    setInterval(cargarSocialProof, 60000);
+
+    function aplicarTemaTemporada() {
+        var mes = new Date().getMonth();
+        var dia = new Date().getDate();
+        var overlay = document.getElementById('cinematic-overlay');
+        var indicator = document.getElementById('theme-indicator');
+        var tema = null;
+        if (mes === 11 && dia >= 20) tema = { nombre: 'Navidad', icono: '🎄', color: '#ef4444' };
+        else if (mes === 11 && dia < 20) tema = { nombre: 'Adviento', icono: '🕯', color: '#f59e0b' };
+        else if (mes === 0 && dia <= 6) tema = { nombre: 'Reyes', icono: '👑', color: '#ffd700' };
+        else if (mes === 1 && dia >= 10 && dia <= 16) tema = { nombre: 'San Valentin', icono: '❤️', color: '#f43f5e' };
+        else if (mes === 2 && dia >= 15 && dia <= 22) tema = { nombre: 'San Patricio', icono: '☘️', color: '#22c55e' };
+        else if (mes >= 5 && mes <= 7) tema = { nombre: 'Verano', icono: '☀️', color: '#f97316' };
+        else if (mes === 9 && dia >= 25 && dia <= 31) tema = { nombre: 'Halloween', icono: '🎃', color: '#f97316' };
+        else if (mes === 11 && dia >= 28) tema = { nombre: 'Fin de Año', icono: '🎆', color: '#a855f7' };
+        if (tema) {
+            indicator.textContent = tema.icono + ' ' + tema.nombre;
+            indicator.style.display = 'block';
+            indicator.style.background = 'rgba(0,0,0,0.5)';
+            indicator.style.color = tema.color;
+            indicator.style.border = '1px solid ' + tema.color;
+        }
+    }
+    aplicarTemaTemporada();
+
+    function iniciarCinematico() {
+        var overlay = document.getElementById('cinematic-overlay');
+        overlay.innerHTML = '';
+        overlay.classList.add('active');
+        var esNoche = new Date().getHours() >= 20 || new Date().getHours() < 7;
+        if (esNoche) {
+            overlay.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(0,20,40,0.3), transparent)';
+            for (var i = 0; i < 60; i++) {
+                var star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 60 + 'vh';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                var s = (1 + Math.random() * 2) + 'px';
+                star.style.width = s; star.style.height = s;
+                overlay.appendChild(star);
+            }
+        } else {
+            var hora = new Date().getHours();
+            if (hora >= 7 && hora < 12) {
+                overlay.style.background = 'radial-gradient(ellipse at 80% 0%, rgba(255,200,50,0.04), transparent)';
+            }
+        }
+    }
+    iniciarCinematico();
+    setInterval(iniciarCinematico, 60000);
+
+    function preguntarSatisfaccion(ventaId) {
+        Swal.fire({
+            title: '¿Como fue tu experiencia?',
+            html: '<div style="display:flex;gap:12px;justify-content:center;font-size:2.5rem;cursor:pointer;" id="rating-box">' +
+                '<span onclick="enviarRating(\'' + ventaId + '\',\'EXCELENTE\',this)" title="Excelente">&#128525;</span>' +
+                '<span onclick="enviarRating(\'' + ventaId + '\',\'BUENA\',this)" title="Buena">&#128578;</span>' +
+                '<span onclick="enviarRating(\'' + ventaId + '\',\'NORMAL\',this)" title="Normal">&#128528;</span>' +
+                '<span onclick="enviarRating(\'' + ventaId + '\',\'MALA\',this)" title="Mala">&#128544;</span>' +
+                '</div>',
+            showConfirmButton: false,
+            background: '#1e293b', color: '#e2e8f0',
+        });
+    }
+    function enviarRating(ventaId, rating, el) {
+        fetch('/api/satisfaccion/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ venta_id: ventaId, rating: rating })
+        }).then(function() {
+            el.style.transform = 'scale(1.5)';
+            setTimeout(function() { Swal.close(); }, 500);
+        });
+    }
+
+    crearParticulas();
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/sw.js').catch(function() {});
+    }
+
+    // ========== 8 NUEVAS FEATURES ==========
+
+    // 1. VOZ AUTOMATICA - anuncia pedidos listos
+    function anunciarPedido(){
+        fetch('/api/anuncio-voz/')
+        .then(r => r.json())
+        .then(d => {
+            if(d.mensaje){
+                const synth = window.speechSynthesis;
+                const msg = new SpeechSynthesisUtterance(d.mensaje);
+                msg.lang = 'es-AR';
+                msg.rate = 0.9;
+                msg.pitch = 1.0;
+                synth.speak(msg);
+            }
+        });
+    }
+    setInterval(anunciarPedido, 30000);
+
+    // 2. ANIMACION 3D al agregar producto
+    function animacionAgregar(producto){
+        const el = document.createElement('div');
+        el.textContent = '+ ' + producto.nombre;
+        el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:2rem;font-weight:900;color:#00ff88;z-index:9999;pointer-events:none;text-shadow:0 0 20px rgba(0,255,136,0.8);transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275)';
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+            el.style.transform = 'translate(-50%,-150%) scale(1.2)';
+            el.style.opacity = '0';
+        });
+        setTimeout(() => el.remove(), 600);
+    }
+
+    // 3. COMPETICION CAJEROS
+    function verCompeticion(){
+        fetch('/api/competicion/')
+        .then(r => r.json())
+        .then(d => {
+            let html = '<div style="text-align:center">';
+            d.ranking.forEach(r => {
+                const badge = r.badge.oro ? '🥇' : r.badge.plata ? '🥈' : r.badge.bronce ? '🥉' : '';
+                html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:1px solid rgba(255,255,255,0.1)">
+                    <span style="font-size:1.5rem">${r.posicion}° ${badge}</span>
+                    <span style="flex:1;margin-left:15px;font-weight:700">${r.nombre}</span>
+                    <span style="color:#00ff88;font-weight:900">${r.ventas} ventas</span>
+                    <span style="color:#f43f5e;margin-left:15px;font-weight:900">$${r.ingresos.toLocaleString()}</span>
+                </div>`;
+            });
+            html += '</div>';
+            Swal.fire({title:'Ranking del Mes',html:html,background:'#1e293b',color:'#e2e8f0',showConfirmButton:false,width:500});
+        });
+    }
+
+    // 4. SUGERENCIA INTELIGENTE POR HORA
+    function verSugerencia(){
+        fetch('/api/sugerencia-hora/')
+        .then(r => r.json())
+        .then(d => {
+            let html = `<div style="text-align:center;font-size:1.1rem;color:#f43f5e;margin-bottom:15px">${d.sugerencia}</div>`;
+            if(d.productos.length > 0){
+                html += '<div style="display:flex;gap:10px;justify-content:center">';
+                d.productos.forEach(p => {
+                    html += `<div style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);border-radius:12px;padding:10px 15px;text-align:center">
+                        <div style="font-weight:700">${p.nombre}</div>
+                        <div style="color:#00ff88;font-weight:900">$${parseFloat(p.precio).toLocaleString()}</div>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+            Swal.fire({title:`Sugerencia ${d.hora}`,html:html,background:'#1e293b',color:'#e2e8f0',showConfirmButton:false});
+        });
+    }
+
+    // 5. AUTO-PEDIDO PROVEEDORES - stock bajo
+    function verStockBajo(){
+        fetch('/api/stock-bajo/')
+        .then(r => r.json())
+        .then(d => {
+            if(d.insumos.length === 0){
+                Swal.fire({icon:'success',title:'Todo OK!',text:'No hay stock bajo',background:'#1e293b',color:'#e2e8f0'});
+                return;
+            }
+            let html = '<div style="text-align:center">';
+            d.insumos.forEach(i => {
+                html += `<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid rgba(255,255,255,0.1)">
+                    <span>${i.nombre}</span>
+                    <span style="color:#f43f5e">${i.stock_actual} / ${i.stock_minimo} ${i.unidad}</span>
+                </div>`;
+            });
+            html += '</div>';
+            Swal.fire({
+                title:'Stock Bajo - Pedir Proveedor',
+                html:html,
+                background:'#1e293b',color:'#e2e8f0',
+                showCancelButton:true,
+                confirmButtonText:'Generar Pedidos Auto',
+                confirmButtonColor:'#00ff88',
+            }).then(res => {
+                if(res.isConfirmed){
+                    fetch('/api/pedidos-proveedor/',{method:'POST'})
+                    .then(r=>r.json())
+                    .then(d=>{
+                        Swal.fire({icon:'success',title:`${d.total} pedidos creados`,html:'Pedidos generados automáticamente',background:'#1e293b',color:'#e2e8f0'});
+                    });
+                }
+            });
+        });
+    }
+
+    // 6. CHAT CAJERO-COCINA
+    function abrirChat(){
+        Swal.fire({
+            title:'Chat Cajero-Cocina',
+            html:`<div id="chat-container" style="text-align:left;max-height:300px;overflow-y:auto;background:rgba(0,0,0,0.3);border-radius:10px;padding:10px;margin-bottom:10px"></div>
+                  <input id="chat-input" placeholder="Escribe un mensaje..." style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.5);color:#fff;font-size:0.9rem">`,
+            background:'#1e293b',color:'#e2e8f0',
+            showConfirmButton:false,
+            timer:0,
+            didOpen: () => {
+                cargarChat();
+                setInterval(cargarChat, 5000);
+                document.getElementById('chat-input').addEventListener('keypress', e => {
+                    if(e.key === 'Enter' && e.target.value.trim()){
+                        fetch('/api/chat/enviar/',{
+                            method:'POST',
+                            headers:{'Content-Type':'application/json'},
+                            body:JSON.stringify({texto: e.target.value.trim()})
+                        }).then(() => { e.target.value = ''; cargarChat(); });
+                    }
+                });
+            }
+        });
+    }
+
+    let lastChatId = 0;
+    function cargarChat(){
+        fetch('/api/chat/mensajes/')
+        .then(r => r.json())
+        .then(d => {
+            const container = document.getElementById('chat-container');
+            if(!container) return;
+            d.mensajes.forEach(m => {
+                if(m.id <= lastChatId) return;
+                lastChatId = m.id;
+                const div = document.createElement('div');
+                div.style.cssText = `margin:5px 0;padding:8px 12px;border-radius:10px;max-width:80%;${m.emisor==='CAJERO'?'background:rgba(0,212,255,0.2);margin-left:auto':'background:rgba(244,63,94,0.2);margin-right:auto'}`;
+                div.innerHTML = `<div style="font-size:0.7rem;color:${m.emisor==='CAJERO'?'#00d4ff':'#f43f5e'};margin-bottom:3px">${m.emisor} ${m.fecha}</div><div>${m.texto}</div>`;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
+            });
+        });
+    }
+
+    // 7. Sugerencia automatica al abrir POS
+    setTimeout(verSugerencia, 5000);
+
+    // ========== 8 NUEVAS FEATURES (ROUND 4) ==========
+
+    // 1. PROPINAS
+    var propinaSeleccionada = 15;
+    function seleccionarPropina(pct, btn) {
+        propinaSeleccionada = pct;
+        document.querySelectorAll('.propina-btn').forEach(b => {
+            b.style.background = 'rgba(255,255,255,0.05)';
+            b.style.color = '#fff';
+            b.style.borderColor = 'rgba(255,255,255,0.2)';
+        });
+        btn.style.background = 'rgba(0,255,136,0.3)';
+        btn.style.color = '#00ff88';
+        btn.style.borderColor = '#00ff88';
+        var keys = Object.keys(ordenActual);
+        var total = 0;
+        for (var i = 0; i < keys.length; i++) total += ordenActual[keys[i]].precio * ordenActual[keys[i]].cantidad;
+        var propinaMonto = total * (pct / 100);
+        var label = document.getElementById('propina-label');
+        if (label) {
+            label.textContent = pct === 0 ? 'Sin propina' : 'Incluye propina ' + pct + '%: ' + propinaMonto.toFixed(2) + ' \u20ac';
+        }
+    }
+
+    // 2. FIRMA DIGITAL
+    function abrirFirma(ventaId) {
+        var canvasHtml = '<div style="text-align:center">' +
+            '<canvas id="firma-canvas" width="400" height="200" style="border:2px solid rgba(255,255,255,0.2);border-radius:12px;background:#fff;cursor:crosshair;touch-action:none;"></canvas>' +
+            '<div style="margin-top:10px;display:flex;gap:10px;justify-content:center">' +
+            '<button onclick="limpiarFirma()" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;cursor:pointer">Limpiar</button>' +
+            '</div></div>';
+        Swal.fire({
+            title: 'Firma del Cliente',
+            html: canvasHtml,
+            showCancelButton: true,
+            confirmButtonText: 'Guardar Firma',
+            confirmButtonColor: '#00ff88',
+            background: '#1e293b',
+            color: '#e2e8f0',
+            didOpen: function() {
+                initFirmaCanvas();
+            }
+        }).then(function(r) {
+            if (r.isConfirmed) {
+                var canvas = document.getElementById('firma-canvas');
+                var firma = canvas.toDataURL('image/png');
+                fetch('/api/firma/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                    body: JSON.stringify({ venta_id: ventaId, firma: firma })
+                }).then(function(res) { return res.json(); }).then(function(d) {
+                    if (d.ok) Swal.fire({ icon: 'success', title: 'Firma guardada', timer: 1500, showConfirmButton: false, background: '#1e293b', color: '#e2e8f0' });
+                });
+            }
+        });
+    }
+
+    var firmaDibujando = false;
+    function initFirmaCanvas() {
+        var canvas = document.getElementById('firma-canvas');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        function getPos(e) {
+            var rect = canvas.getBoundingClientRect();
+            var touch = e.touches ? e.touches[0] : e;
+            return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+        }
+        function start(e) { firmaDibujando = true; var p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+        function draw(e) {
+            if (!firmaDibujando) return;
+            var p = getPos(e);
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
+            e.preventDefault();
+        }
+        function end() { firmaDibujando = false; }
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', start);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', end);
+    }
+
+    function limpiarFirma() {
+        var canvas = document.getElementById('firma-canvas');
+        if (canvas) {
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    // 3. BACKUP USB
+    function backupUSB() {
+        Swal.fire({ title: 'Generando backup...', html: 'Por favor espera...', allowOutsideClick: false, background: '#1e293b', color: '#e2e8f0', didOpen: function() { Swal.showLoading(); }});
+        fetch('/api/backup/', { method: 'GET', headers: { 'X-CSRFToken': getCookie('csrftoken') } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.ok) {
+                var size = (d.tamano / 1024).toFixed(1);
+                Swal.fire({ icon: 'success', title: 'Backup completado', html: 'Archivo: ' + d.archivo.split('\\').pop() + '<br>Tamaño: ' + size + ' KB', confirmButtonColor: '#00ff88', background: '#1e293b', color: '#e2e8f0' });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: d.error || 'Error al crear backup', background: '#1e293b', color: '#e2e8f0' });
+            }
+        });
+    }
+
+    // 4. HEATMAP EN VIVO
+    function verHeatmapRT() {
+        fetch('/api/heatmap/realtime/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            var html = '<div style="text-align:left">';
+            html += '<div style="display:flex;justify-content:space-around;margin-bottom:15px;text-align:center">';
+            html += '<div><div style="font-size:1.5rem;font-weight:900;color:#00ff88">' + d.total_ventas_hora + '</div><div style="font-size:0.7rem;color:#94a3b8">Ventas/hora</div></div>';
+            html += '<div><div style="font-size:1.5rem;font-weight:900;color:#f43f5e">$' + d.total_ingresos_hora.toFixed(0) + '</div><div style="font-size:0.7rem;color:#94a3b8">Ingresos/hora</div></div>';
+            html += '</div>';
+            html += '<div style="font-weight:700;margin-bottom:8px;color:#94a3b8">Productos mas vendidos ahora:</div>';
+            d.heatmap.forEach(function(item) {
+                var color = item.intensidad > 70 ? '#f43f5e' : item.intensidad > 40 ? '#f97316' : '#00ff88';
+                html += '<div style="display:flex;align-items:center;gap:10px;margin:6px 0">';
+                html += '<div style="width:40%;font-size:0.8rem">' + item.producto + '</div>';
+                html += '<div style="flex:1;background:rgba(255,255,255,0.1);border-radius:10px;height:12px;overflow:hidden">';
+                html += '<div style="width:' + item.intensidad + '%;height:100%;background:' + color + ';border-radius:10px;transition:width 1s"></div>';
+                html += '</div>';
+                html += '<div style="width:30px;font-size:0.7rem;font-weight:700;color:' + color + '">' + item.unidades + 'x</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            Swal.fire({ title: 'Mapa de Calor en Vivo', html: html, background: '#1e293b', color: '#e2e8f0', showConfirmButton: false, width: 550 });
+        });
+    }
+
+    // 5. NOTIFICACIONES PUSH
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+    function verificarNotificaciones() {
+        fetch('/api/notificacion/pendientes/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            d.notificaciones.forEach(function(n) {
+                if (Notification.permission === 'granted') {
+                    new Notification(n.titulo, { body: n.mensaje, icon: '/static/img/cafe_default.svg' });
+                }
+                lanzarToastAlerta(n.titulo + ': ' + n.mensaje);
+            });
+        });
+    }
+    setInterval(verificarNotificaciones, 15000);
+
+    // 6. RECETAS EN COCINA
+    function verReceta(articuloId) {
+        fetch('/api/receta/' + articuloId + '/pasos/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.pasos.length === 0) {
+                Swal.fire({ icon: 'info', title: 'Sin receta', text: 'No hay pasos definidos para este articulo', background: '#1e293b', color: '#e2e8f0' });
+                return;
+            }
+            var html = '<div style="text-align:left">';
+            var totalTiempo = 0;
+            d.pasos.forEach(function(p) {
+                totalTiempo += p.tiempo_minutos;
+                html += '<div style="margin:12px 0;padding:12px;border-radius:10px;background:rgba(255,255,255,0.05);border-left:3px solid #00ff88">';
+                html += '<div style="display:flex;justify-content:space-between;align-items:center">';
+                html += '<span style="font-weight:700;color:#00ff88">Paso ' + p.orden + '</span>';
+                if (p.tiempo_minutos > 0) html += '<span style="font-size:0.75rem;color:#f97316">⏱ ' + p.tiempo_minutos + ' min</span>';
+                html += '</div>';
+                html += '<div style="font-weight:600;margin:5px 0">' + p.titulo + '</div>';
+                html += '<div style="font-size:0.85rem;color:#94a3b8">' + p.descripcion + '</div>';
+                if (p.consejo) html += '<div style="font-size:0.75rem;color:#a855f7;margin-top:5px">💡 ' + p.consejo + '</div>';
+                html += '</div>';
+            });
+            html += '<div style="text-align:center;margin-top:10px;color:#f97316;font-weight:700">⏱ Tiempo total: ' + totalTiempo + ' minutos</div>';
+            html += '</div>';
+            Swal.fire({ title: 'Receta', html: html, background: '#1e293b', color: '#e2e8f0', showConfirmButton: false, width: 500 });
+        });
+    }
+
+    // ========== 8 NUEVAS FEATURES (ROUND 5) ==========
+
+    // 1. MAPA MESAS EN TIEMPO REAL
+    function verMapaMesas() {
+        fetch('/api/mapa-mesas/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            var html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center">';
+            d.mesas.forEach(function(m) {
+                var color = m.ocupada ? '#f43f5e' : '#00ff88';
+                var bg = m.ocupada ? 'rgba(244,63,94,0.15)' : 'rgba(0,255,136,0.08)';
+                html += '<div style="padding:15px;border-radius:12px;background:' + bg + ';border:2px solid ' + color + '">';
+                html += '<div style="font-size:1.5rem;font-weight:900;color:' + color + '">' + m.numero + '</div>';
+                html += '<div style="font-size:0.65rem;color:#94a3b8">' + (m.ocupada ? 'Ocupada' : 'Libre') + '</div>';
+                if (m.ocupada) {
+                    html += '<div style="font-size:0.6rem;color:#f97316;margin-top:3px">' + m.tiempo_minutos + 'min</div>';
+                    html += '<div style="font-size:0.6rem;color:#00ff88">' + m.pedidos_pendientes + ' ped.</div>';
+                }
+                html += '<div style="font-size:0.65rem;color:#a855f7;margin-top:3px">$' + m.total_hoy.toLocaleString() + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            Swal.fire({ title: 'Mapa de Mesas', html: html, background: '#1e293b', color: '#e2e8f0', showConfirmButton: false, width: 600 });
+        });
+    }
+
+    // 2. CUMPLEANOS
+    function verCumpleanos() {
+        fetch('/api/cumpleanos/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            var html = '<div style="text-align:center">';
+            if (d.hoy.length > 0) {
+                html += '<div style="font-size:1.2rem;margin-bottom:10px">🎂 Hoy cumplen anos:</div>';
+                d.hoy.forEach(function(c) {
+                    html += '<div style="padding:10px;margin:8px 0;border-radius:10px;background:rgba(244,63,94,0.15);border:1px solid rgba(244,63,94,0.3)">';
+                    html += '<strong>' + c.nombre + '</strong>';
+                    html += '<div style="font-size:0.8rem;color:#a855f7">' + c.puntos + ' puntos - Nivel ' + c.nivel + '</div>';
+                    html += '</div>';
+                });
+            } else {
+                html += '<div style="color:#94a3b8;margin-bottom:15px">Nadie cumple anos hoy</div>';
+            }
+            if (d.semana.length > 0) {
+                html += '<div style="font-weight:700;margin:15px 0 8px;color:#f97316">Proximos cumpleanos esta semana:</div>';
+                d.semana.forEach(function(c) {
+                    html += '<div style="padding:6px;color:#94a3b8">' + c.nombre + ' (dia ' + c.dia + ')</div>';
+                });
+            }
+            html += '</div>';
+            Swal.fire({ title: 'Cumpleanos', html: html, background: '#1e293b', color: '#e2e8f0', showConfirmButton: false });
+        });
+    }
+
+    // 3. COMBOS
+    function verCombos() {
+        fetch('/api/combos/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.combos.length === 0) {
+                Swal.fire({ icon: 'info', title: 'Sin combos', text: 'Crea combos desde el admin', background: '#1e293b', color: '#e2e8f0' });
+                return;
+            }
+            var html = '<div style="text-align:left">';
+            d.combos.forEach(function(c) {
+                html += '<div style="margin:12px 0;padding:15px;border-radius:12px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2)">';
+                html += '<div style="display:flex;justify-content:space-between;align-items:center">';
+                html += '<div style="font-weight:700;font-size:1.1rem;color:#00ff88">' + c.nombre + '</div>';
+                html += '<div style="text-align:right"><div style="font-size:1.3rem;font-weight:900;color:#00ff88">$' + c.precio.toFixed(2) + '</div>';
+                html += '<div style="font-size:0.7rem;color:#94a3b8;text-decoration:line-through">$' + c.precio_original.toFixed(2) + '</div>';
+                html += '<div style="font-size:0.7rem;color:#f43f5e">Ahorras $' + c.ahorro.toFixed(2) + '</div></div>';
+                html += '</div>';
+                if (c.descripcion) html += '<div style="font-size:0.8rem;color:#94a3b8;margin:5px 0">' + c.descripcion + '</div>';
+                c.items.forEach(function(i) {
+                    html += '<div style="font-size:0.8rem;color:#94a3b8">• ' + i.cantidad + 'x ' + i.articulo__nombre + '</div>';
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            Swal.fire({ title: 'Combos Disponibles', html: html, background: '#1e293b', color: '#e2e8f0', showConfirmButton: false, width: 500 });
+        });
+    }
+
+    // 4. CALCULADORA DE CAMBIO
+    function calcularCambio() {
+        var keys = Object.keys(ordenActual);
+        var total = 0;
+        for (var i = 0; i < keys.length; i++) total += ordenActual[keys[i]].precio * ordenActual[keys[i]].cantidad;
+        Swal.fire({
+            title: 'Calcular Cambio',
+            html: '<div style="font-size:1.2rem;color:#94a3b8;margin-bottom:10px">Total: <span style="color:#00ff88;font-weight:900">$' + total.toFixed(2) + '</span></div><input id="pago-input" type="number" placeholder="Cantidad recibida" style="width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.3);color:#fff;font-size:1.2rem;text-align:center" autofocus><div id="cambio-display" style="margin-top:15px;font-size:1.5rem;font-weight:900;color:#00ff88"></div>',
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#00ff88',
+            background: '#1e293b',
+            color: '#e2e8f0',
+            didOpen: function() {
+                var input = document.getElementById('pago-input');
+                input.addEventListener('input', function() {
+                    var pagado = parseFloat(this.value) || 0;
+                    var cambio = pagado - total;
+                    var display = document.getElementById('cambio-display');
+                    if (pagado > 0) {
+                        display.textContent = cambio >= 0 ? 'Cambio: $' + cambio.toFixed(2) : 'Falta: $' + Math.abs(cambio).toFixed(2);
+                        display.style.color = cambio >= 0 ? '#00ff88' : '#f43f5e';
+                    } else {
+                        display.textContent = '';
+                    }
+                });
+            }
+        });
+    }
+
+    // 5. RATING PRODUCTOS (se puede llamar desde ticket)
+    function ratingProducto(articuloId, articuloNombre) {
+        var starsHtml = '<div id="rating-stars" style="font-size:2.5rem;text-align:center;margin:10px 0">';
+        for (var i = 1; i <= 5; i++) {
+            starsHtml += '<span class="rate-star" data-val="' + i + '" onclick="selectRating(' + i + ')" style="cursor:pointer;color:#374151;transition:color 0.2s">&#9733;</span>';
+        }
+        starsHtml += '</div>';
+        Swal.fire({
+            title: 'Calificar: ' + articuloNombre,
+            html: starsHtml + '<input id="rating-nombre" placeholder="Tu nombre" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.3);color:#fff;margin-bottom:8px"><input id="rating-comentario" placeholder="Comentario (opcional)" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.3);color:#fff">',
+            showCancelButton: true,
+            confirmButtonText: 'Enviar',
+            confirmButtonColor: '#f59e0b',
+            background: '#1e293b',
+            color: '#e2e8f0',
+        }).then(function(r) {
+            if (r.isConfirmed) {
+                var nombre = document.getElementById('rating-nombre').value || 'Anonimo';
+                var comentario = document.getElementById('rating-comentario').value || '';
+                fetch('/api/rating/crear/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({articulo_id: articuloId, nombre: nombre, estrellas: window._ratingStars || 5, comentario: comentario})
+                }).then(function(r2) { return r2.json(); }).then(function(d) {
+                    if (d.ok) Swal.fire({icon:'success',title:'Gracias!',timer:1500,showConfirmButton:false,background:'#1e293b',color:'#e2e8f0'});
+                });
+            }
+        });
+    }
+
+    window._ratingStars = 5;
+    function selectRating(n) {
+        window._ratingStars = n;
+        document.querySelectorAll('.rate-star').forEach(function(s) {
+            s.style.color = parseInt(s.dataset.val) <= n ? '#f59e0b' : '#374151';
+        });
+    }
+
+    // 6. DESCUENTOS INTELIGENTES - auto-check al cobrar
+    function verificarDescuentos(items) {
+        return fetch('/api/aplicar-descuento/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({items: items})
+        }).then(function(r) { return r.json(); });
+    }
+
+    // 7. CHECK CUMPLEANOS al seleccionar cliente
+    function checkCumpleanosCliente() {
+        if (!clienteActual) return;
+        fetch('/api/cumpleanos/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            d.hoy.forEach(function(c) {
+                if (c.id === clienteActual.id) {
+                    Swal.fire({icon:'info',title:'🎂 Feliz Cumpleanos!',text:clienteActual.nombre + ' hoy cumple anos! Descuento especial disponible.',background:'#1e293b',color:'#e2e8f0'});
+                }
+            });
+        });
+    }
+
+    // 8. TOP RATINGS en dashboard
+    function verTopRatings() {
+        fetch('/api/top-ratings/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            var html = '<div style="text-align:left">';
+            d.top.forEach(function(r, i) {
+                var stars = '';
+                for (var s = 0; s < 5; s++) stars += s < Math.round(r.promedio) ? '&#9733;' : '<span style="color:#374151">&#9733;</span>';
+                html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)">';
+                html += '<div><span style="color:#f59e0b;font-weight:700">' + (i+1) + '.</span> ' + r.producto + '</div>';
+                html += '<div style="text-align:right"><div>' + stars + '</div><div style="font-size:0.7rem;color:#94a3b8">' + r.promedio.toFixed(1) + ' (' + r.total_ratings + ')</div></div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            Swal.fire({title:'Top Productos',html:html,background:'#1e293b',color:'#e2e8f0',showConfirmButton:false,width:450});
+        });
+    }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews del Restaurante</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body{font-family:'Inter',sans-serif;background:#0a0e1a;color:#fff}
+        .review-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:12px;transition:all 0.3s}
+        .review-card:hover{border-color:rgba(244,63,94,0.3);transform:translateY(-2px)}
+        .star{color:#f59e0b;font-size:1.2rem}
+        .star-empty{color:#374151;font-size:1.2rem}
+        .prom-badge{font-size:3rem;font-weight:900;color:#f59e0b;text-shadow:0 0 30px rgba(245,158,11,0.3)}
+        .form-star{font-size:2rem;cursor:pointer;color:#374151;transition:color 0.2s}
+        .form-star:hover,.form-star.active{color:#f59e0b}
+    </style>
+</head>
+<body>
+    <div class="container py-5" style="max-width:700px">
+        <h1 class="text-center mb-2" style="font-weight:900;background:linear-gradient(135deg,#f43f5e,#ff6b9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Opiniones de Nuestros Clientes</h1>
+        <p class="text-center text-muted mb-4">Lo que dicen de nosotros</p>
+
+        <div class="text-center mb-5 p-4" style="background:rgba(255,255,255,0.03);border-radius:20px">
+            <div class="prom-badge">{{ promedio }}</div>
+            <div style="font-size:1.5rem">{% for i in "12345" %}{% if forloop.counter <= promedio %}<span class="star">&#9733;</span>{% else %}<span class="star-empty">&#9733;</span>{% endif %}{% endfor %}</div>
+            <div class="text-muted mt-1">{{ reviews|length }} opiniones</div>
+        </div>
+
+        <div id="reviews-list">
+            {% for r in reviews %}
+            <div class="review-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>{{ r.nombre }}</strong>
+                    <small class="text-muted">{{ r.fecha|date:"d/m/Y" }}</small>
+                </div>
+                <div class="mb-2">{% for i in "12345" %}{% if forloop.counter <= r.estrellas %}<span class="star">&#9733;</span>{% else %}<span class="star-empty">&#9733;</span>{% endif %}{% endfor %}</div>
+                <p class="mb-0" style="color:#94a3b8">{{ r.comentario }}</p>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted py-4">Aun no hay opiniones</p>
+            {% endfor %}
+        </div>
+
+        <div class="mt-5 p-4" style="background:rgba(255,255,255,0.03);border-radius:20px">
+            <h4 class="text-center mb-3">Deja tu Opinion</h4>
+            <input id="review-nombre" class="form-control mb-2" placeholder="Tu nombre" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);color:#fff">
+            <div class="text-center mb-3">
+                <span class="form-star" data-val="1" onclick="setStars(1)">&#9733;</span>
+                <span class="form-star" data-val="2" onclick="setStars(2)">&#9733;</span>
+                <span class="form-star" data-val="3" onclick="setStars(3)">&#9733;</span>
+                <span class="form-star" data-val="4" onclick="setStars(4)">&#9733;</span>
+                <span class="form-star active" data-val="5" onclick="setStars(5)">&#9733;</span>
+            </div>
+            <textarea id="review-comentario" class="form-control mb-3" rows="3" placeholder="Cuentanos tu experiencia..." style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);color:#fff"></textarea>
+            <button class="btn w-100" style="background:linear-gradient(135deg,#f43f5e,#ff6b9d);color:#fff;font-weight:700" onclick="enviarReview()">Enviar Opinion</button>
+        </div>
+
+        <div class="text-center mt-4"><a href="/" style="color:#94a3b8;text-decoration:none">Volver al TPV</a></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    var starsSeleccionadas = 5;
+    function setStars(n) {
+        starsSeleccionadas = n;
+        document.querySelectorAll('.form-star').forEach(function(s) {
+            s.classList.toggle('active', parseInt(s.dataset.val) <= n);
+        });
+    }
+    function enviarReview() {
+        var nombre = document.getElementById('review-nombre').value.trim();
+        var comentario = document.getElementById('review-comentario').value.trim();
+        if (!nombre || !comentario) {
+            Swal.fire({icon:'warning',title:'Completa todos los campos',background:'#1e293b',color:'#e2e8f0'});
+            return;
+        }
+        fetch('/api/reviews/crear/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': document.cookie.match(/csrftoken=([^;]+)/)?.[1] || ''},
+            body: JSON.stringify({nombre:nombre, estrellas:starsSeleccionadas, comentario:comentario})
+        }).then(function(r){return r.json()}).then(function(d) {
+            if (d.ok) {
+                Swal.fire({icon:'success',title:'Gracias por tu opinion!',timer:2000,showConfirmButton:false,background:'#1e293b',color:'#e2e8f0'});
+                setTimeout(function(){location.reload()}, 2200);
+            }
+        });
+    }
+    </script>
+</body>
+</html>

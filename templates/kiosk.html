@@ -1,0 +1,241 @@
+{% load l10n %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Auto-Servicio - Kiosk</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #fff; min-height: 100vh; overflow-x: hidden; }
+        .kiosk-container { display: flex; height: 100vh; }
+        .kiosk-left { flex: 1; padding: 20px; overflow-y: auto; }
+        .kiosk-right { width: 350px; background: rgba(15,23,42,0.9); border-left: 1px solid rgba(255,255,255,0.1); padding: 20px; display: flex; flex-direction: column; }
+        .logo-kiosk { text-align: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+        .logo-kiosk h1 { font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, #f43f5e, #ff6b9d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-kiosk p { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+        .cat-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+        .cat-pill { padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 0.8rem; border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer; transition: all 0.3s; }
+        .cat-pill:hover, .cat-pill.active { background: linear-gradient(135deg, #f43f5e, #ff6b9d); color: #fff; border-color: transparent; }
+        .productos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .producto-card {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; padding: 20px; text-align: center; cursor: pointer;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .producto-card:hover { border-color: #f43f5e; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(244,63,94,0.3); }
+        .producto-card .emoji { font-size: 2.5rem; margin-bottom: 8px; }
+        .producto-card .nombre { font-weight: 700; font-size: 0.95rem; }
+        .producto-card .precio { color: #00ff88; font-weight: 900; font-size: 1.1rem; margin-top: 5px; }
+        .producto-card .stock-badge { position: absolute; top: 8px; right: 8px; font-size: 0.6rem; padding: 2px 8px; border-radius: 50px; background: rgba(0,255,136,0.2); color: #00ff88; }
+        .ticket-kiosk { flex: 1; overflow-y: auto; margin-bottom: 15px; }
+        .ticket-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .ticket-item .qty { background: rgba(244,63,94,0.2); color: #f43f5e; border-radius: 8px; padding: 4px 10px; font-weight: 700; }
+        .ticket-item .remove { background: rgba(255,0,0,0.2); color: #ff4444; border: none; border-radius: 8px; padding: 4px 8px; cursor: pointer; font-size: 0.8rem; }
+        .ticket-total { border-top: 2px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 10px; }
+        .ticket-total .label { font-size: 0.9rem; color: #94a3b8; }
+        .ticket-total .amount { font-size: 2rem; font-weight: 900; color: #00ff88; }
+        .mesa-select { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+        .mesa-btn { padding: 8px 14px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer; font-weight: 700; transition: all 0.3s; }
+        .mesa-btn:hover, .mesa-btn.active { background: #f43f5e; border-color: #f43f5e; }
+        .btn-pedir { width: 100%; padding: 15px; border: none; border-radius: 12px; background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; font-weight: 900; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; }
+        .btn-pedir:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(0,255,136,0.4); }
+        .btn-pedir:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .empty-ticket { text-align: center; color: rgba(255,255,255,0.3); padding: 40px 0; }
+        .success-overlay { position: fixed; inset: 0; background: rgba(0,255,136,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; }
+        .success-overlay.show { display: flex; }
+        .success-overlay h1 { font-size: 3rem; color: #000; font-weight: 900; }
+        .success-overlay p { font-size: 1.2rem; color: #333; }
+    </style>
+</head>
+<body>
+    <a href="/" style="position:fixed;top:10px;left:10px;z-index:9999;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:8px;text-decoration:none;font-size:0.75rem;backdrop-filter:blur(5px)">TPV</a>
+    <div class="kiosk-container">
+        <div class="kiosk-left">
+            <div class="logo-kiosk">
+                <h1>CAFE TPV</h1>
+                <p>Selecciona tus productos y toca "Pedir"</p>
+            </div>
+            <div class="cat-pills">
+                <div class="cat-pill active" data-cat="all" onclick="filtrarCategoria('all', this)">Todos</div>
+                {% for cat in categorias %}
+                <div class="cat-pill" data-cat="{{ cat.id }}" onclick="filtrarCategoria('{{ cat.id }}', this)">{{ cat.nombre }}</div>
+                {% endfor %}
+            </div>
+            <div class="productos-grid" id="grid">
+                {% for a in articulos %}
+                <div class="producto-card" data-id="{{ a.id }}" data-nombre="{{ a.nombre }}" data-precio="{{ a.precio_con_iva }}" data-cat="{{ a.categoria_id }}" onclick="agregarAlCarrito(this)">
+                    <div class="emoji">{% if a.categoria %}{% if 'cafe' in a.categoria.nombre|lower %}&#9749;{% elif 'te' in a.categoria.nombre|lower %}&#127861;{% elif 'jugo' in a.categoria.nombre|lower %}&#129380;{% elif 'pastel' in a.categoria.nombre|lower %}&#127856;{% elif 'sandwich' in a.categoria.nombre|lower %}&#129728;{% else %}&#127835;{% endif %}{% else %}&#127835;{% endif %}</div>
+                    <div class="nombre">{{ a.nombre }}</div>
+                    <div class="precio">${{ a.precio_con_iva|unlocalize }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="kiosk-right">
+            <h3 style="margin-bottom:10px;">Tu Pedido</h3>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.8rem;color:#94a3b8;">Selecciona tu mesa:</label>
+                <div class="mesa-select" id="mesas-select">
+                    {% for m in mesas %}
+                    <div class="mesa-btn" data-id="{{ m.id }}" onclick="seleccionarMesa({{ m.id }}, this)">{{ m.numero }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="ticket-kiosk" id="ticket-kiosk">
+                <div class="empty-ticket" id="empty-msg">Agrega productos tocando las cards</div>
+            </div>
+            <div class="ticket-total">
+                <div style="display:flex;justify-content:space-between">
+                    <span class="label">Subtotal</span>
+                    <span id="kiosk-subtotal">$0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:5px;">
+                    <span class="label">IVA (16%)</span>
+                    <span id="kiosk-iva">$0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                    <span class="label" style="font-weight:900;color:#fff">TOTAL</span>
+                    <span class="amount" id="kiosk-total">$0</span>
+                </div>
+            </div>
+            <button class="btn-pedir" id="btn-pedir" disabled onclick="enviarPedido()">PEDIR</button>
+        </div>
+    </div>
+
+    <div class="success-overlay" id="success-overlay">
+        <h1>&#10004; Pedido Enviado!</h1>
+        <p>Tu pedido llegara pronto a la mesa</p>
+        <p style="margin-top:20px;font-size:0.9rem;color:#555">Mesa <span id="success-mesa"></span> - Total: $<span id="success-total"></span></p>
+    </div>
+
+    <script>
+    let carrito = {};
+    let mesaSeleccionada = null;
+
+    function filtrarCategoria(catId, el) {
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        document.querySelectorAll('.producto-card').forEach(card => {
+            if (catId === 'all' || card.dataset.cat === catId) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function seleccionarMesa(id, el) {
+        mesaSeleccionada = id;
+        document.querySelectorAll('.mesa-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        actualizarBoton();
+    }
+
+    function agregarAlCarrito(el) {
+        const id = el.dataset.id;
+        const nombre = el.dataset.nombre;
+        const precio = parseFloat(el.dataset.precio);
+        const stock = parseInt(el.dataset.stock);
+        if (carrito[id]) {
+            if (carrito[id].cantidad >= stock) return;
+            carrito[id].cantidad += 1;
+        } else {
+            carrito[id] = { nombre, precio, cantidad: 1 };
+        }
+        actualizarTicket();
+    }
+
+    function quitarDelCarrito(id) {
+        if (carrito[id]) {
+            carrito[id].cantidad -= 1;
+            if (carrito[id].cantidad <= 0) delete carrito[id];
+        }
+        actualizarTicket();
+    }
+
+    function actualizarTicket() {
+        const container = document.getElementById('ticket-kiosk');
+        const empty = document.getElementById('empty-msg');
+        const keys = Object.keys(carrito);
+        if (keys.length === 0) {
+            container.innerHTML = '<div class="empty-ticket">Agrega productos tocando las cards</div>';
+            document.getElementById('kiosk-subtotal').textContent = '$0';
+            document.getElementById('kiosk-iva').textContent = '$0';
+            document.getElementById('kiosk-total').textContent = '$0';
+            actualizarBoton();
+            return;
+        }
+        let html = '';
+        let subtotal = 0;
+        keys.forEach(id => {
+            const item = carrito[id];
+            const lineTotal = item.precio * item.cantidad;
+            subtotal += lineTotal;
+            html += `<div class="ticket-item">
+                <span>${item.nombre}</span>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span class="qty">x${item.cantidad}</span>
+                    <span>$${lineTotal.toLocaleString()}</span>
+                    <button class="remove" onclick="quitarDelCarrito('${id}')">X</button>
+                </div>
+            </div>`;
+        });
+        const iva = subtotal * 0.16;
+        const total = subtotal + iva;
+        container.innerHTML = html;
+        document.getElementById('kiosk-subtotal').textContent = '$' + subtotal.toLocaleString();
+        document.getElementById('kiosk-iva').textContent = '$' + iva.toFixed(2);
+        document.getElementById('kiosk-total').textContent = '$' + total.toLocaleString();
+        actualizarBoton();
+    }
+
+    function actualizarBoton() {
+        const btn = document.getElementById('btn-pedir');
+        btn.disabled = Object.keys(carrito).length === 0 || !mesaSeleccionada;
+    }
+
+    function enviarPedido() {
+        const btn = document.getElementById('btn-pedir');
+        btn.disabled = true;
+        btn.textContent = 'ENVIANDO...';
+        const items = Object.keys(carrito).map(id => ({
+            id: parseInt(id),
+            cantidad: carrito[id].cantidad
+        }));
+        fetch('/api/kiosk/pedido/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mesa_id: mesaSeleccionada, items: items })
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.ok) {
+                document.getElementById('success-mesa').textContent = d.mesa;
+                document.getElementById('success-total').textContent = d.total.toLocaleString();
+                document.getElementById('success-overlay').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('success-overlay').classList.remove('show');
+                    carrito = {};
+                    mesaSeleccionada = null;
+                    actualizarTicket();
+                    document.querySelectorAll('.mesa-btn').forEach(b => b.classList.remove('active'));
+                    btn.textContent = 'PEDIR';
+                }, 4000);
+            } else {
+                alert('Error: ' + (d.error || 'Desconocido'));
+                btn.disabled = false;
+                btn.textContent = 'PEDIR';
+            }
+        })
+        .catch(() => {
+            alert('Error de conexion');
+            btn.disabled = false;
+            btn.textContent = 'PEDIR';
+        });
+    }
+    </script>
+</body>
+</html>

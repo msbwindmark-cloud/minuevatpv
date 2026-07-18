@@ -1,0 +1,135 @@
+{% load l10n %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    {% load l10n %}
+    <title>{% if error %}Error{% else %}Pedir - Mesa {{ mesa.numero }}{% endif %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#00d4ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Inter',system-ui,sans-serif;background:#0a0e1a;color:#e2e8f0;min-height:100vh;-webkit-user-select:none;user-select:none}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        .header{background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(168,85,247,0.1));padding:20px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06)}
+        .header h1{font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#00d4ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header .mesa-tag{display:inline-block;margin-top:8px;padding:4px 16px;border-radius:20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);font-size:0.8rem;font-weight:700;color:#00d4ff}
+        .cat-scroll{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+        .cat-scroll::-webkit-scrollbar{display:none}
+        .cat-chip{padding:8px 16px;border-radius:50px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#94a3b8;font-weight:700;font-size:0.8rem;white-space:nowrap;cursor:pointer;transition:all 0.2s}
+        .cat-chip.active{background:linear-gradient(135deg,#00d4ff,#a855f7);color:#fff;border-color:transparent}
+        .products{padding:0 12px 120px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+        .prod-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s}
+        .prod-card:active{transform:scale(0.95);background:rgba(0,212,255,0.1)}
+        .prod-card .icon{font-size:2rem;margin-bottom:4px}
+        .prod-card .name{font-weight:700;font-size:0.8rem;color:#e2e8f0;margin-bottom:4px}
+        .prod-card .price{font-weight:900;font-size:1rem;background:linear-gradient(135deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .cart-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,42,0.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.08);padding:12px 16px;z-index:100}
+        .cart-items{max-height:160px;overflow-y:auto;margin-bottom:8px}
+        .cart-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+        .cart-item .qty{background:linear-gradient(135deg,#00d4ff,#a855f7);color:#fff;padding:2px 10px;border-radius:20px;font-weight:700;font-size:0.75rem}
+        .cart-item .cname{flex:1;font-size:0.8rem;font-weight:600}
+        .cart-item .cprice{font-weight:700;color:#00ff88;font-size:0.85rem}
+        .cart-item .cbtn{width:24px;height:24px;border-radius:50%;border:1px solid rgba(244,63,94,0.3);background:rgba(244,63,94,0.1);color:#f43f5e;font-size:0.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .cart-total{display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08)}
+        .cart-total .tlabel{font-weight:700;color:#94a3b8}
+        .cart-total .ttotal{font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .send-btn{width:100%;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,#00ff88,#00d4ff);color:#0a0e1a;font-weight:900;font-size:1rem;cursor:pointer;margin-top:8px;transition:transform 0.2s}
+        .send-btn:active{transform:scale(0.97)}
+        .send-btn:disabled{opacity:0.4;cursor:not-allowed}
+        .success-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;display:none}
+        .success-overlay.show{display:flex}
+        .success-overlay .check{font-size:5rem;margin-bottom:20px;animation:bounceIn 0.5s}
+        @keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+        .success-overlay h2{font-size:1.5rem;font-weight:900;color:#00ff88;margin-bottom:10px}
+        .success-overlay p{color:#94a3b8;font-size:0.9rem}
+    </style>
+</head>
+<body>
+    <a href="/" style="position:fixed;top:10px;left:10px;z-index:9999;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:8px;text-decoration:none;font-size:0.75rem;backdrop-filter:blur(5px)">TPV</a>
+    {% if error %}
+    <div style="padding:40px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:15px;">&#128533;</div>
+        <h2>{{ error }}</h2>
+        <p style="color:#94a3b8;margin-top:10px;">Escanea el QR de otra mesa</p>
+    </div>
+    {% else %}
+    <div class="header">
+        <h1>TPV Cafeteria</h1>
+        <div class="mesa-tag">Mesa {{ mesa.numero }} - {{ mesa.sillas }} sillas</div>
+    </div>
+    <div class="cat-scroll">
+        <div class="cat-chip active" onclick="filtrarCat('todas',this)">Todos</div>
+        {% for cat in categorias %}
+        <div class="cat-chip" onclick="filtrarCat('{{ cat.id }}',this)">{{ cat.icono }} {{ cat.nombre }}</div>
+        {% endfor %}
+    </div>
+    <div class="products" id="grid">
+        {% for prod in articulos %}
+        <div class="prod-card" data-cat="{{ prod.categoria.id }}" data-id="{{ prod.id }}" data-name="{{ prod.nombre|escapejs }}" data-price="{{ prod.precio_con_iva|unlocalize }}" onclick="add(this)">
+            <div class="icon">{{ prod.categoria.icono }}</div>
+            <div class="name">{{ prod.nombre }}</div>
+            <div class="price">{{ prod.precio_con_iva|unlocalize }}&euro;</div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="cart-bar" id="cart-bar" style="display:none;">
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-total">
+            <span class="tlabel">TOTAL</span>
+            <span class="ttotal" id="cart-total">0.00 &euro;</span>
+        </div>
+        <button class="send-btn" id="send-btn" onclick="enviarPedido()">ENVIAR PEDIDO A COCINA &#128640;</button>
+    </div>
+    <div class="success-overlay" id="success-overlay">
+        <div class="check">&#10004;</div>
+        <h2>Pedido Enviado!</h2>
+        <p>Tu pedido esta en camino a la cocina</p>
+        <p style="margin-top:15px;color:#64748b;font-size:0.8rem;">Numero de pedido: <strong id="pedido-num"></strong></p>
+    </div>
+    <script>
+    var cart={};
+    function add(el){
+        var id=el.dataset.id;
+        if(cart[id]){cart[id].qty++}else{cart[id]={name:el.dataset.name,price:parseFloat(el.dataset.price),qty:1}}
+        render();
+    }
+    function remove(id){if(cart[id]){cart[id].qty--;if(cart[id].qty<=0)delete cart[id]}render()}
+    function render(){
+        var keys=Object.keys(cart);
+        var bar=document.getElementById('cart-bar');
+        if(keys.length===0){bar.style.display='none';return}
+        bar.style.display='block';
+        var html='';var total=0;
+        for(var i=0;i<keys.length;i++){var it=cart[keys[i]];var sub=it.price*it.qty;total+=sub;html+='<div class="cart-item"><span class="qty">'+it.qty+'x</span><span class="cname">'+it.name+'</span><span class="cprice">'+sub.toFixed(2)+' &euro;</span><button class="cbtn" onclick="remove(\''+keys[i]+'\')">&#10005;</button></div>'}
+        document.getElementById('cart-items').innerHTML=html;
+        document.getElementById('cart-total').textContent=total.toFixed(2)+' \u20ac';
+    }
+    function filtrarCat(cat,el){
+        document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active')});
+        el.classList.add('active');
+        document.querySelectorAll('.prod-card').forEach(function(c){c.style.display=(cat==='todas'||c.dataset.cat===cat)?'':'none'});
+    }
+    function getCookie(n){var v=document.cookie.split('; ').find(function(r){return r.startsWith(n+'=')});return v?v.split('=')[1]:null}
+    function enviarPedido(){
+        var items=[];var keys=Object.keys(cart);
+        for(var i=0;i<keys.length;i++){items.push({id:keys[i],cantidad:cart[keys[i]].qty})}
+        if(items.length===0)return;
+        document.getElementById('send-btn').disabled=true;
+        fetch('/api/pedido-movil/crear/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({mesa_id:{{ mesa.id }},items:items})})
+        .then(function(r){return r.json()}).then(function(d){
+            if(d.status==='success'){
+                document.getElementById('pedido-num').textContent='#'+d.pedido_id;
+                document.getElementById('success-overlay').classList.add('show');
+                cart={};render();
+            }else{alert(d.error||'Error');document.getElementById('send-btn').disabled=false}
+        });
+    }
+    </script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>TPV Cafeteria Premium</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9749;</text></svg>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root{--neon-green:#00ff88;--neon-blue:#00d4ff;--neon-purple:#a855f7;--neon-pink:#f43f5e;--neon-orange:#f97316;--glass-bg:rgba(15,23,42,0.7);--glass-border:rgba(255,255,255,0.08)}
+        *{box-sizing:border-box}body{font-family:'Inter',sans-serif;user-select:none;overflow:hidden;background:#0a0e1a}
+        .bg-animated{position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#0a0e1a 0%,#1a1040 25%,#0d2137 50%,#0a1628 75%,#0a0e1a 100%);background-size:400% 400%;animation:gradientShift 15s ease infinite}
+        @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        .particle{position:fixed;width:3px;height:3px;border-radius:50%;pointer-events:none;z-index:1;animation:floatUp linear infinite}
+        @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+        .main-container{position:relative;z-index:2;height:100vh}
+        .scroll-zona{height:calc(100vh - 130px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,212,255,0.3) transparent}
+        .scroll-zona::-webkit-scrollbar{width:5px}
+        .scroll-zona::-webkit-scrollbar-track{background:transparent}
+        .scroll-zona::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.3);border-radius:10px}
+        .cat-pill{padding:8px 20px;border-radius:50px;font-weight:700;font-size:0.85rem;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#94a3b8;cursor:pointer;transition:all 0.3s;white-space:nowrap}
+        .cat-pill:hover{border-color:var(--neon-blue);color:var(--neon-blue);background:rgba(0,212,255,0.1)}
+        .cat-pill.active{background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));color:#fff;border-color:transparent;box-shadow:0 0 20px rgba(0,212,255,0.4)}
+        .producto-card{position:relative;border-radius:20px;padding:16px 10px;text-align:center;cursor:pointer;border:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(10px);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden;min-height:130px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+        .producto-card::before{content:'';position:absolute;inset:-2px;border-radius:22px;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple),var(--neon-pink));z-index:-1;opacity:0;transition:opacity 0.3s}
+        .producto-card:hover::before{opacity:1}
+        .producto-card:hover{transform:translateY(-6px) scale(1.03);border-color:transparent;box-shadow:0 10px 40px rgba(0,212,255,0.2)}
+        .producto-card:active{transform:scale(0.95)}
+        .producto-card .icono-prod{font-size:2.2rem;margin-bottom:6px;filter:drop-shadow(0 0 8px rgba(0,212,255,0.3))}
+        .producto-card .nombre-prod{font-weight:700;font-size:0.8rem;color:#e2e8f0;margin-bottom:4px}
+        .producto-card .precio-prod{font-weight:900;font-size:1.1rem;background:linear-gradient(135deg,var(--neon-green),var(--neon-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .ripple{position:absolute;border-radius:50%;background:rgba(0,212,255,0.4);transform:scale(0);animation:rippleAnim 0.6s ease-out;pointer-events:none}
+        @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+        .ticket-panel{background:var(--glass-bg);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;padding:20px;height:100%;display:flex;flex-direction:column}
+        .ticket-header{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:12px}
+        .user-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;color:#fff}
+        .ticket-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);animation:slideIn 0.3s cubic-bezier(0.4,0,0.2,1)}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+        .qty-badge{background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));color:#fff;padding:2px 10px;border-radius:20px;font-weight:700;font-size:0.75rem;min-width:36px;text-align:center}
+        .item-subtotal{font-weight:700;color:var(--neon-green)}
+        .btn-remove-item{width:26px;height:26px;border-radius:50%;border:1px solid rgba(244,63,94,0.3);background:rgba(244,63,94,0.1);color:#f43f5e;font-size:0.7rem;font-weight:900;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+        .btn-remove-item:hover{background:#f43f5e;color:#fff;border-color:#f43f5e}
+        .total-section{background:rgba(0,0,0,0.3);border-radius:16px;padding:16px;margin:12px 0;border:1px solid rgba(255,255,255,0.05)}
+        .total-row{display:flex;justify-content:space-between;font-size:0.8rem;color:#94a3b8;margin-bottom:4px}
+        .total-grande{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);margin-top:8px}
+        .total-grande .label{font-size:1rem;font-weight:700;color:#e2e8f0}
+        .total-grande .cantidad{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--neon-green),var(--neon-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .total-grande .cantidad.pulse{animation:totalPulse 0.4s ease}
+        @keyframes totalPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+        .cobro-btn{border:none;border-radius:16px;padding:14px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden}
+        .cobro-btn:active{transform:scale(0.96)}
+        .cobro-btn-efectivo{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 20px rgba(16,185,129,0.3)}
+        .cobro-btn-efectivo:hover{box-shadow:0 6px 30px rgba(16,185,129,0.5);transform:translateY(-2px)}
+        .cobro-btn-tarjeta{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.3)}
+        .cobro-btn-tarjeta:hover{box-shadow:0 6px 30px rgba(59,130,246,0.5);transform:translateY(-2px)}
+        .reloj{font-size:0.8rem;color:#64748b;font-weight:600;font-variant-numeric:tabular-nums}
+        .empty-ticket{flex-grow:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#475569}
+        .empty-ticket .icon{font-size:3rem;margin-bottom:10px;opacity:0.4}
+        .mesa-card{border-radius:16px;padding:14px;text-align:center;cursor:pointer;border:2px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(10px);transition:all 0.3s;position:relative;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .mesa-card:hover{transform:translateY(-3px);border-color:var(--neon-blue);box-shadow:0 6px 25px rgba(0,212,255,0.15)}
+        .mesa-card:active{transform:scale(0.96)}
+        .mesa-card.mesa-seleccionada{border-color:var(--neon-blue)!important;box-shadow:0 0 25px rgba(0,212,255,0.4)!important;opacity:1!important;transform:translateY(-3px)}
+        .mesa-card.mesa-pendiente{border-color:var(--neon-orange)!important;box-shadow:0 0 15px rgba(249,115,22,0.25)!important}
+        .mesa-card .mesa-num{font-weight:900;font-size:1.2rem;color:#e2e8f0}
+        .mesa-card .mesa-sillas{font-size:0.7rem;color:#64748b}
+        .mesa-badge{position:absolute;top:-6px;right:-6px;background:linear-gradient(135deg,var(--neon-orange),#ea580c);color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;padding:0 4px;border-radius:10px;display:none;text-align:center;line-height:18px}
+    </style>
+</head>
+<body class="h-100 text-white">
+    <div class="bg-animated"></div>
+    <div id="particles-container"></div>
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1060;" id="contenedor-toasts"></div>
+
+    <div class="main-container container-fluid h-100 p-3">
+        <div class="row h-100 g-3">
+            <div class="col-md-7 d-flex flex-column h-100">
+                <div class="d-flex align-items-center justify-content-between mb-2 flex-shrink-0">
+                    <div class="d-flex gap-2 overflow-x-auto pb-1" id="cat-tabs">
+                        <button class="cat-pill active" onclick="filtrarCategoria('todas', this)">Todos</button>
+                        
+                        <button class="cat-pill" onclick="filtrarCategoria('1', this)">☕ Calientes</button>
+                        
+                        <button class="cat-pill" onclick="filtrarCategoria('2', this)">🧊 Frias</button>
+                        
+                        <button class="cat-pill" onclick="filtrarCategoria('3', this)">🥪 Bocadillos</button>
+                        
+                        <button class="cat-pill" onclick="filtrarCategoria('4', this)">🥐 Pasteleria</button>
+                        
+                        <button class="cat-pill" onclick="filtrarCategoria('5', this)">🥃 Licores</button>
+                        
+                    </div>
+                    <div class="reloj ms-3" id="reloj"></div>
+                </div>
+                <div class="scroll-zona">
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 g-3" id="grid-productos">
+                        
+                        <div class="col item-producto" data-categoria="1">
+                            <div class="producto-card"
+                                 data-id="1"
+                                 data-nombre="Cafe Solo"
+                                 data-precio="0.88"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">☕</div>
+                                <div class="nombre-prod">Cafe Solo</div>
+                                <div class="precio-prod">0.88&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="1">
+                            <div class="producto-card"
+                                 data-id="2"
+                                 data-nombre="Cafe con Leche"
+                                 data-precio="1.21"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">☕</div>
+                                <div class="nombre-prod">Cafe con Leche</div>
+                                <div class="precio-prod">1.21&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="1">
+                            <div class="producto-card"
+                                 data-id="3"
+                                 data-nombre="Cortado"
+                                 data-precio="1.10"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">☕</div>
+                                <div class="nombre-prod">Cortado</div>
+                                <div class="precio-prod">1.10&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="1">
+                            <div class="producto-card"
+                                 data-id="4"
+                                 data-nombre="Capuchino"
+                                 data-precio="1.65"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">☕</div>
+                                <div class="nombre-prod">Capuchino</div>
+                                <div class="precio-prod">1.65&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="1">
+                            <div class="producto-card"
+                                 data-id="5"
+                                 data-nombre="Chocolate Caliente"
+                                 data-precio="1.76"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">☕</div>
+                                <div class="nombre-prod">Chocolate Caliente</div>
+                                <div class="precio-prod">1.76&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="1">
+                            <div class="producto-card"
+                                 data-id="6"
+                                 data-nombre="Te Verde"
+                                 data-precio="1.10"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">☕</div>
+                                <div class="nombre-prod">Te Verde</div>
+                                <div class="precio-prod">1.10&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="1">
+                            <div class="producto-card"
+                                 data-id="7"
+                                 data-nombre="Te Negro"
+                                 data-precio="1.10"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">☕</div>
+                                <div class="nombre-prod">Te Negro</div>
+                                <div class="precio-prod">1.10&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="2">
+                            <div class="producto-card"
+                                 data-id="8"
+                                 data-nombre="Cafe Frio"
+                                 data-precio="1.98"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🧊</div>
+                                <div class="nombre-prod">Cafe Frio</div>
+                                <div class="precio-prod">1.98&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="2">
+                            <div class="producto-card"
+                                 data-id="9"
+                                 data-nombre="Capuchino Frio"
+                                 data-precio="2.42"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🧊</div>
+                                <div class="nombre-prod">Capuchino Frio</div>
+                                <div class="precio-prod">2.42&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="2">
+                            <div class="producto-card"
+                                 data-id="10"
+                                 data-nombre="Zumo de Naranja"
+                                 data-precio="1.98"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🧊</div>
+                                <div class="nombre-prod">Zumo de Naranja</div>
+                                <div class="precio-prod">1.98&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="2">
+                            <div class="producto-card"
+                                 data-id="11"
+                                 data-nombre="Agua Mineral"
+                                 data-precio="0.83"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🧊</div>
+                                <div class="nombre-prod">Agua Mineral</div>
+                                <div class="precio-prod">0.83&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="3">
+                            <div class="producto-card"
+                                 data-id="12"
+                                 data-nombre="Bocadillo Jamon"
+                                 data-precio="2.75"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥪</div>
+                                <div class="nombre-prod">Bocadillo Jamon</div>
+                                <div class="precio-prod">2.75&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="3">
+                            <div class="producto-card"
+                                 data-id="13"
+                                 data-nombre="Bocadillo Queso"
+                                 data-precio="2.42"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥪</div>
+                                <div class="nombre-prod">Bocadillo Queso</div>
+                                <div class="precio-prod">2.42&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="3">
+                            <div class="producto-card"
+                                 data-id="14"
+                                 data-nombre="Bocadillo Mixto"
+                                 data-precio="3.08"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥪</div>
+                                <div class="nombre-prod">Bocadillo Mixto</div>
+                                <div class="precio-prod">3.08&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="4">
+                            <div class="producto-card"
+                                 data-id="15"
+                                 data-nombre="Croissant"
+                                 data-precio="1.32"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥐</div>
+                                <div class="nombre-prod">Croissant</div>
+                                <div class="precio-prod">1.32&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="4">
+                            <div class="producto-card"
+                                 data-id="16"
+                                 data-nombre="Napolitana Chocolate"
+                                 data-precio="1.65"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥐</div>
+                                <div class="nombre-prod">Napolitana Chocolate</div>
+                                <div class="precio-prod">1.65&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="4">
+                            <div class="producto-card"
+                                 data-id="17"
+                                 data-nombre="Ensaimada"
+                                 data-precio="1.43"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥐</div>
+                                <div class="nombre-prod">Ensaimada</div>
+                                <div class="precio-prod">1.43&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="5">
+                            <div class="producto-card"
+                                 data-id="18"
+                                 data-nombre="Baileys"
+                                 data-precio="3.02"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥃</div>
+                                <div class="nombre-prod">Baileys</div>
+                                <div class="precio-prod">3.02&euro;</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col item-producto" data-categoria="5">
+                            <div class="producto-card"
+                                 data-id="19"
+                                 data-nombre="Cafe con Baileys"
+                                 data-precio="3.63"
+                                 onclick="agregarAlTicket(this)">
+                                <div class="icono-prod">🥃</div>
+                                <div class="nombre-prod">Cafe con Baileys</div>
+                                <div class="precio-prod">3.63&euro;</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 d-flex flex-column h-100">
+                <div class="mb-2 flex-shrink-0">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span style="font-weight:700;font-size:0.85rem;color:#94a3b8;">MESAS</span>
+                        <span style="font-size:0.75rem;color:#64748b;" id="mesa-actual-label">Selecciona una mesa</span>
+                    </div>
+                    <div class="d-flex gap-2 overflow-x-auto pb-2" id="mesas-container">
+                        <div class="mesa-card" style="min-width:70px;" onclick="seleccionarMesa(0, this)">
+                            <div class="mesa-num">LLE</div>
+                            <div class="mesa-sillas">Para llevar</div>
+                        </div>
+                        
+                        <div class="mesa-card" style="min-width:70px;" id="mesa-1" onclick="seleccionarMesa(1, this)">
+                            <div class="mesa-badge" id="mesa-badge-1" style="display:none;">0</div>
+                            <div class="mesa-num">1</div>
+                            <div class="mesa-sillas">4 sillas</div>
+                        </div>
+                        
+                        <div class="mesa-card" style="min-width:70px;" id="mesa-2" onclick="seleccionarMesa(2, this)">
+                            <div class="mesa-badge" id="mesa-badge-2" style="display:none;">0</div>
+                            <div class="mesa-num">2</div>
+                            <div class="mesa-sillas">4 sillas</div>
+                        </div>
+                        
+                        <div class="mesa-card" style="min-width:70px;" id="mesa-3" onclick="seleccionarMesa(3, this)">
+                            <div class="mesa-badge" id="mesa-badge-3" style="display:none;">0</div>
+                            <div class="mesa-num">3</div>
+                            <div class="mesa-sillas">2 sillas</div>
+                        </div>
+                        
+                        <div class="mesa-card" style="min-width:70px;" id="mesa-4" onclick="seleccionarMesa(4, this)">
+                            <div class="mesa-badge" id="mesa-badge-4" style="display:none;">0</div>
+                            <div class="mesa-num">4</div>
+                            <div class="mesa-sillas">6 sillas</div>
+                        </div>
+                        
+                        <div class="mesa-card" style="min-width:70px;" id="mesa-5" onclick="seleccionarMesa(5, this)">
+                            <div class="mesa-badge" id="mesa-badge-5" style="display:none;">0</div>
+                            <div class="mesa-num">5</div>
+                            <div class="mesa-sillas">4 sillas</div>
+                        </div>
+                        
+                        <div class="mesa-card" style="min-width:70px;" id="mesa-6" onclick="seleccionarMesa(6, this)">
+                            <div class="mesa-badge" id="mesa-badge-6" style="display:none;">0</div>
+                            <div class="mesa-num">6</div>
+                            <div class="mesa-sillas">8 sillas</div>
+                        </div>
+                        
+                        <div class="mesa-card" id="btn-add-mesa" style="min-width:70px;border-style:dashed;" onclick="crearMesa()">
+                            <div class="mesa-num" style="font-size:1.5rem;">+</div>
+                            <div class="mesa-sillas">Nueva mesa</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ticket-panel flex-grow-1" style="min-height:0;">
+                    <div class="ticket-header">
+                        <div class="user-avatar">A</div>
+                        <div style="flex-grow:1;">
+                            <div style="font-weight:700;font-size:0.85rem;">ADMIN</div>
+                            <div style="font-size:0.7rem;color:#64748b;" id="ticket-mesa-info">Sin mesa asignada</div>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 overflow-y-auto mb-2" id="caja-ticket" style="max-height:calc(100vh - 420px);">
+                        <div class="empty-ticket" id="ticket-vacio">
+                            <div class="icon">&#9749;</div>
+                            <div id="ticket-vacio-msg">Selecciona una mesa para empezar</div>
+                        </div>
+                    </div>
+                    <div class="total-section">
+                        <div class="total-row"><span>Base Imponible</span><span id="txt-base">0.00 &euro;</span></div>
+                        <div class="total-row"><span>I.V.A.</span><span id="txt-iva">0.00 &euro;</span></div>
+                        <div class="total-grande">
+                            <span class="label">TOTAL</span>
+                            <span class="cantidad" id="txt-total">0.00 &euro;</span>
+                        </div>
+                    </div>
+                    <button class="cobro-btn cobro-btn-efectivo mb-2" onclick="ejecutarTransaccion('EFECTIVO')">&#128176; COBRAR EFECTIVO</button>
+                    <button class="cobro-btn cobro-btn-tarjeta mb-2" onclick="ejecutarTransaccion('TARJETA')">&#128179; COBRAR TARJETA</button>
+                    <div class="row g-2 mt-auto pt-2" style="border-top:1px solid rgba(255,255,255,0.08);">
+                        
+                        <div class="col-4"><a href="/admin/" class="btn btn-outline-light btn-sm w-100 rounded-3" target="_blank" style="font-size:0.75rem;">Admin</a></div>
+                        <div class="col-4"><a href="/api/dashboard-gerencia/" class="btn btn-outline-success btn-sm w-100 rounded-3" target="_blank" style="font-size:0.75rem;">Balances</a></div>
+                        
+                        <div class="col-4">
+                            <a href="/accounts/logout/" class="btn btn-outline-danger btn-sm w-100 rounded-3" style="font-size:0.75rem;">Salir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    var ordenActual = {};
+    var pedidosMesa = {};
+    var mesaActual = null;
+    var mesasInfo = {};
+
+    function getCookie(name) {
+        var v = document.cookie.split('; ').find(function(r){ return r.startsWith(name+'='); });
+        return v ? v.split('=')[1] : null;
+    }
+
+    function sonido(f, d, t) {
+        try {
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return;
+            var c = new AC(), o = c.createOscillator(), g = c.createGain();
+            o.type = t || 'sine';
+            o.frequency.setValueAtTime(f, c.currentTime);
+            g.gain.setValueAtTime(0.08, c.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + d);
+            o.connect(g); g.connect(c.destination);
+            o.start(); o.stop(c.currentTime + d);
+        } catch(e) {}
+    }
+    function sonidoAdd() { sonido(880, 0.08, 'sine'); setTimeout(function(){ sonido(1100, 0.08, 'sine'); }, 50); }
+    function sonidoRemove() { sonido(440, 0.1, 'triangle'); }
+    function sonidoCobro() {
+        sonido(523, 0.12, 'sine');
+        setTimeout(function(){ sonido(659, 0.12, 'sine'); }, 100);
+        setTimeout(function(){ sonido(784, 0.15, 'sine'); }, 200);
+        setTimeout(function(){ sonido(1047, 0.25, 'sine'); }, 320);
+    }
+    function sonidoAlerta() { sonido(300, 0.3, 'sawtooth'); }
+
+    function crearParticulas() {
+        var c = document.getElementById('particles-container');
+        if (!c) return;
+        var cols = ['#00d4ff','#a855f7','#00ff88','#f43f5e','#f97316'];
+        for (var i = 0; i < 25; i++) {
+            var p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (8 + Math.random() * 15) + 's';
+            p.style.animationDelay = (Math.random() * 10) + 's';
+            p.style.background = cols[Math.floor(Math.random() * cols.length)];
+            var s = (2 + Math.random() * 3) + 'px';
+            p.style.width = s; p.style.height = s;
+            c.appendChild(p);
+        }
+    }
+
+    function actualizarReloj() {
+        var el = document.getElementById('reloj');
+        if (!el) return;
+        var n = new Date();
+        var d = ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'];
+        var m = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        el.textContent = d[n.getDay()] + ' ' + n.getDate() + ' ' + m[n.getMonth()] + ' ' +
+            String(n.getHours()).padStart(2, '0') + ':' +
+            String(n.getMinutes()).padStart(2, '0') + ':' +
+            String(n.getSeconds()).padStart(2, '0');
+    }
+
+    function crearRipple(e, el) {
+        var r = document.createElement('span');
+        r.className = 'ripple';
+        var rect = el.getBoundingClientRect();
+        var s = Math.max(rect.width, rect.height);
+        r.style.width = s + 'px'; r.style.height = s + 'px';
+        r.style.left = (e.clientX - rect.left - s / 2) + 'px';
+        r.style.top = (e.clientY - rect.top - s / 2) + 'px';
+        el.appendChild(r);
+        setTimeout(function(){ r.remove(); }, 600);
+    }
+
+    function filtrarCategoria(catId, btn) {
+        var pills = document.querySelectorAll('.cat-pill');
+        for (var i = 0; i < pills.length; i++) pills[i].classList.remove('active');
+        btn.classList.add('active');
+        var items = document.querySelectorAll('.item-producto');
+        for (var j = 0; j < items.length; j++) {
+            items[j].style.display = (catId === 'todas' || items[j].getAttribute('data-categoria') === catId) ? '' : 'none';
+        }
+    }
+
+    function seleccionarMesa(id, el) {
+        if (mesaActual !== null) guardarPedidoMesaActual();
+        var cards = document.querySelectorAll('.mesa-card');
+        for (var i = 0; i < cards.length; i++) {
+            cards[i].style.opacity = '0.5';
+            cards[i].classList.remove('mesa-seleccionada');
+        }
+        el.style.opacity = '1';
+        el.classList.add('mesa-seleccionada');
+        mesaActual = id;
+        var nombre = (id === 0) ? 'Para llevar' : el.querySelector('.mesa-num').textContent;
+        mesasInfo[mesaActual] = { nombre: nombre, el: el };
+        document.getElementById('mesa-actual-label').textContent = (id === 0) ? 'Para llevar' : 'Mesa ' + nombre;
+        document.getElementById('ticket-mesa-info').textContent = (id === 0) ? 'Pedido para llevar' : 'Mesa ' + nombre;
+        if (pedidosMesa[mesaActual]) {
+            ordenActual = JSON.parse(JSON.stringify(pedidosMesa[mesaActual]));
+        } else {
+            ordenActual = {};
+        }
+        actualizarGraficosTicket();
+        actualizarBadgesMesas();
+        sonidoAdd();
+    }
+
+    function guardarPedidoMesaActual() {
+        if (mesaActual !== null) pedidosMesa[mesaActual] = JSON.parse(JSON.stringify(ordenActual));
+    }
+
+    function actualizarBadgesMesas() {
+        var ids = Object.keys(pedidosMesa);
+        for (var i = 0; i < ids.length; i++) {
+            var mid = ids[i];
+            var items = pedidosMesa[mid];
+            var b = document.getElementById('mesa-badge-' + mid);
+            if (!b) continue;
+            var total = 0;
+            var k = Object.keys(items);
+            for (var j = 0; j < k.length; j++) total += items[k[j]].cantidad;
+            if (total > 0) {
+                b.style.display = 'block'; b.textContent = total;
+                var card = document.getElementById('mesa-' + mid);
+                if (card && mid != mesaActual) card.classList.add('mesa-pendiente');
+            } else {
+                b.style.display = 'none';
+                var card2 = document.getElementById('mesa-' + mid);
+                if (card2) card2.classList.remove('mesa-pendiente');
+            }
+        }
+    }
+
+    function crearMesa() {
+        Swal.fire({
+            title: 'Nueva Mesa',
+            html: '<input id="swal-num" class="swal2-input" placeholder="Numero de mesa" type="number" min="1"><input id="swal-sillas" class="swal2-input" placeholder="Sillas" type="number" min="1" value="4">',
+            confirmButtonText: 'Crear',
+            confirmButtonColor: '#00d4ff',
+            background: '#1e293b',
+            color: '#e2e8f0',
+            preConfirm: function() {
+                var n = document.getElementById('swal-num').value;
+                var s = document.getElementById('swal-sillas').value;
+                if (!n) { Swal.showValidationMessage('Introduce un numero'); return false; }
+                return { numero: n, sillas: s };
+            }
+        }).then(function(r) {
+            if (r.isConfirmed && r.value) {
+                fetch('/api/mesas/crear/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                    body: JSON.stringify(r.value)
+                }).then(function(res) { return res.json(); }).then(function(d) {
+                    if (d.status === 'success') {
+                        var c = document.getElementById('mesas-container');
+                        var a = document.getElementById('btn-add-mesa');
+                        var div = document.createElement('div');
+                        div.className = 'mesa-card';
+                        div.style.minWidth = '70px';
+                        div.id = 'mesa-' + d.id;
+                        div.onclick = function() { seleccionarMesa(d.id, this); };
+                        div.innerHTML = '<div class="mesa-badge" id="mesa-badge-' + d.id + '" style="display:none;">0</div><div class="mesa-num">' + r.value.numero + '</div><div class="mesa-sillas">' + r.value.sillas + ' sillas</div>';
+                        c.insertBefore(div, a);
+                        sonidoAdd();
+                    }
+                });
+            }
+        });
+    }
+
+    function agregarAlTicket(el) {
+        if (mesaActual === null) {
+            sonidoAlerta();
+            return Swal.fire({
+                icon: 'info',
+                title: 'Selecciona una mesa',
+                text: 'Debes elegir una mesa o "Para llevar" antes de anadir productos.',
+                confirmButtonColor: '#00d4ff',
+                background: '#1e293b',
+                color: '#e2e8f0'
+            });
+        }
+        var id = el.getAttribute('data-id');
+        var nombre = el.getAttribute('data-nombre');
+        var precio = parseFloat(el.getAttribute('data-precio'));
+        sonidoAdd();
+        crearRipple(event, el);
+        if (ordenActual[id]) {
+            ordenActual[id].cantidad += 1;
+        } else {
+            ordenActual[id] = { nombre: nombre, precio: precio, cantidad: 1 };
+        }
+        actualizarGraficosTicket();
+        actualizarBadgeMesaActual();
+    }
+
+    function quitarDelTicket(id) {
+        sonidoRemove();
+        if (ordenActual[id]) {
+            if (ordenActual[id].cantidad > 1) { ordenActual[id].cantidad -= 1; }
+            else { delete ordenActual[id]; }
+            actualizarGraficosTicket();
+            actualizarBadgeMesaActual();
+        }
+    }
+
+    function actualizarBadgeMesaActual() {
+        if (mesaActual === null) return;
+        pedidosMesa[mesaActual] = JSON.parse(JSON.stringify(ordenActual));
+        actualizarBadgesMesas();
+    }
+
+    function actualizarGraficosTicket() {
+        var c = document.getElementById('caja-ticket');
+        var v = document.getElementById('ticket-vacio');
+        var keys = Object.keys(ordenActual);
+        if (v) v.style.display = keys.length === 0 ? 'flex' : 'none';
+        var html = '';
+        var ac = 0;
+        for (var i = 0; i < keys.length; i++) {
+            var id = keys[i];
+            var it = ordenActual[id];
+            var sub = it.precio * it.cantidad;
+            ac += sub;
+            html += '<div class="ticket-item"><div style="display:flex;align-items:center;gap:8px;"><button class="btn-remove-item" onclick="quitarDelTicket(\'' + id + '\')">&#10005;</button><span class="qty-badge">' + it.cantidad + 'x</span><span style="font-weight:600;font-size:0.85rem;color:#e2e8f0;">' + it.nombre + '</span></div><span class="item-subtotal">' + sub.toFixed(2) + ' \u20ac</span></div>';
+        }
+        c.innerHTML = html;
+        var base = ac / 1.10;
+        var iva = ac - base;
+        document.getElementById('txt-base').textContent = base.toFixed(2) + ' \u20ac';
+        document.getElementById('txt-iva').textContent = iva.toFixed(2) + ' \u20ac';
+        var t = document.getElementById('txt-total');
+        t.textContent = ac.toFixed(2) + ' \u20ac';
+        t.classList.remove('pulse');
+        void t.offsetWidth;
+        t.classList.add('pulse');
+    }
+
+    function lanzarToastAlerta(msg) {
+        var c = document.getElementById('contenedor-toasts');
+        var id = 'toast' + Date.now();
+        c.insertAdjacentHTML('beforeend', '<div id="' + id + '" class="toast align-items-center text-bg-danger border-0 show mb-2" role="alert"><div class="d-flex"><div class="toast-body fw-bold">&#9888; ' + msg + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>');
+        setTimeout(function(){ var e = document.getElementById(id); if (e) e.remove(); }, 5000);
+    }
+
+    function ejecutarTransaccion(metodo) {
+        if (mesaActual === null) {
+            sonidoAlerta();
+            return Swal.fire({
+                icon: 'info',
+                title: 'Selecciona una mesa',
+                text: 'Elige una mesa o "Para llevar" antes de cobrar.',
+                confirmButtonColor: '#00d4ff',
+                background: '#1e293b',
+                color: '#e2e8f0'
+            });
+        }
+        if (Object.keys(ordenActual).length === 0) {
+            sonidoAlerta();
+            return Swal.fire({
+                icon: 'warning',
+                title: 'Ticket Vacio',
+                text: 'Anade productos primero.',
+                confirmButtonColor: '#f59e0b',
+                background: '#1e293b',
+                color: '#e2e8f0'
+            });
+        }
+        var total = 0;
+        var keys = Object.keys(ordenActual);
+        for (var i = 0; i < keys.length; i++) total += ordenActual[keys[i]].precio * ordenActual[keys[i]].cantidad;
+        var icono = metodo === 'EFECTIVO' ? '\uD83D\uDCB5' : '\uD83D\uDCB3';
+        var color = metodo === 'EFECTIVO' ? '#10b981' : '#3b82f6';
+        var nombreMesa = mesasInfo[mesaActual] ? mesasInfo[mesaActual].nombre : 'Mesa ' + mesaActual;
+        Swal.fire({
+            title: 'Confirmar cobro',
+            html: '<div style="margin:10px 0;color:#94a3b8;">' + nombreMesa + '</div><div style="font-size:1.3rem;font-weight:700;margin:10px 0;">' + icono + ' ' + metodo + '</div><div style="font-size:2.2rem;font-weight:900;color:#00ff88;">' + total.toFixed(2) + ' \u20ac</div>',
+            showCancelButton: true,
+            confirmButtonText: 'COBRAR',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: color,
+            cancelButtonColor: '#64748b',
+            background: '#1e293b',
+            color: '#e2e8f0'
+        }).then(function(r) {
+            if (!r.isConfirmed) return;
+            var lista = [];
+            for (var i = 0; i < keys.length; i++) lista.push({ id: keys[i], cantidad: ordenActual[keys[i]].cantidad });
+            fetch('/api/registrar-cobro/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ items: lista, forma_pago: metodo, mesa_id: (mesaActual > 0) ? mesaActual : null })
+            }).then(function(res) { return res.json(); }).then(function(d) {
+                if (d.status === 'success') {
+                    sonidoCobro();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cobro completado',
+                        html: '<div style="font-size:0.9rem;color:#94a3b8;margin-bottom:5px;">Ticket #' + d.ticket_id + ' | ' + nombreMesa + '</div><div style="font-size:1.2rem;margin:10px 0;">' + icono + ' ' + metodo + '</div><div style="font-size:2rem;font-weight:900;color:#00ff88;">' + d.total.toFixed(2) + ' \u20ac</div>',
+                        confirmButtonColor: '#10b981',
+                        background: '#1e293b',
+                        color: '#e2e8f0'
+                    });
+                    if (d.alertas && d.alertas.length > 0) {
+                        for (var j = 0; j < d.alertas.length; j++) {
+                            var a = d.alertas[j];
+                            lanzarToastAlerta('REPOSICION: Quedan ' + a.restante + ' ' + a.unidad + ' de ' + a.ingrediente);
+                        }
+                    }
+                    delete pedidosMesa[mesaActual];
+                    ordenActual = {};
+                    actualizarGraficosTicket();
+                    actualizarBadgesMesas();
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: d.error || 'Error', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+                }
+            }).catch(function() {
+                Swal.fire({ icon: 'error', title: 'Sin conexion', text: 'No se pudo contactar con el servidor.', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+            });
+        });
+    }
+
+    crearParticulas();
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+    </script>
+</body>
+</html>

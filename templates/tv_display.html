@@ -1,0 +1,131 @@
+{% load l10n %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display TV - Productos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; overflow: hidden; height: 100vh; }
+        .tv-container { height: 100vh; display: flex; flex-direction: column; }
+        .tv-header { text-align: center; padding: 30px; background: linear-gradient(180deg, rgba(244,63,94,0.1), transparent); }
+        .tv-header h1 {
+            font-size: 3rem; font-weight: 900;
+            background: linear-gradient(135deg, #f43f5e, #ff6b9d);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .tv-header .sub { color: rgba(255,255,255,0.4); font-size: 0.9rem; letter-spacing: 6px; text-transform: uppercase; }
+        .tv-grid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 15px; padding: 0 30px 30px; }
+        .tv-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 20px; text-align: center; position: relative;
+            transition: all 0.5s; animation: tvFadeIn 0.8s ease forwards; opacity: 0;
+        }
+        .tv-card:nth-child(1) { animation-delay: 0.1s; }
+        .tv-card:nth-child(2) { animation-delay: 0.2s; }
+        .tv-card:nth-child(3) { animation-delay: 0.3s; }
+        .tv-card:nth-child(4) { animation-delay: 0.4s; }
+        .tv-card:nth-child(5) { animation-delay: 0.5s; }
+        .tv-card:nth-child(6) { animation-delay: 0.6s; }
+        .tv-card:nth-child(7) { animation-delay: 0.7s; }
+        .tv-card:nth-child(8) { animation-delay: 0.8s; }
+        @keyframes tvFadeIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(20px); } }
+        .tv-card:hover { border-color: rgba(244,63,94,0.4); box-shadow: 0 0 40px rgba(244,63,94,0.15); }
+        .tv-card .icon { font-size: 3rem; margin-bottom: 10px; animation: gentleFloat 3s ease-in-out infinite; }
+        @keyframes gentleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .tv-card .name { font-weight: 700; font-size: 1.1rem; color: #fff; margin-bottom: 5px; }
+        .tv-card .price { font-weight: 900; font-size: 1.8rem; color: #00ff88; }
+        .tv-card .glow { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, rgba(244,63,94,0.15), transparent); filter: blur(20px); }
+        .tv-footer { text-align: center; padding: 15px; color: rgba(255,255,255,0.2); font-size: 0.8rem; }
+        .hora-tv { color: rgba(255,255,255,0.15); font-size: 4rem; font-weight: 100; text-align: center; padding: 10px; }
+        .slide-active .tv-card { animation: slideIn 0.6s ease forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+    <a href="/" style="position:fixed;top:10px;left:10px;z-index:9999;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:8px;text-decoration:none;font-size:0.75rem;backdrop-filter:blur(5px)">TPV</a>
+    <div class="tv-container">
+        <div class="tv-header">
+            <div class="hora-tv" id="hora-tv"></div>
+            <h1>CAFE TPV</h1>
+            <div class="sub">Nuestros productos destacados</div>
+        </div>
+        <div class="tv-grid slide-active" id="tv-grid">
+        </div>
+        <div class="tv-footer">Cafe TPV &copy; 2026 - Exhibicion Automatica</div>
+    </div>
+
+    <script>
+    const productos = [
+        {% for a in articulos %}
+        {
+            nombre: '{{ a.nombre|escapejs }}',
+            precio: '{{ a.precio_con_iva|unlocalize }}',
+            cat: '{{ a.categoria.nombre|default:"General"|escapejs }}'
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const catIcons = {
+        'Cafe': '&#9749;', 'Café': '&#9749;', 'Te': '&#127861;', 'Té': '&#127861;',
+        'Jugo': '&#129380;', 'Batido': '&#129380;', 'Pastel': '&#127856;', 'Torta': '&#127856;',
+        'Sandwich': '&#129728;', 'Snack': '&#127838;', 'Postre': '&#127856;',
+        'Bebida fria': '&#129380;', 'Bebida caliente': '&#9749;',
+    };
+
+    function getIcon(cat) {
+        for (const [key, icon] of Object.entries(catIcons)) {
+            if (cat.toLowerCase().includes(key.toLowerCase())) return icon;
+        }
+        return '&#127835;';
+    }
+
+    let paginaActual = 0;
+    const porPagina = 8;
+
+    function mostrarPagina() {
+        const grid = document.getElementById('tv-grid');
+        const inicio = paginaActual * porPagina;
+        const fin = Math.min(inicio + porPagina, productos.length);
+        const items = productos.slice(inicio, fin);
+
+        grid.innerHTML = '';
+        grid.classList.remove('slide-active');
+        void grid.offsetWidth;
+        grid.classList.add('slide-active');
+
+        items.forEach((p, i) => {
+            const card = document.createElement('div');
+            card.className = 'tv-card';
+            card.style.animationDelay = (i * 0.1) + 's';
+            card.innerHTML = `
+                <div class="glow"></div>
+                <div class="icon">${getIcon(p.cat)}</div>
+                <div class="name">${p.nombre}</div>
+                <div class="price">$${parseFloat(p.precio).toLocaleString()}</div>
+            `;
+            grid.appendChild(card);
+        });
+
+        if (fin >= productos.length) {
+            paginaActual = 0;
+        } else {
+            paginaActual++;
+        }
+    }
+
+    function updateHora() {
+        const now = new Date();
+        document.getElementById('hora-tv').textContent = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    updateHora();
+    setInterval(updateHora, 1000);
+    mostrarPagina();
+    setInterval(mostrarPagina, 8000);
+    </script>
+</body>
+</html>

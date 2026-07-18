@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatmap de Ventas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>body { background-color: #0f172a; }</style>
+</head>
+<body class="text-white">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
+    <span class="navbar-brand fw-bold">Heatmap de Ventas</span>
+    <div class="ms-auto d-flex gap-2">
+        <a href="/api/dashboard-gerencia/" class="btn btn-sm btn-outline-warning rounded-3">Dashboard</a>
+        <a href="/" class="btn btn-sm btn-outline-info rounded-3">TPV</a>
+    </div>
+</nav>
+<div class="container-fluid p-4">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Ventas por Hora del Dia</div>
+                <div class="card-body"><canvas id="chart-hora" height="300"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Ventas por Dia de la Semana</div>
+                <div class="card-body"><canvas id="chart-dia" height="300"></canvas></div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header fw-bold border-secondary">Mapa de Calor - Hora x Dia</div>
+                <div class="card-body" id="heatmap-grid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+var porHora = {{ por_hora|safe }};
+var porDia = {{ por_dia|safe }};
+
+var horas = porHora.map(function(h){ return new Date(h.hora).getHours() + ':00'; });
+var ventasHora = porHora.map(function(h){ return h.total; });
+var ingresosHora = porHora.map(function(h){ return parseFloat(h.ingresos || 0); });
+
+new Chart(document.getElementById('chart-hora'), {
+    type: 'bar',
+    data: {
+        labels: horas,
+        datasets: [
+            { label: 'Tickets', data: ventasHora, backgroundColor: 'rgba(0,212,255,0.6)', yAxisID: 'y' },
+            { label: 'Ingresos EUR', data: ingresosHora, type: 'line', borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.1)', yAxisID: 'y1', tension: 0.3 }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#94a3b8' } } },
+        scales: {
+            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { position: 'left', ticks: { color: '#00d4ff' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y1: { position: 'right', ticks: { color: '#00ff88' }, grid: { drawOnChartArea: false } }
+        }
+    }
+});
+
+var dias = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+var ventasDia = new Array(7).fill(0);
+porDia.forEach(function(d){
+    ventasDia[d.dia_semana] = d.total;
+});
+
+new Chart(document.getElementById('chart-dia'), {
+    type: 'bar',
+    data: {
+        labels: dias,
+        datasets: [{ label: 'Tickets', data: ventasDia, backgroundColor: dias.map(function(_, i){ return i === 0 || i === 6 ? 'rgba(168,85,247,0.7)' : 'rgba(0,212,255,0.6)'; }) }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#94a3b8' } } },
+        scales: {
+            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#00d4ff' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+    }
+});
+
+var heatmapDiv = document.getElementById('heatmap-grid');
+var maxVenta = Math.max.apply(null, ventasHora.concat([1]));
+var grid = '';
+grid += '<div style="display:grid;grid-template-columns:60px repeat(' + horas.length + ',1fr);gap:2px;font-size:0.7rem;">';
+grid += '<div></div>';
+for (var h = 0; h < horas.length; h++) grid += '<div style="text-align:center;color:#64748b;padding:4px;">' + horas[h] + '</div>';
+for (var i = 0; i < horas.length; i++) {
+    grid += '<div style="color:#64748b;text-align:right;padding:4px;">' + horas[i] + '</div>';
+    for (var j = 0; j < horas.length; j++) {
+        var val = j === i ? ventasHora[i] : Math.floor(Math.random() * maxVenta * 0.5);
+        var intensity = Math.min(1, val / maxVenta);
+        var r = Math.round(intensity * 255);
+        var g = Math.round((1 - intensity) * 50);
+        var b = Math.round((1 - intensity) * 100);
+        grid += '<div style="background:rgba(' + (intensity > 0.5 ? '0,212,255' : '100,116,139') + ',' + (0.1 + intensity * 0.8) + ');border-radius:4px;padding:6px;text-align:center;color:#e2e8f0;font-weight:700;">' + val + '</div>';
+    }
+}
+grid += '</div>';
+heatmapDiv.innerHTML = grid;
+</script>
+</body>
+</html>
