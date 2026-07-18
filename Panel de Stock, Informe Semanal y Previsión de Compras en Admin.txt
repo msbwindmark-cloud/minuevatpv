@@ -478,13 +478,52 @@ Todo hecho y verificado. Ahora tienes 3 botones de 1 clic:
 -------------------------------------------------------------------------------
 
 
+Listo. Smartlook está activo en todo el proyecto.
 
+### Qué se hizo
+
+| Archivo | Qué |
+|---------|-----|
+| `cafe_tpv/middleware.py` | **Nuevo** — Inyecta el script Smartlook antes de `</head>` en toda respuesta HTML |
+| `cafe_tpv/settings.py` | Añadido el middleware al final de la lista |
+
+### Cómo funciona
+
+- **0 templates tocados** — El middleware intercepta cada respuesta HTML y añade el script automáticamente
+- **Cubre todo** — TPV, admin, dashboard, reservas, reviews, todas las páginas
+- **No afecta** — Las respuestas que no son HTML (JSON, imágenes, etc.) no se tocan
+- **Fácil de quitar** — Si quieres desactivarlo, solo comenta la línea en `settings.py`
+
+### Para probar
+
+1. Recarga `http://127.0.0.1:8000/` en tu navegador
+2. Abre las DevTools (F12) → pestaña Elements → busca `<head>` → debería aparecer el script de Smartlook
+3. Entra a Smartlook con tu cuenta y empieza a grabar sesiones
+4. Los heatmaps empezarán a generarse automáticamente
+
+**Recuerda**: En PythonAnywhere, añade el middleware también en tu `settings.py` de producción.
 
 
 
 
 -------------------------------------------------------------------------------
 
+
+glows.msb@gmail.com
+
+minuevatpv
+
+
+https://app.smartlook.com/org/2kifg66qiq87x4kizjckrofb/project/oyh9v2a0wbvbdf1sra577zhs/dashboards/0LC-yBSY8N?signUpSource=go
+
+
+echo "# minuevatpv" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/msbwindmark-cloud/minuevatpv.git
+git push -u origin main
 
 -------------------------------------------------------------------------------
 

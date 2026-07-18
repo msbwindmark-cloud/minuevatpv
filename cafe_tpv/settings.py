@@ -43,6 +43,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'livereload.middleware.LiveReloadScript',
+    'cafe_tpv.middleware.SmartlookMiddleware',
 ]
 
 ROOT_URLCONF = 'cafe_tpv.urls'
