@@ -530,6 +530,13 @@ https://github.com/msbwindmark-cloud/minuevatpv.git
 
 minuevatpv.pythonanywhere.com 
 
+
+python manage.py collectstatic --noinput
+
+/home/minuevatpv/minuevatpv/staticfiles
+
+
+
 -------------------------------------------------------------------------------
 
 javier
