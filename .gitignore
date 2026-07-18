@@ -1,29 +1,45 @@
 # Python
 __pycache__/
 *.py[cod]
-*.pyo
+*$py.class
+*.so
 *.egg-info/
+*.egg
 dist/
 build/
+eggs/
+*.whl
+
+# Virtual environment
+venv/
+env/
+.venv/
 
 # Django
 *.sqlite3
-*.log
+db.sqlite3
 media/
+staticfiles/
+*.log
 
-# Entorno virtual
-venv/
-.venv/
-env/
+# Environment variables (keeping .env tracked for deployment)
+# .env
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# Sistema
-.DS_Store
+# OS
 Thumbs.db
-*.env
-!.env.example
+Desktop.ini
+.DS_Store
+
+# Migrations (optional - uncomment if you don't want to track them)
+# tpv/migrations/
+
+# Backup files
+*.bak
+*.backup

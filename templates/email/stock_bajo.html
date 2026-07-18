@@ -1,0 +1,28 @@
+{% extends "email/base_email.html" %}
+{% block header_icon %}⚠️{% endblock %}
+{% block header_title %}Alerta Stock Bajo{% endblock %}
+
+{% block content %}
+<p style="color:#e2e8f0;font-size:14px;margin:0 0 20px;">Se han detectado los siguientes insumos por debajo del nivel minimo:</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+<tr style="background:rgba(239,68,68,0.15);">
+<td style="padding:10px 14px;color:#fca5a5;font-size:12px;font-weight:700;border-radius:8px 0 0 0;">Insumo</td>
+<td style="padding:10px 14px;color:#fca5a5;font-size:12px;font-weight:700;text-align:center;">Actual</td>
+<td style="padding:10px 14px;color:#fca5a5;font-size:12px;font-weight:700;text-align:center;">Minimo</td>
+<td style="padding:10px 14px;color:#fca5a5;font-size:12px;font-weight:700;text-align:center;border-radius:0 8px 0 0;">Falta</td>
+</tr>
+{% for insumo in insumos %}
+<tr style="background:rgba(255,255,255,0.03);">
+<td style="padding:10px 14px;color:#e2e8f0;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06);">{{ insumo.nombre }}</td>
+<td style="padding:10px 14px;color:#ef4444;font-size:13px;font-weight:700;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">{{ insumo.cantidad_actual }} {{ insumo.unidad_medida }}</td>
+<td style="padding:10px 14px;color:#94a3b8;font-size:13px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">{{ insumo.cantidad_minima }} {{ insumo.unidad_medida }}</td>
+<td style="padding:10px 14px;color:#f97316;font-size:13px;font-weight:700;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">{{ insumo.falta }} {{ insumo.unidad_medida }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<div style="background:rgba(249,115,22,0.1);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 8px 8px 0;">
+<p style="margin:0;color:#fdba74;font-size:13px;font-weight:600;">Acción recomendada: Crear un pedido de reposicion desde el panel de admin.</p>
+</div>
+{% endblock %}

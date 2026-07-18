@@ -1,0 +1,64 @@
+{% extends "email/base_email.html" %}
+{% block header_icon %}📊{% endblock %}
+{% block header_title %}Informe Semanal Cafeteria{% endblock %}
+
+{% block content %}
+<p style="color:#94a3b8;font-size:13px;margin:0 0 25px;">Semana del {{ fecha_inicio }} al {{ fecha_fin }}</p>
+
+<!-- KPIs -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:25px;">
+<tr>
+<td width="33%" style="text-align:center;padding:15px 8px;background:rgba(0,212,255,0.08);border-radius:10px 0 0 10px;">
+<p style="margin:0 0 5px;color:#64748b;font-size:11px;font-weight:600;">VENTAS TOTALES</p>
+<p style="margin:0;color:#00d4ff;font-size:22px;font-weight:900;">{{ total_ventas|floatformat:2 }} &euro;</p>
+</td>
+<td width="33%" style="text-align:center;padding:15px 8px;background:rgba(0,212,255,0.06);">
+<p style="margin:0 0 5px;color:#64748b;font-size:11px;font-weight:600;">TICKETS</p>
+<p style="margin:0;color:#e2e8f0;font-size:22px;font-weight:900;">{{ total_tickets }}</p>
+</td>
+<td width="33%" style="text-align:center;padding:15px 8px;background:rgba(0,212,255,0.08);border-radius:0 10px 10px 0;">
+<p style="margin:0 0 5px;color:#64748b;font-size:11px;font-weight:600;">GASTOS</p>
+<p style="margin:0;color:#f97316;font-size:22px;font-weight:900;">{{ total_gastos|floatformat:2 }} &euro;</p>
+</td>
+</tr>
+</table>
+
+<!-- Desglose diario -->
+<h3 style="color:#e2e8f0;font-size:15px;margin:0 0 12px;">Desglose Diario</h3>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:25px;">
+<tr style="background:rgba(0,212,255,0.1);">
+<td style="padding:8px 12px;color:#00d4ff;font-size:11px;font-weight:700;">Dia</td>
+<td style="padding:8px 12px;color:#00d4ff;font-size:11px;font-weight:700;text-align:right;">Ventas</td>
+<td style="padding:8px 12px;color:#00d4ff;font-size:11px;font-weight:700;text-align:right;">Tickets</td>
+</tr>
+{% for dia in desglose_diario %}
+<tr style="background:rgba(255,255,255,0.02);">
+<td style="padding:8px 12px;color:#cbd5e1;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.04);">{{ dia.nombre }}</td>
+<td style="padding:8px 12px;color:#e2e8f0;font-size:12px;font-weight:700;text-align:right;border-bottom:1px solid rgba(255,255,255,0.04);">{{ dia.ventas|floatformat:2 }} &euro;</td>
+<td style="padding:8px 12px;color:#94a3b8;font-size:12px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.04);">{{ dia.tickets }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- Top productos -->
+{% if top_productos %}
+<h3 style="color:#e2e8f0;font-size:15px;margin:0 0 12px;">Top Productos</h3>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:25px;">
+{% for p in top_productos %}
+<tr style="background:rgba(255,255,255,0.02);">
+<td style="padding:8px 12px;color:#94a3b8;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.04);">{{ forloop.counter }}. {{ p.nombre }}</td>
+<td style="padding:8px 12px;color:#00d4ff;font-size:12px;font-weight:700;text-align:right;border-bottom:1px solid rgba(255,255,255,0.04);">{{ p.total }} uds</td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<!-- Comparativa -->
+{% if comparativa %}
+<div style="background:rgba({% if comparativa.pct > 0 %}34,197,94{% else %}239,68,68{% endif %},0.1);border-left:4px solid {% if comparativa.pct > 0 %}#22c55e{% else %}#ef4444{% endif %};padding:14px 18px;border-radius:0 8px 8px 0;">
+<p style="margin:0;color:{% if comparativa.pct > 0 %}#86efac{% else %}#fca5a5{% endif %};font-size:13px;font-weight:600;">
+vs semana anterior: {% if comparativa.pct > 0 %}+{% endif %}{{ comparativa.pct|floatformat:1 }}% en ventas
+</p>
+</div>
+{% endif %}
+{% endblock %}

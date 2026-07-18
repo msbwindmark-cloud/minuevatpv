@@ -10,7 +10,8 @@ from .models import (
     CuponDescuento, PerfilEmpleado, MetaDiaria, Cliente,
     ColaNumero, PedidoMovil, LineaPedidoMovil, PlanoRestaurante, MesaPosicion,
     MensajeChat, PedidoProveedor, FirmaDigital, PasoReceta, NotificacionPush,
-    DescuentoInteligente, ReviewRestaurante, RatingProducto, Combo, ComboItem
+    DescuentoInteligente, ReviewRestaurante, RatingProducto, Combo, ComboItem,
+    EmailLog
 )
 
 
@@ -156,6 +157,16 @@ class AuditLogAdmin(admin.ModelAdmin):
 class TurnoCajaAdmin(admin.ModelAdmin):
     list_display = ('id', 'cajero', 'fecha_apertura', 'fecha_cierre', 'saldo_inicial', 'total_teorico', 'total_real', 'cerrado')
     list_filter = ('cerrado', 'cajero')
+    actions = ['enviar_cierre_email']
+
+    @admin.action(description='Enviar cierre de caja por email')
+    def enviar_cierre_email(self, request, queryset):
+        from .emails import enviar_cierre_caja_email
+        count = 0
+        for turno in queryset.filter(cerrado=True):
+            enviar_cierre_caja_email(turno)
+            count += 1
+        self.message_user(request, f'{count} cierre(s) de caja enviado(s) por email')
 
 
 @admin.register(PedidoCocina)
@@ -172,8 +183,32 @@ class MenuDelDiaAdmin(admin.ModelAdmin):
 
 @admin.register(Reserva)
 class ReservaAdmin(admin.ModelAdmin):
-    list_display = ('cliente_nombre', 'mesa', 'fecha_reserva', 'hora_reserva', 'num_personas', 'estado')
+    list_display = ('cliente_nombre', 'mesa', 'fecha_reserva', 'hora_reserva', 'num_personas', 'email_cliente', 'estado')
     list_filter = ('estado', 'fecha_reserva')
+    search_fields = ('cliente_nombre', 'email_cliente')
+    fieldsets = (
+        ('Cliente', {
+            'fields': ('cliente_nombre', 'cliente_telefono', 'email_cliente')
+        }),
+        ('Reserva', {
+            'fields': ('mesa', 'fecha_reserva', 'hora_reserva', 'num_personas', 'notas')
+        }),
+        ('Estado', {
+            'fields': ('estado', 'creado_por')
+        }),
+    )
+    actions = ['confirmar_y_enviar_email']
+
+    @admin.action(description='Confirmar reserva y enviar email al cliente')
+    def confirmar_y_enviar_email(self, request, queryset):
+        from .emails import enviar_reserva_confirmacion_email
+        count = 0
+        for reserva in queryset.filter(estado='PENDIENTE'):
+            reserva.estado = 'CONFIRMADA'
+            reserva.save()
+            enviar_reserva_confirmacion_email(reserva)
+            count += 1
+        self.message_user(request, f'{count} reserva(s) confirmada(s) y email(s) enviado(s)')
 
 
 @admin.register(CuponDescuento)
@@ -238,15 +273,15 @@ class MensajeChatAdmin(admin.ModelAdmin):
 
 @admin.register(PedidoProveedor)
 class PedidoProveedorAdmin(admin.ModelAdmin):
-    list_display = ('insumo', 'cantidad_solicitada', 'unidad_insumo', 'estado', 'creado', 'creado_por')
+    list_display = ('insumo', 'cantidad_solicitada', 'unidad_insumo', 'email_proveedor', 'estado', 'creado', 'creado_por')
     list_filter = ('estado', 'creado')
-    search_fields = ('insumo__nombre', 'notas')
+    search_fields = ('insumo__nombre', 'notas', 'email_proveedor')
     date_hierarchy = 'creado'
     readonly_fields = ('creado',)
-    actions = ['marcar_enviado', 'marcar_recibido', 'cancelar_pedido']
+    actions = ['marcar_enviado', 'marcar_recibido', 'cancelar_pedido', 'enviar_pedido_email']
     fieldsets = (
         ('Detalle del Pedido', {
-            'fields': ('insumo', 'cantidad_solicitada', 'notas')
+            'fields': ('insumo', 'cantidad_solicitada', 'email_proveedor', 'notas')
         }),
         ('Estado', {
             'fields': ('estado',)
@@ -281,6 +316,18 @@ class PedidoProveedorAdmin(admin.ModelAdmin):
     def cancelar_pedido(self, request, queryset):
         count = queryset.filter(estado__in=['PENDIENTE', 'ENVIADO']).update(estado='CANCELADO')
         self.message_user(request, f'{count} pedidos cancelados')
+
+    @admin.action(description='Enviar pedido por email al proveedor')
+    def enviar_pedido_email(self, request, queryset):
+        from .emails import enviar_pedido_proveedor_email
+        enviados = 0
+        for pedido in queryset.filter(estado='PENDIENTE'):
+            if pedido.email_proveedor:
+                enviar_pedido_proveedor_email(pedido)
+                enviados += 1
+            else:
+                self.message_user(request, f'Pedido #{pedido.id} sin email de proveedor — saltado', level=messages.WARNING)
+        self.message_user(request, f'{enviados} pedido(s) enviado(s) por email')
 
 
 @admin.register(FirmaDigital)
@@ -327,6 +374,17 @@ class ComboAdmin(admin.ModelAdmin):
 @admin.register(ComboItem)
 class ComboItemAdmin(admin.ModelAdmin):
     list_display = ('combo', 'articulo', 'cantidad')
+
+
+@admin.register(EmailLog)
+class EmailLogAdmin(admin.ModelAdmin):
+    list_display = ('asunto', 'tipo', 'destinatarios', 'enviado', 'fecha_envio')
+    list_filter = ('tipo', 'enviado')
+    search_fields = ('asunto', 'destinatarios')
+    readonly_fields = ('asunto', 'destinatarios', 'tipo', 'enviado', 'error', 'fecha_envio')
+
+    def has_add_permission(self, request):
+        return False
 
 
 # Template personalizado para el admin index con enlaces a gestiones

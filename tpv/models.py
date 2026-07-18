@@ -210,6 +210,7 @@ class Reserva(models.Model):
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, related_name="reservas")
     cliente_nombre = models.CharField(max_length=100)
     cliente_telefono = models.CharField(max_length=20, blank=True)
+    email_cliente = models.EmailField(blank=True, verbose_name="Email del Cliente")
     fecha_reserva = models.DateField()
     hora_reserva = models.TimeField()
     num_personas = models.PositiveIntegerField(default=2)
@@ -453,6 +454,7 @@ class PedidoProveedor(models.Model):
     insumo = models.ForeignKey(InsumoMateriaPrima, on_delete=models.CASCADE)
     cantidad_solicitada = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='PENDIENTE')
+    email_proveedor = models.EmailField(blank=True, verbose_name="Email del Proveedor")
     notas = models.TextField(blank=True)
     creado = models.DateTimeField(auto_now_add=True)
     creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -567,3 +569,21 @@ class ComboItem(models.Model):
 
     def __str__(self):
         return f"{self.cantidad}x {self.articulo.nombre} en {self.combo.nombre}"
+
+
+class EmailLog(models.Model):
+    asunto = models.CharField(max_length=200)
+    destinatarios = models.TextField()
+    tipo = models.CharField(max_length=50)
+    enviado = models.BooleanField(default=True)
+    error = models.TextField(blank=True)
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-fecha_envio']
+        verbose_name = 'Log de Email'
+        verbose_name_plural = 'Logs de Emails'
+
+    def __str__(self):
+        estado = '✓' if self.enviado else '✗'
+        return f'{estado} [{self.tipo}] {self.asunto} ({self.fecha_envio.strftime("%d/%m %H:%M")})'

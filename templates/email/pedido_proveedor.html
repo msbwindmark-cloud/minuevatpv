@@ -1,0 +1,36 @@
+{% extends "email/base_email.html" %}
+{% block header_icon %}📦{% endblock %}
+{% block header_title %}Pedido a Proveedor{% endblock %}
+
+{% block content %}
+<p style="color:#e2e8f0;font-size:14px;margin:0 0 20px;">Se ha enviado un nuevo pedido de compra:</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:25px;">
+<tr style="background:rgba(0,212,255,0.1);">
+<td style="padding:10px 14px;color:#00d4ff;font-size:11px;font-weight:700;">Campo</td>
+<td style="padding:10px 14px;color:#00d4ff;font-size:11px;font-weight:700;">Detalle</td>
+</tr>
+<tr style="background:rgba(255,255,255,0.03);">
+<td style="padding:10px 14px;color:#94a3b8;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06);">Insumo</td>
+<td style="padding:10px 14px;color:#e2e8f0;font-size:13px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06);">{{ pedido.insumo.nombre }}</td>
+</tr>
+<tr style="background:rgba(255,255,255,0.02);">
+<td style="padding:10px 14px;color:#94a3b8;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06);">Cantidad</td>
+<td style="padding:10px 14px;color:#22c55e;font-size:13px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06);">{{ pedido.cantidad_solicitada }} {{ pedido.insumo.unidad_medida }}</td>
+</tr>
+<tr style="background:rgba(255,255,255,0.03);">
+<td style="padding:10px 14px;color:#94a3b8;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06);">Fecha</td>
+<td style="padding:10px 14px;color:#e2e8f0;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06);">{{ pedido.creado|date:"d/m/Y H:i" }}</td>
+</tr>
+{% if pedido.notas %}
+<tr style="background:rgba(255,255,255,0.02);">
+<td style="padding:10px 14px;color:#94a3b8;font-size:13px;">Notas</td>
+<td style="padding:10px 14px;color:#fdba74;font-size:13px;">{{ pedido.notas }}</td>
+</tr>
+{% endif %}
+</table>
+
+<div style="background:rgba(34,197,94,0.1);border-left:4px solid #22c55e;padding:14px 18px;border-radius:0 8px 8px 0;">
+<p style="margin:0;color:#86efac;font-size:13px;font-weight:600;">Por favor, proceder con el envio lo antes posible.</p>
+</div>
+{% endblock %}

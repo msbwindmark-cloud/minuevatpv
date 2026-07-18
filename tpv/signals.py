@@ -1,5 +1,6 @@
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save, post_delete
+from django.db.models import F
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from .models import (
@@ -71,3 +72,30 @@ _track_model(MenuDelDia, 'MenuDelDia')
 _track_model(Reserva, 'Reserva')
 _track_model(CuponDescuento, 'Cupon')
 _track_model(PerfilEmpleado, 'PerfilEmpleado')
+
+
+@receiver(post_save, sender=InsumoMateriaPrima)
+def alerta_stock_bajo(sender, instance, **kwargs):
+    """Envia email automatico cuando un insumo baja del minimo."""
+    if instance.necesita_reposicion:
+        from .emails import enviar_alerta_stock_bajo
+        insumos_bajos = []
+        for ins in InsumoMateriaPrima.objects.filter(cantidad_actual__lte=F('cantidad_minima')):
+            falta = ins.cantidad_minima - ins.cantidad_actual
+            insumos_bajos.append({
+                'nombre': ins.nombre,
+                'cantidad_actual': ins.cantidad_actual,
+                'cantidad_minima': ins.cantidad_minima,
+                'unidad_medida': ins.unidad_medida,
+                'falta': falta,
+            })
+        if insumos_bajos:
+            enviar_alerta_stock_bajo(insumos_bajos)
+
+
+@receiver(post_save, sender=Reserva)
+def notificar_reserva_confirmada(sender, instance, **kwargs):
+    """Envia email cuando una reserva pasa a CONFIRMADA."""
+    if instance.estado == 'CONFIRMADA' and instance.email_cliente:
+        from .emails import enviar_reserva_confirmacion_email
+        enviar_reserva_confirmacion_email(instance)

@@ -1,0 +1,22 @@
+{% extends "email/base_email.html" %}
+{% block header_icon %}📋{% endblock %}
+{% block header_title %}Copia Pedido a Proveedor{% endblock %}
+
+{% block content %}
+<p style="color:#94a3b8;font-size:13px;margin:0 0 20px;">Copia informativa del pedido enviado al proveedor:</p>
+
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td style="padding:8px 0;color:#64748b;font-size:12px;">Pedido #{{ pedido.id }}</td>
+</tr>
+<tr>
+<td style="padding:8px 0;color:#e2e8f0;font-size:14px;font-weight:700;">{{ pedido.insumo.nombre }}: {{ pedido.cantidad_solicitada }} {{ pedido.insumo.unidad_medida }}</td>
+</tr>
+<tr>
+<td style="padding:8px 0;color:#94a3b8;font-size:12px;">Estado: <span style="color:#22c55e;font-weight:700;">{{ pedido.get_estado_display }}</span></td>
+</tr>
+<tr>
+<td style="padding:8px 0;color:#94a3b8;font-size:12px;">Creado por: {{ pedido.creado_por|default:"Sistema" }}</td>
+</tr>
+</table>
+{% endblock %}

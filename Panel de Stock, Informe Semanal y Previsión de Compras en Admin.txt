@@ -259,9 +259,147 @@ Ahora en el panel admin (`/admin/`) verás **4 tarjetas**:
 
 **Recarga** `http://127.0.0.1:8000/admin/` y prueba el nuevo botón.
 
+---------------------------------------------------------------------------
 
+
+Perfecto, ya tengo toda la foto. Aquí va el **plan completo**:
+
+---
+
+## Plan de integración de Email (Gmail SMTP)
+
+### Archivos a modificar/crear
+
+| Archivo | Acción | Qué hace |
+|---------|--------|----------|
+| `cafe_tpv/settings.py` | Editar | Configurar Gmail SMTP (`EMAIL_HOST`, `EMAIL_PORT`, etc.) |
+| `.env` | Editar | Añadir `EMAIL_HOST_USER` y `EMAIL_HOST_PASSWORD` (contraseña de app de Google) |
+| `tpv/emails.py` | **Crear** | Funciones utilitarias de envío (plantilla base, helpers) |
+| `tpv/signals.py` | Editar | Signal `post_save` en `InsumoMateriaPrima` para alertas de stock bajo + signal en `Reserva` para confirmación |
+| `tpv/management/commands/enviar_informe_semanal.py` | **Crear** | Management command que genera y envía el informe semanal por email |
+| `tpv/admin.py` | Editar | Añadir action "Enviar email de pedido a proveedor" en `PedidoProveedorAdmin` + opción "Enviar cierre de caja por email" en `TurnoCaja` |
+| `tpv/models.py` | Editar | Añadir campo `email` a `PedidoProveedor` (email del proveedor) |
+| `templates/email/base_email.html` | **Crear** | Plantilla HTML base del email con branding del café |
+| `templates/email/stock_bajo.html` | **Crear** | Plantilla email de alerta de stock bajo |
+| `templates/email/informe_semanal.html` | **Crear** | Plantilla email del informe semanal |
+| `templates/email/pedido_proveedor.html` | **Crear** | Plantilla email de confirmación de pedido a proveedor |
+| `templates/email/reserva_confirmacion.html` | **Crear** | Plantilla email de confirmación de reserva |
+| `templates/email/cierre_caja.html` | **Crear** | Plantilla email del cierre de caja diario |
+
+### Funcionalidades detalladas
+
+#### 1. Alertas de stock bajo (automático)
+- **Trigger**: Signal `post_save` en `InsumoMateriaPrima` — si `cantidad_actual <= cantidad_minima`
+- **Destinatarios**: Staff (javiera) + superuser (tú)
+- **Contenido**: Lista de insumos bajos, cantidades, umbral mínimo
+- **Anti-spam**: No envía más de 1 email/hora del mismo tipo (cooldown en signal)
+
+#### 2. Informe semanal automático (domingo noche)
+- **Command**: `python manage.py enviar_informe_semanal`
+- **Programar**: Windows Task Scheduler cada domingo a las 23:00
+- **Destinatarios**: Staff + superuser
+- **Contenido**: Resumen de ventas, gastos, top productos, comparativa semana anterior
+- **Adjunto**: PDF del informe
+
+#### 3. Pedido a proveedor por email
+- **Trigger**: Action en admin "Enviar pedido por email"
+- **Destinatario**: Email del proveedor (campo nuevo en `PedidoProveedor`)
+- **Copia**: Superuser
+- **Contenido**: Detalle del pedido (insumo, cantidad, notas, fecha)
+
+#### 4. Confirmación de reserva
+- **Trigger**: Signal `post_save` en `Reserva` cuando estado = CONFIRMADA
+- **Destinatario**: Email del cliente (campo nuevo o existente en `Reserva`)
+- **Copia**: Staff
+- **Contenido**: Fecha, hora, mesa, número de personas, notas
+
+#### 5. Cierre de caja por email
+- **Trigger**: Action en admin "Enviar cierre por email" o automático al cerrar turno
+- **Destinatarios**: Staff + superuser
+- **Contenido**: Apertura/cierre, efectivo/tarjeta, gastos, total teórico vs real, tickets
+
+### Gmail SMTP (settings.py)
+```python
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # tu gmail
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # contraseña de app
+DEFAULT_FROM_EMAIL = 'TPV Cafeteria <tu@gmail.com>'
+```
+
+### Flujo de usuario
+
+**Staff (javiera):**
+- Recibe alertas de stock bajo automáticamente
+- Recibe informe semanal los domingos
+- En admin, selecciona pedido proveedor → action "Enviar por email"
+- En admin, al cerrar turno → action "Enviar cierre por email"
+- Nuevas reservas confirmadas → email automático
+
+**Superuser (tú):**
+- Recibe copia de TODO (stock, informes, pedidos, cierres)
+- Puede configurar destinatarios desde admin
+- Ve historial de emails enviados en admin (tabla `EmailLog`)
+
+### Modelo `EmailLog` (para historial)
+```python
+class EmailLog(models.Model):
+    asunto = models.CharField(max_length=200)
+    destinatarios = models.TextField()
+    tipo = models.CharField(max_length=50)  # stock, informe, pedido, reserva, cierre
+    enviado = models.BooleanField(default=True)
+    error = models.TextField(blank=True)
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+```
+
+---
+
+¿Te parece bien este plan? ¿Quieres que ajuste algo (más/fewer funcionalidades, diferente frecuencia, etc.)?
 
 ----------------------------------------------------------------
+
+
+Todo hecho y verificado. El informe semanal ya se ha enviado a tu Gmail de prueba. Resumen de lo implementado:
+
+### Archivos creados/modificados
+
+| Archivo | Qué |
+|---------|-----|
+| `cafe_tpv/settings.py` | Config SMTP Gmail |
+| `.env` | Credenciales Gmail |
+| `tpv/models.py` | +`EmailLog`, +`email_proveedor` en PedidoProveedor, +`email_cliente` en Reserva |
+| `tpv/emails.py` | 6 funciones de envío con cooldown anti-spam |
+| `tpv/signals.py` | Alerta stock bajo + notificación reserva |
+| `tpv/admin.py` | EmailLogAdmin + 3 actions nuevos |
+| `tpv/management/commands/enviar_informe_semanal.py` | Command listo |
+| `templates/email/` | 7 plantillas HTML con branding |
+
+### Qué hace cada funcionalidad
+
+| Función | Trigger | Quién recibe |
+|---------|---------|--------------|
+| **Stock bajo** | Automático (signal) | Staff + superuser |
+| **Informe semanal** | `python manage.py enviar_informe_semanal` | Staff + superuser |
+| **Pedido proveedor** | Action en admin → "Enviar pedido por email" | Proveedor + copia superuser |
+| **Reserva** | Action en admin → "Confirmar y enviar email" | Cliente + staff |
+| **Cierre caja** | Action en admin → "Enviar cierre de caja por email" | Staff + superuser |
+
+### Para el informe semanal automático (domingo noche)
+
+En **Windows Task Scheduler**:
+```
+Programa: C:\wamp64\www\ProyectosDjango\nuevacafe\nuevacafe\venv\Scripts\python.exe
+Argumentos: C:\wamp64\www\ProyectosDjango\nuevacafe\nuevacafe\manage.py enviar_informe_semanal
+Cada domingo a las 23:00
+```
+
+**Revisa tu Gmail** — debería llegar el informe semanal de prueba. Si no aparece, revisa la carpeta de spam o los logs en `/admin/` → "Email Logs".
+
+
+
+------------------------------------------------------------------
 
 javier
 Javier@2025
