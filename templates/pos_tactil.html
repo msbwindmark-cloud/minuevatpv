@@ -386,7 +386,103 @@
         setTimeout(function(){ sonido(784, 0.15, 'sine'); }, 200);
         setTimeout(function(){ sonido(1047, 0.25, 'sine'); }, 320);
     }
+    function sonidoTerminal() { sonido(1200, 0.06, 'sine'); }
+    function sonidoTerminalOk() {
+        sonido(880, 0.1, 'sine');
+        setTimeout(function(){ sonido(1100, 0.15, 'sine'); }, 120);
+    }
     function sonidoAlerta() { sonido(300, 0.3, 'sawtooth'); }
+
+    function terminalAnimacion(payload, total, nombreMesa, metodo, icono) {
+        var steps = [
+            { icon: '💳', text: 'Inserte o acerque la tarjeta...', pct: 0 },
+            { icon: '📡', text: 'Leyendo datos...', pct: 33 },
+            { icon: '⏳', text: 'Autorizando pago...', pct: 66 },
+            { icon: '✅', text: 'Pago aprobado', pct: 100 }
+        ];
+        var idx = 0;
+        function showStep() {
+            var s = steps[idx];
+            sonidoTerminal();
+            Swal.fire({
+                title: 'Terminal de Pago',
+                html: '<div style="text-align:center;">' +
+                    '<div style="font-size:3rem;margin:15px 0;">' + s.icon + '</div>' +
+                    '<div style="font-size:1.1rem;color:#e2e8f0;margin:10px 0;">' + s.text + '</div>' +
+                    '<div style="width:80%;margin:15px auto;background:rgba(255,255,255,0.1);border-radius:10px;height:8px;overflow:hidden;">' +
+                    '<div style="height:100%;width:' + s.pct + '%;background:linear-gradient(90deg,#3b82f6,#00d4ff);border-radius:10px;transition:width 0.4s ease;"></div></div>' +
+                    '<div style="font-size:0.8rem;color:#64748b;margin-top:8px;">' + total.toFixed(2) + ' &euro;</div>' +
+                    '</div>',
+                showConfirmButton: false,
+                background: '#1e293b', color: '#e2e8f0',
+                allowOutsideClick: false, allowEscapeKey: false
+            });
+            idx++;
+            if (idx < steps.length) {
+                setTimeout(showStep, idx === 1 ? 1200 : idx === 2 ? 1500 : 1000);
+            } else {
+                sonidoTerminalOk();
+                setTimeout(function() {
+                    fetch('/api/registrar-cobro/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                        body: JSON.stringify(payload)
+                    }).then(function(res) { return res.json(); }).then(function(d) {
+                        Swal.close();
+                        if (d.status === 'success') {
+                            sonidoCobro();
+                            lanzarConfetti();
+                            var pdfLink = '<a href="/pdf/ticket/' + d.ticket_id + '/" target="_blank" style="display:inline-block;margin-top:10px;padding:8px 18px;border-radius:12px;background:rgba(255,255,255,0.1);color:#00d4ff;font-weight:700;font-size:0.85rem;text-decoration:none;border:1px solid rgba(0,212,255,0.3);">&#128196; Ver Ticket PDF</a>';
+                            var qrLink = '<a href="/pdf/ticket-qr/' + d.ticket_id + '/" target="_blank" style="display:inline-block;margin-top:5px;margin-left:6px;padding:8px 18px;border-radius:12px;background:rgba(168,85,247,0.15);color:#a855f7;font-weight:700;font-size:0.85rem;text-decoration:none;border:1px solid rgba(168,85,247,0.3);">&#128270; Ticket QR</a>';
+                            var descHtml = d.descuento > 0 ? '<div style="font-size:0.85rem;color:var(--neon-green);margin:5px 0;">Descuento: -' + d.descuento.toFixed(2) + ' &euro;</div>' : '';
+                            var ptsHtml = d.puntos_ganados > 0 ? '<div style="font-size:0.85rem;color:#a855f7;margin:5px 0;">+' + d.puntos_ganados + ' puntos fidelidad &#127942;</div>' : '';
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Cobro completado',
+                                html: '<div style="font-size:0.9rem;color:#94a3b8;margin-bottom:5px;">Ticket #' + d.ticket_id + ' | ' + nombreMesa + '</div><div style="font-size:1.2rem;margin:10px 0;">' + icono + ' ' + metodo + '</div><div style="font-size:2rem;font-weight:900;color:#00ff88;">' + d.total.toFixed(2) + ' \u20ac</div>' + descHtml + ptsHtml + pdfLink + qrLink,
+                                confirmButtonColor: '#10b981',
+                                confirmButtonText: 'Aceptar',
+                                background: '#1e293b',
+                                color: '#e2e8f0'
+                            }).then(function() {
+                                preguntarSatisfaccion(d.ticket_id);
+                            });
+                            if (d.alertas && d.alertas.length > 0) {
+                                for (var j = 0; j < d.alertas.length; j++) {
+                                    var a = d.alertas[j];
+                                    lanzarToastAlerta('REPOSICION: Quedan ' + a.restante + ' ' + a.unidad + ' de ' + a.ingrediente);
+                                }
+                            }
+                            var cobroMesaId = mesaActual;
+                            delete pedidosMesa[cobroMesaId];
+                            var badgeCobro = document.getElementById('mesa-badge-' + cobroMesaId);
+                            if (badgeCobro) { badgeCobro.style.display = 'none'; badgeCobro.textContent = '0'; }
+                            var elMesa = document.getElementById('mesa-' + cobroMesaId);
+                            if (elMesa) { elMesa.classList.remove('mesa-seleccionada', 'mesa-pendiente'); elMesa.style.opacity = '1'; }
+                            var cards = document.querySelectorAll('.mesa-card');
+                            for (var c = 0; c < cards.length; c++) cards[c].style.opacity = '1';
+                            mesaActual = null;
+                            ordenActual = {};
+                            cuponAplicado = null;
+                            descuentoGlobal = 0;
+                            document.getElementById('cupon-form').style.display = 'flex';
+                            document.getElementById('cupon-activo').style.display = 'none';
+                            document.getElementById('cupon-codigo').value = '';
+                            document.getElementById('mesa-actual-label').textContent = 'Selecciona mesa';
+                            document.getElementById('ticket-mesa-info').textContent = '';
+                            actualizarGraficosTicket();
+                            actualizarBadgesMesas();
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error', text: d.error || 'Error', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+                        }
+                    }).catch(function() {
+                        Swal.fire({ icon: 'error', title: 'Sin conexion', text: 'No se pudo contactar con el servidor.', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0' });
+                    });
+                }, 600);
+            }
+        }
+        showStep();
+    }
 
     function crearParticulas() {
         var c = document.getElementById('particles-container');
@@ -624,10 +720,17 @@
             if (!r.isConfirmed) return;
             var lista = [];
             for (var i = 0; i < keys.length; i++) lista.push({ id: keys[i], cantidad: ordenActual[keys[i]].cantidad });
+            var payload = { items: lista, forma_pago: metodo, mesa_id: (mesaActual > 0) ? mesaActual : null, cupon: cuponAplicado || '', cliente_id: clienteActual ? clienteActual.id : null };
+
+            if (metodo === 'TARJETA') {
+                terminalAnimacion(payload, total + propinaMonto, nombreMesa, metodo, icono);
+                return;
+            }
+
             fetch('/api/registrar-cobro/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
-                body: JSON.stringify({ items: lista, forma_pago: metodo, mesa_id: (mesaActual > 0) ? mesaActual : null, cupon: cuponAplicado || '', cliente_id: clienteActual ? clienteActual.id : null })
+                body: JSON.stringify(payload)
             }).then(function(res) { return res.json(); }).then(function(d) {
                 if (d.status === 'success') {
                     sonidoCobro();
