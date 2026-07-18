@@ -1,0 +1,221 @@
+PLAN: Panel de Stock, Informe Semanal y Previsión de Compras en Admin
+Resumen de lo que vamos a construir
+Todo dentro del admin de Django, accesible solo para superusers/staff:
+
+Dashboard de Stock - Vista mejorada en admin con alertas visuales, edición rápida y resumen
+Informe Semanal de Gastos - Página en admin para ver gastos de la semana (domingo noche)
+Previsión de Compras del Lunes - Calcula automáticamente qué comprar basándose en la semana anterior
+Exportar a Excel/PDF - Botones directos desde el admin
+Paso 1: Nuevos modelos (models.py)
+No necesitamos modelos nuevos. Usamos los existentes:
+
+InsumoMateriaPrima (stock actual, mínimo, unidad)
+ComposicionReceta (qué insumo usa cada artículo y cuánto)
+LineaVenta (qué se vendió = cuánto se consumió)
+RegistroGasto (gastos registrados)
+PedidoProveedor (pedidos al proveedor)
+Paso 2: Admin mejorado (admin.py)
+2a. InsumoMateriaPrimaAdmin mejorado:
+
+list_display con indicador visual de stock (emoji verde/rojo)
+list_editable para editar stock directamente desde la lista
+actions personalizados: "Actualizar stock", "Marcar para reposición"
+fieldsets con组织organización visual
+Colores condicionales en el admin
+2b. ComposicionRecetaAdmin mejorado:
+
+Mostrar insumo con su stock actual
+Indicador de cuántas unidades del artículo se pueden hacer con el stock actual
+2c. PedidoProveedorAdmin mejorado:
+
+list_display mejorado con info del insumo
+actions para marcar como enviado/recibido
+list_filter por fecha
+Paso 3: Vista de Dashboard de Stock (vista personalizada en admin)
+Crear una vista de admin personalizada accesible desde un enlace en el admin:
+
+URL: /admin/stock-dashboard/
+
+Contenido:
+
+Resumen: total insumos, stock bajo, stock crítico
+Tabla de todos los insumos con:
+Stock actual vs mínimo
+Barra de progreso visual
+Estado (OK / Bajo / Crítico)
+Acción rápida para actualizar stock
+Botón "Generar pedido proveedor" para todos los críticos
+Botón "Exportar a Excel" el stock actual
+Paso 4: Informe Semanal de Gastos (vista personalizada en admin)
+URL: /admin/informe-semanal/
+
+Contenido:
+
+Selector de semana (lunes a domingo)
+Resumen de la semana:
+Total facturado
+Total gastos
+Balance neto
+Tickets totales
+Ticket medio
+Desglose de gastos por día (lunes a domingo)
+Top 10 productos vendidos en la semana
+Comparativa con semana anterior
+Botones de exportación:
+"Exportar a Excel" (hoja resumen + hoja detalle diario)
+"Exportar a PDF" (reporte A4 formateado)
+Paso 5: Previsión de Compras del Lunes (vista personalizada en admin)
+URL: /admin/prevision-compras/
+
+Contenido:
+
+Análisis automático de la semana anterior
+Para cada insumo:
+Stock actual
+Consumo estimado de la semana (basado en ventas × recetas)
+Stock proyectado al final de la semana
+Cantidad a recomendar para comprar
+Botón "Crear pedidos proveedor" con las cantidades calculadas
+Botón "Exportar a Excel" la lista de compras
+Botón "Exportar a PDF" la lista de compras
+Paso 6: Exportaciones Excel/PDF
+6a. Excel de Stock:
+
+Hoja "Stock Actual" con todos los insumos
+Hoja "Stock Bajo" solo los que necesitan reposición
+6b. Excel de Informe Semanal:
+
+Hoja "Resumen Semanal"
+Hoja "Detalle Diario"
+Hoja "Top Productos"
+6c. Excel de Previsión de Compras:
+
+Hoja "Lista de Compras" con cantidades a pedir
+6d. PDF de Informe Semanal:
+
+Reporte A4 con resumen y gráfico
+6e. PDF de Previsión:
+
+Lista de compras formateada para imprimir
+Paso 7: Templates HTML
+Crear templates en templates/admin/ para las vistas personalizadas:
+
+stock_dashboard.html - Dashboard de stock
+informe_semanal.html - Informe semanal
+prevision_compras.html - Previsión de compras
+Estos templates extenderán admin/base_site.html para mantener la apariencia del admin.
+
+Paso 8: URLs y permisos
+Todas las vistas accesibles solo para superusers
+URLs dentro del namespace /admin/ para integración natural
+Usar @admin.site.admin_view para proteger las vistas
+Archivos a modificar/crear:
+Archivo	Acción
+tpv/models.py	Sin cambios
+tpv/admin.py	Mejorar InsumoMateriaPrimaAdmin, ComposicionRecetaAdmin, PedidoProveedorAdmin
+tpv/views.py	Agregar 3 nuevas vistas: stock_dashboard, informe_semanal, prevision_compras
+cafe_tpv/urls.py	Agregar 3 URLs nuevas en /admin/
+templates/admin/stock_dashboard.html	Nuevo template
+templates/admin/informe_semanal.html	Nuevo template
+templates/admin/prevision_compras.html	Nuevo template
+Orden de implementación:
+Primero: admin.py mejorado (mejoras inmediatas visibles)
+Segundo: Vista de stock dashboard
+Tercero: Informe semanal
+Cuarto: Previsión de compras
+Quinto: Exportaciones Excel/PDF
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+
+
+✅ Implementación completada
+1. Admin mejorado (tpv/admin.py)
+InsumoMateriaPrimaAdmin:
+
+Indicadores visuales de estado: 🟢 OK / 🟡 BAJO / 🔴 AGOTADO
+Edición directa del stock desde la lista (list_editable)
+Fieldsets organizados con descripción
+Actions: "Marcar para reposición" y "Actualizar stock mínimo"
+Filtro por unidad de medida
+ComposicionRecetaAdmin:
+
+Muestra stock del insumo asociado
+Calcula "Unidades posibles" con el stock actual
+Filtro por categoría de artículo
+PedidoProveedorAdmin:
+
+Actions: "Marcar enviado", "Marcar recibido" (actualiza stock automáticamente), "Cancelar"
+Fieldsets organizados
+Búsqueda por nombre de insumo
+RegistroGastoAdmin / OperacionVentaAdmin:
+
+date_hierarchy, search_fields, readonly_fields mejorados
+2. Dashboard de Stock (/admin/stock-dashboard/)
+Tarjetas resumen: Total insumos, Stock OK, Stock Bajo, Agotados, Pedidos Pendientes
+Tabla completa con barras de progreso y badges de estado
+Botones de acción rápida
+Botón exportar Excel
+3. Informe Semanal (/admin/informe-semanal/)
+Navegación entre semanas (anterior/siguiente)
+Tarjetas: Total facturado, Gastos, Balance, Tickets, Ticket medio, Efectivo/Tarjeta
+Comparativa con semana anterior (% variación)
+Tabla detalle por día (Lunes-Domingo)
+Top 10 productos vendidos
+Desglose de gastos por concepto
+Exportar a Excel (3 hojas: Resumen, Detalle Diario, Top Productos)
+Exportar a PDF (reporte A4 completo)
+4. Previsión de Compras (/admin/prevision-compras/)
+Explicación de cómo funciona el cálculo
+Análisis de la semana anterior → consumo por insumo
+Proyección para la próxima semana
+Tabla con: Stock Actual, Consumo Semanal, Stock Proyectado, Cantidad a Comprar
+Badge visual: "COMPRAR" / "OK"
+Resumen de cobertura (días de stock restante)
+Exportar a Excel (lista de compras con totales)
+Exportar a PDF (lista de compras para imprimir)
+Archivos modificados/creados:
+Archivo	Estado
+tpv/admin.py	✅ Mejorado
+tpv/views.py	✅ +700 líneas (8 nuevas funciones)
+cafe_tpv/urls.py	✅ +10 URLs nuevas
+templates/admin/stock_dashboard.html	✅ Nuevo
+templates/admin/informe_semanal.html	✅ Nuevo
+templates/admin/prevision_compras.html	✅ Nuevo
+Todo accesible solo para superusers desde el admin. Cuando el bar empiece a usarlo, el domingo por la noche puede ir a /admin/informe-semanal/ para ver los gastos de la semana y a /admin/prevision-compras/ para ver qué comprar el lunes.
+
+
+
+
+
+--------------------------------------------------------------------
+
+
+
+Listo. Django check: **0 errores**. Ahora tu panel admin tiene:
+
+### En el admin principal (`/admin/`):
+Verás un panel oscuro arriba con **3 tarjetas clickeables**:
+- 📦 **Dashboard Stock** → te lleva a `/admin/stock-dashboard/`
+- 📊 **Informe Semanal** → te lleva a `/admin/informe-semanal/`
+- 🟢 **Previsión Compras** → te lleva a `/admin/prevision-compras/`
+
+### En cada página nueva:
+Hay un botón **⬅️ Volver al Admin** arriba a la derecha que te devuelve a `/admin/`
+
+### En el sidebar:
+También hay enlaces de navegación rápida en el lateral derecho de cada página.
+
+**Recarga** `http://127.0.0.1:8000/admin/` y dime qué ves.
+
+
+
+
+

@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.contrib import admin
 from django.db import transaction
 from django.db.models import Sum, Count, F, Q, Avg
 from django.utils import timezone
@@ -2334,4 +2335,750 @@ def api_sheets_sync(request):
         ])
     response = HttpResponse(output.getvalue(), content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="tpv_sheets_{hoy.strftime("%Y%m%d")}.csv"'
+    return response
+
+
+# ==================== ADMIN PANEL: STOCK, INFORME SEMANAL, PREVISION ====================
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_stock_dashboard(request):
+    """Dashboard de gestión de stock accesible desde el admin"""
+    from decimal import Decimal
+
+    insumos = InsumoMateriaPrima.objects.all().order_by('nombre')
+
+    total_insumos = insumos.count()
+    stock_bajo = insumos.filter(cantidad_actual__lte=F('cantidad_minima')).count()
+    stock_critico = insumos.filter(cantidad_actual__lte=0).count()
+    stock_ok = total_insumos - stock_bajo
+
+    insumos_data = []
+    for insumo in insumos:
+        if insumo.cantidad_minima > 0:
+            porcentaje = min(100, int((insumo.cantidad_actual / insumo.cantidad_minima) * 100))
+        else:
+            porcentaje = 100
+
+        if insumo.cantidad_actual <= 0:
+            estado = 'AGOTADO'
+            estado_clase = 'danger'
+        elif insumo.cantidad_actual <= insumo.cantidad_minima:
+            estado = 'BAJO'
+            estado_clase = 'warning'
+        else:
+            estado = 'OK'
+            estado_clase = 'success'
+
+        insumos_data.append({
+            'insumo': insumo,
+            'porcentaje': porcentaje,
+            'estado': estado,
+            'estado_clase': estado_clase,
+        })
+
+    pedidos_pendientes = PedidoProveedor.objects.filter(estado='PENDIENTE').count()
+
+    context = {
+        **admin.site.each_context(request),
+        'titulo': 'Dashboard de Stock',
+        'insumos_data': insumos_data,
+        'total_insumos': total_insumos,
+        'stock_bajo': stock_bajo,
+        'stock_critico': stock_critico,
+        'stock_ok': stock_ok,
+        'pedidos_pendientes': pedidos_pendientes,
+        'app_list': admin.site.get_app_list(request),
+    }
+    return render(request, 'admin/stock_dashboard.html', context)
+
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_informe_semanal(request):
+    """Informe semanal de gastos y ventas accesible desde el admin"""
+    from decimal import Decimal
+
+    hoy = timezone.now().date()
+    semana_offset = int(request.GET.get('semana', 0))
+    fecha_inicio_semana = hoy - timedelta(days=hoy.weekday()) + timedelta(weeks=semana_offset)
+    fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+
+    ventas_semana = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio_semana,
+        fecha_registro__date__lte=fecha_fin_semana
+    )
+    gastos_semana = RegistroGasto.objects.filter(
+        fecha_gasto__date__gte=fecha_inicio_semana,
+        fecha_gasto__date__lte=fecha_fin_semana
+    )
+
+    total_ventas = ventas_semana.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    total_gastos = gastos_semana.aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+    balance = total_ventas - total_gastos
+    total_tickets = ventas_semana.count()
+    ticket_medio = (total_ventas / total_tickets) if total_tickets > 0 else Decimal('0.00')
+
+    efectivo = ventas_semana.filter(forma_pago='EFECTIVO').aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    tarjeta = ventas_semana.filter(forma_pago='TARJETA').aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+
+    # Detalle diario
+    dias_semana = []
+    nombres_dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    for i in range(7):
+        dia = fecha_inicio_semana + timedelta(days=i)
+        ventas_dia = ventas_semana.filter(fecha_registro__date=dia)
+        gastos_dia = gastos_semana.filter(fecha_gasto__date=dia)
+        total_dia = ventas_dia.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+        gasto_dia = gastos_dia.aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+        dias_semana.append({
+            'nombre': nombres_dias[i],
+            'fecha': dia,
+            'ventas': total_dia,
+            'gastos': gasto_dia,
+            'balance': total_dia - gasto_dia,
+            'tickets': ventas_dia.count(),
+        })
+
+    # Top productos vendidos
+    top_productos = (
+        LineaVenta.objects
+        .filter(venta__fecha_registro__date__gte=fecha_inicio_semana,
+                venta__fecha_registro__date__lte=fecha_fin_semana)
+        .values('articulo__nombre')
+        .annotate(unidades=Sum('unidades'), ingresos=Sum('precio_aplicado_con_iva'))
+        .order_by('-ingresos')[:10]
+    )
+
+    # Desglose de gastos
+    desglose_gastos = (
+        gastos_semana
+        .values('concepto')
+        .annotate(total=Sum('importe_total'))
+        .order_by('-total')
+    )
+
+    # Semana anterior para comparativa
+    fecha_inicio_ant = fecha_inicio_semana - timedelta(days=7)
+    fecha_fin_ant = fecha_fin_semana - timedelta(days=7)
+    ventas_anterior = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio_ant,
+        fecha_registro__date__lte=fecha_fin_ant
+    )
+    total_ventas_anterior = ventas_anterior.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    tickets_anterior = ventas_anterior.count()
+    variacion_ventas = 0
+    if total_ventas_anterior > 0:
+        variacion_ventas = round(((float(total_ventas) - float(total_ventas_anterior)) / float(total_ventas_anterior)) * 100, 1)
+
+    context = {
+        **admin.site.each_context(request),
+        'titulo': 'Informe Semanal',
+        'fecha_inicio': fecha_inicio_semana,
+        'fecha_fin': fecha_fin_semana,
+        'semana_offset': semana_offset,
+        'total_ventas': total_ventas,
+        'total_gastos': total_gastos,
+        'balance': balance,
+        'total_tickets': total_tickets,
+        'ticket_medio': ticket_medio,
+        'efectivo': efectivo,
+        'tarjeta': tarjeta,
+        'dias_semana': dias_semana,
+        'top_productos': top_productos,
+        'desglose_gastos': desglose_gastos,
+        'total_ventas_anterior': total_ventas_anterior,
+        'tickets_anterior': tickets_anterior,
+        'variacion_ventas': variacion_ventas,
+        'app_list': admin.site.get_app_list(request),
+    }
+    return render(request, 'admin/informe_semanal.html', context)
+
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_prevision_compras(request):
+    """Previsión de compras del lunes basada en la semana anterior"""
+    from decimal import Decimal
+
+    hoy = timezone.now().date()
+    semana_offset = int(request.GET.get('semana', 0))
+
+    # Semana a analizar (la anterior)
+    fecha_inicio_semana = hoy - timedelta(days=hoy.weekday()) + timedelta(weeks=semana_offset - 1)
+    fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+
+    # Semana de previsión (la siguiente)
+    fecha_inicio_prevision = fecha_fin_semana + timedelta(days=1)
+    fecha_fin_prevision = fecha_inicio_prevision + timedelta(days=6)
+
+    # Ventas de la semana analizada
+    ventas_semana = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio_semana,
+        fecha_registro__date__lte=fecha_fin_semana
+    )
+
+    # Calcular consumo de cada insumo basado en ventas × recetas
+    lineas_venta = LineaVenta.objects.filter(
+        venta__in=ventas_semana
+    ).select_related('articulo')
+
+    consumo_insumos = {}
+    for linea in lineas_venta:
+        recetas = ComposicionReceta.objects.filter(articulo=linea.articulo)
+        for receta in recetas:
+            insumo_id = receta.insumo.id
+            consumo = receta.cantidad_consumida * linea.unidades
+            if insumo_id in consumo_insumos:
+                consumo_insumos[insumo_id]['consumo_total'] += consumo
+            else:
+                consumo_insumos[insumo_id] = {
+                    'insumo': receta.insumo,
+                    'consumo_total': consumo,
+                }
+
+    # Calcular previsión para la próxima semana
+    dias_analizados = 7
+    dias_prevision = 7
+
+    prevision_data = []
+    total_compra = Decimal('0.00')
+
+    for insumo in InsumoMateriaPrima.objects.all().order_by('nombre'):
+        consumo_info = consumo_insumos.get(insumo.id, {'consumo_total': Decimal('0.00')})
+        consumo_semanal = consumo_info['consumo_total']
+
+        # Consumo diario promedio
+        consumo_diario = consumo_semanal / dias_analizados if dias_analizados > 0 else Decimal('0.00')
+
+        # Consumo estimado para la próxima semana
+        consumo_estimado = consumo_diario * dias_prevision
+
+        # Stock actual
+        stock_actual = insumo.cantidad_actual
+
+        # Stock proyectado al final de la próxima semana
+        stock_proyectado = stock_actual - consumo_estimado
+
+        # Cantidad a recomendar para comprar
+        if stock_proyectado < insumo.cantidad_minima:
+            cantidad_comprar = insumo.cantidad_minima * 2 - stock_proyectado
+            if cantidad_comprar < 0:
+                cantidad_comprar = Decimal('0.00')
+        else:
+            cantidad_comprar = Decimal('0.00')
+
+        total_compra += cantidad_comprar
+
+        prevision_data.append({
+            'insumo': insumo,
+            'consumo_semanal': consumo_semanal,
+            'consumo_diario': consumo_diario,
+            'consumo_estimado': consumo_estimado,
+            'stock_actual': stock_actual,
+            'stock_proyectado': stock_proyectado,
+            'cantidad_comprar': cantidad_comprar,
+            'necesita_compra': cantidad_comprar > 0,
+        })
+
+    context = {
+        **admin.site.each_context(request),
+        'titulo': 'Previsión de Compras',
+        'semana_offset': semana_offset,
+        'fecha_inicio_analisis': fecha_inicio_semana,
+        'fecha_fin_analisis': fecha_fin_semana,
+        'fecha_inicio_prevision': fecha_inicio_prevision,
+        'fecha_fin_prevision': fecha_fin_prevision,
+        'prevision_data': prevision_data,
+        'total_compra': total_compra,
+        'total_ventas_semana': ventas_semana.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00'),
+        'app_list': admin.site.get_app_list(request),
+    }
+    return render(request, 'admin/prevision_compras.html', context)
+
+
+# ==================== EXPORTACIONES EXCEL/PDF PARA ADMIN ====================
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_exportar_stock_excel(request):
+    """Exporta el estado del stock actual a Excel"""
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+
+    wb = openpyxl.Workbook()
+
+    # Hoja 1: Stock Actual
+    ws = wb.active
+    ws.title = "Stock Actual"
+    headers = ['Insumo', 'Stock Actual', 'Stock Mínimo', 'Unidad', 'Estado', 'Necesita Reposición']
+    header_fill = PatternFill(start_color="8B4513", end_color="8B4513", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    for col, h in enumerate(headers, 1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.fill = header_fill
+        c.font = header_font
+        c.alignment = Alignment(horizontal='center')
+        c.border = thin_border
+
+    insumos = InsumoMateriaPrima.objects.all().order_by('nombre')
+    for row, insumo in enumerate(insumos, 2):
+        estado = 'AGOTADO' if insumo.cantidad_actual <= 0 else ('BAJO' if insumo.necesita_reposicion else 'OK')
+        ws.cell(row=row, column=1, value=insumo.nombre).border = thin_border
+        ws.cell(row=row, column=2, value=float(insumo.cantidad_actual)).border = thin_border
+        ws.cell(row=row, column=3, value=float(insumo.cantidad_minima)).border = thin_border
+        ws.cell(row=row, column=4, value=insumo.get_unidad_medida_display()).border = thin_border
+        c_estado = ws.cell(row=row, column=5, value=estado)
+        c_estado.border = thin_border
+        if estado == 'AGOTADO':
+            c_estado.fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
+            c_estado.font = Font(color="FFFFFF", bold=True)
+        elif estado == 'BAJO':
+            c_estado.fill = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")
+            c_estado.font = Font(bold=True)
+        else:
+            c_estado.fill = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")
+        ws.cell(row=row, column=6, value='SÍ' if insumo.necesita_reposicion else 'NO').border = thin_border
+
+    for col in range(1, 7):
+        ws.column_dimensions[chr(64+col)].width = 20
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="stock_actual_{timezone.now().date()}.xlsx"'
+    wb.save(response)
+    return response
+
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_exportar_informe_semanal_excel(request):
+    """Exporta el informe semanal a Excel"""
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from decimal import Decimal
+
+    hoy = timezone.now().date()
+    semana_offset = int(request.GET.get('semana', 0))
+    fecha_inicio = hoy - timedelta(days=hoy.weekday()) + timedelta(weeks=semana_offset)
+    fecha_fin = fecha_inicio + timedelta(days=6)
+
+    wb = openpyxl.Workbook()
+
+    # Hoja 1: Resumen Semanal
+    ws = wb.active
+    ws.title = "Resumen Semanal"
+    header_fill = PatternFill(start_color="8B4513", end_color="8B4513", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+
+    resumen_data = [
+        ['Concepto', 'Valor'],
+        ['Semana del', fecha_inicio.strftime('%d/%m/%Y')],
+        ['al', fecha_fin.strftime('%d/%m/%Y')],
+        ['', ''],
+    ]
+    for row, data in enumerate(resumen_data, 1):
+        for col, val in enumerate(data, 1):
+            c = ws.cell(row=row, column=col, value=val)
+            if row == 1:
+                c.fill = header_fill
+                c.font = header_font
+
+    ventas = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio, fecha_registro__date__lte=fecha_fin
+    )
+    gastos = RegistroGasto.objects.filter(
+        fecha_gasto__date__gte=fecha_inicio, fecha_gasto__date__lte=fecha_fin
+    )
+    total_v = ventas.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    total_g = gastos.aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+
+    metrics = [
+        ['Total Facturado', f'{total_v:.2f} EUR'],
+        ['Total Gastos', f'{total_g:.2f} EUR'],
+        ['Balance', f'{(total_v - total_g):.2f} EUR'],
+        ['Tickets', ventas.count()],
+        ['Ticket Medio', f'{(total_v / ventas.count() if ventas.count() > 0 else 0):.2f} EUR'],
+    ]
+    for row, data in enumerate(metrics, 5):
+        for col, val in enumerate(data, 1):
+            ws.cell(row=row, column=col, value=val)
+
+    ws.column_dimensions['A'].width = 20
+    ws.column_dimensions['B'].width = 25
+
+    # Hoja 2: Detalle Diario
+    ws2 = wb.create_sheet("Detalle Diario")
+    dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    headers2 = ['Día', 'Fecha', 'Ventas', 'Gastos', 'Balance', 'Tickets']
+    for col, h in enumerate(headers2, 1):
+        c = ws2.cell(row=1, column=col, value=h)
+        c.fill = PatternFill(start_color="228B22", end_color="228B22", fill_type="solid")
+        c.font = header_font
+
+    for i in range(7):
+        dia = fecha_inicio + timedelta(days=i)
+        v_dia = ventas.filter(fecha_registro__date=dia).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+        g_dia = gastos.filter(fecha_gasto__date=dia).aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+        row = i + 2
+        ws2.cell(row=row, column=1, value=dias[i])
+        ws2.cell(row=row, column=2, value=dia.strftime('%d/%m'))
+        ws2.cell(row=row, column=3, value=float(v_dia))
+        ws2.cell(row=row, column=4, value=float(g_dia))
+        ws2.cell(row=row, column=5, value=float(v_dia - g_dia))
+        ws2.cell(row=row, column=6, value=ventas.filter(fecha_registro__date=dia).count())
+
+    for col in range(1, 7):
+        ws2.column_dimensions[chr(64+col)].width = 18
+
+    # Hoja 3: Top Productos
+    ws3 = wb.create_sheet("Top Productos")
+    headers3 = ['Producto', 'Unidades Vendidas', 'Ingresos']
+    for col, h in enumerate(headers3, 1):
+        c = ws3.cell(row=1, column=col, value=h)
+        c.fill = PatternFill(start_color="DC143C", end_color="DC143C", fill_type="solid")
+        c.font = header_font
+
+    top = (
+        LineaVenta.objects
+        .filter(venta__fecha_registro__date__gte=fecha_inicio, venta__fecha_registro__date__lte=fecha_fin)
+        .values('articulo__nombre')
+        .annotate(unidades=Sum('unidades'), ingresos=Sum('precio_aplicado_con_iva'))
+        .order_by('-ingresos')[:10]
+    )
+    for row, t in enumerate(top, 2):
+        ws3.cell(row=row, column=1, value=t['articulo__nombre'])
+        ws3.cell(row=row, column=2, value=t['unidades'])
+        ws3.cell(row=row, column=3, value=float(t['ingresos'] or 0))
+
+    for col in range(1, 4):
+        ws3.column_dimensions[chr(64+col)].width = 22
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="informe_semanal_{fecha_inicio.strftime("%Y%m%d")}.xlsx"'
+    wb.save(response)
+    return response
+
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_exportar_prevision_excel(request):
+    """Exporta la previsión de compras a Excel"""
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    from decimal import Decimal
+
+    hoy = timezone.now().date()
+    semana_offset = int(request.GET.get('semana', 0))
+
+    fecha_inicio_semana = hoy - timedelta(days=hoy.weekday()) + timedelta(weeks=semana_offset - 1)
+    fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+    fecha_inicio_prevision = fecha_fin_semana + timedelta(days=1)
+    fecha_fin_prevision = fecha_inicio_prevision + timedelta(days=6)
+
+    ventas_semana = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio_semana,
+        fecha_registro__date__lte=fecha_fin_semana
+    )
+
+    lineas_venta = LineaVenta.objects.filter(venta__in=ventas_semana).select_related('articulo')
+
+    consumo_insumos = {}
+    for linea in lineas_venta:
+        recetas = ComposicionReceta.objects.filter(articulo=linea.articulo)
+        for receta in recetas:
+            insumo_id = receta.insumo.id
+            consumo = receta.cantidad_consumida * linea.unidades
+            if insumo_id in consumo_insumos:
+                consumo_insumos[insumo_id] += consumo
+            else:
+                consumo_insumos[insumo_id] = consumo
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Lista de Compras"
+
+    headers = ['Insumo', 'Unidad', 'Stock Actual', 'Consumo Semanal', 'Stock Proyectado', 'Cantidad a Comprar']
+    header_fill = PatternFill(start_color="8B4513", end_color="8B4513", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    thin_border = Border(
+        left=Side(style='thin'), right=Side(style='thin'),
+        top=Side(style='thin'), bottom=Side(style='thin')
+    )
+
+    for col, h in enumerate(headers, 1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.fill = header_fill
+        c.font = header_font
+        c.alignment = Alignment(horizontal='center')
+        c.border = thin_border
+
+    row = 2
+    total_compra = Decimal('0.00')
+    for insumo in InsumoMateriaPrima.objects.all().order_by('nombre'):
+        consumo = consumo_insumos.get(insumo.id, Decimal('0.00'))
+        consumo_diario = consumo / 7
+        consumo_estimado = consumo_diario * 7
+        stock_proyectado = insumo.cantidad_actual - consumo_estimado
+
+        if stock_proyectado < insumo.cantidad_minima:
+            cantidad_comprar = insumo.cantidad_minima * 2 - stock_proyectado
+            if cantidad_comprar < 0:
+                cantidad_comprar = Decimal('0.00')
+        else:
+            cantidad_comprar = Decimal('0.00')
+
+        total_compra += cantidad_comprar
+
+        ws.cell(row=row, column=1, value=insumo.nombre).border = thin_border
+        ws.cell(row=row, column=2, value=insumo.unidad_medida).border = thin_border
+        ws.cell(row=row, column=3, value=float(insumo.cantidad_actual)).border = thin_border
+        ws.cell(row=row, column=4, value=float(consumo)).border = thin_border
+        ws.cell(row=row, column=5, value=float(stock_proyectado)).border = thin_border
+        c_comprar = ws.cell(row=row, column=6, value=float(cantidad_comprar))
+        c_comprar.border = thin_border
+        if cantidad_comprar > 0:
+            c_comprar.fill = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")
+            c_comprar.font = Font(bold=True)
+        row += 1
+
+    # Fila de total
+    ws.cell(row=row + 1, column=5, value='TOTAL:').font = Font(bold=True)
+    ws.cell(row=row + 1, column=6, value=float(total_compra)).font = Font(bold=True, color="FF0000")
+
+    for col in range(1, 7):
+        ws.column_dimensions[chr(64+col)].width = 22
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="prevision_compras_{fecha_inicio_semana.strftime("%Y%m%d")}.xlsx"'
+    wb.save(response)
+    return response
+
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_exportar_informe_semanal_pdf(request):
+    """Exporta el informe semanal a PDF"""
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    import io
+    from decimal import Decimal
+
+    hoy = timezone.now().date()
+    semana_offset = int(request.GET.get('semana', 0))
+    fecha_inicio = hoy - timedelta(days=hoy.weekday()) + timedelta(weeks=semana_offset)
+    fecha_fin = fecha_inicio + timedelta(days=6)
+
+    ventas = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio, fecha_registro__date__lte=fecha_fin
+    )
+    gastos = RegistroGasto.objects.filter(
+        fecha_gasto__date__gte=fecha_inicio, fecha_gasto__date__lte=fecha_fin
+    )
+    total_v = ventas.aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+    total_g = gastos.aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    w, h = A4
+    y = h - 40
+
+    # Título
+    c.setFont('Helvetica-Bold', 18)
+    c.drawCentredString(w/2, y, 'INFORME SEMANAL - TPV Cafeteria')
+    y -= 25
+    c.setFont('Helvetica', 11)
+    c.drawCentredString(w/2, y, f'Semana: {fecha_inicio.strftime("%d/%m/%Y")} - {fecha_fin.strftime("%d/%m/%Y")}')
+    y -= 35
+
+    # Resumen
+    c.setFont('Helvetica-Bold', 14)
+    c.drawString(40, y, 'RESUMEN SEMANAL')
+    y -= 25
+    c.setFont('Helvetica', 11)
+    for label, val in [
+        ('Total Facturado', f'{total_v:.2f} EUR'),
+        ('Total Gastos', f'{total_g:.2f} EUR'),
+        ('Balance Neto', f'{(total_v - total_g):.2f} EUR'),
+        ('Tickets Totales', str(ventas.count())),
+        ('Ticket Medio', f'{(total_v / ventas.count() if ventas.count() > 0 else 0):.2f} EUR'),
+    ]:
+        c.drawString(50, y, f'{label}:')
+        c.drawRightString(w - 40, y, val)
+        y -= 18
+
+    # Detalle diario
+    c.setFont('Helvetica-Bold', 14)
+    c.drawString(40, y, 'DETALLE POR DIA')
+    y -= 25
+    c.setFont('Helvetica-Bold', 10)
+    c.drawString(40, y, 'Dia')
+    c.drawString(100, y, 'Fecha')
+    c.drawString(160, y, 'Ventas')
+    c.drawRightString(w - 40, y, 'Gastos')
+    y -= 15
+    c.line(40, y, w - 40, y)
+    y -= 15
+
+    dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo']
+    c.setFont('Helvetica', 10)
+    for i in range(7):
+        dia = fecha_inicio + timedelta(days=i)
+        v_dia = ventas.filter(fecha_registro__date=dia).aggregate(t=Sum('total_facturado'))['t'] or Decimal('0.00')
+        g_dia = gastos.filter(fecha_gasto__date=dia).aggregate(t=Sum('importe_total'))['t'] or Decimal('0.00')
+        c.drawString(40, y, dias[i])
+        c.drawString(100, y, dia.strftime('%d/%m'))
+        c.drawString(160, y, f'{v_dia:.2f}')
+        c.drawRightString(w - 40, y, f'{g_dia:.2f}')
+        y -= 15
+
+    # Top productos
+    y -= 15
+    c.setFont('Helvetica-Bold', 14)
+    c.drawString(40, y, 'TOP 10 PRODUCTOS')
+    y -= 25
+    c.setFont('Helvetica-Bold', 10)
+    c.drawString(40, y, '#')
+    c.drawString(60, y, 'Producto')
+    c.drawRightString(w - 40, y, 'Ingresos')
+    y -= 15
+    c.line(40, y, w - 40, y)
+    y -= 15
+
+    top = (
+        LineaVenta.objects
+        .filter(venta__fecha_registro__date__gte=fecha_inicio, venta__fecha_registro__date__lte=fecha_fin)
+        .values('articulo__nombre')
+        .annotate(unidades=Sum('unidades'), ingresos=Sum('precio_aplicado_con_iva'))
+        .order_by('-ingresos')[:10]
+    )
+    c.setFont('Helvetica', 10)
+    for idx, t in enumerate(top, 1):
+        if y < 50:
+            c.showPage()
+            y = h - 40
+        c.drawString(40, y, str(idx))
+        c.drawString(60, y, t['articulo__nombre'][:30])
+        c.drawRightString(w - 40, y, f'{float(t["ingresos"] or 0):.2f}')
+        y -= 15
+
+    c.save()
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="informe_semanal_{fecha_inicio.strftime("%Y%m%d")}.pdf"'
+    return response
+
+
+@login_required
+@user_passes_test(es_gerente)
+def admin_exportar_prevision_pdf(request):
+    """Exporta la previsión de compras a PDF"""
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    import io
+    from decimal import Decimal
+
+    hoy = timezone.now().date()
+    semana_offset = int(request.GET.get('semana', 0))
+
+    fecha_inicio_semana = hoy - timedelta(days=hoy.weekday()) + timedelta(weeks=semana_offset - 1)
+    fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+    fecha_inicio_prevision = fecha_fin_semana + timedelta(days=1)
+    fecha_fin_prevision = fecha_inicio_prevision + timedelta(days=6)
+
+    ventas_semana = OperacionVenta.objects.filter(
+        fecha_registro__date__gte=fecha_inicio_semana,
+        fecha_registro__date__lte=fecha_fin_semana
+    )
+    lineas_venta = LineaVenta.objects.filter(venta__in=ventas_semana).select_related('articulo')
+
+    consumo_insumos = {}
+    for linea in lineas_venta:
+        recetas = ComposicionReceta.objects.filter(articulo=linea.articulo)
+        for receta in recetas:
+            insumo_id = receta.insumo.id
+            consumo = receta.cantidad_consumida * linea.unidades
+            if insumo_id in consumo_insumos:
+                consumo_insumos[insumo_id] += consumo
+            else:
+                consumo_insumos[insumo_id] = consumo
+
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    w, h = A4
+    y = h - 40
+
+    # Título
+    c.setFont('Helvetica-Bold', 18)
+    c.drawCentredString(w/2, y, 'PREVISION DE COMPRAS')
+    y -= 25
+    c.setFont('Helvetica', 11)
+    c.drawCentredString(w/2, y, f'Semana de analisis: {fecha_inicio_semana.strftime("%d/%m/%Y")} - {fecha_fin_semana.strftime("%d/%m/%Y")}')
+    y -= 15
+    c.drawCentredString(w/2, y, f'Prevision para: {fecha_inicio_prevision.strftime("%d/%m/%Y")} - {fecha_fin_prevision.strftime("%d/%m/%Y")}')
+    y -= 35
+
+    # Lista de compras
+    c.setFont('Helvetica-Bold', 14)
+    c.drawString(40, y, 'LISTA DE COMPRAS')
+    y -= 25
+    c.setFont('Helvetica-Bold', 9)
+    c.drawString(40, y, 'Insumo')
+    c.drawString(180, y, 'Unidad')
+    c.drawString(240, y, 'Stock')
+    c.drawString(300, y, 'Consumo')
+    c.drawRightString(w - 40, y, 'Comprar')
+    y -= 15
+    c.line(40, y, w - 40, y)
+    y -= 15
+
+    c.setFont('Helvetica', 9)
+    total_compra = Decimal('0.00')
+    for insumo in InsumoMateriaPrima.objects.all().order_by('nombre'):
+        if y < 50:
+            c.showPage()
+            y = h - 40
+
+        consumo = consumo_insumos.get(insumo.id, Decimal('0.00'))
+        consumo_diario = consumo / 7
+        consumo_estimado = consumo_diario * 7
+        stock_proyectado = insumo.cantidad_actual - consumo_estimado
+
+        if stock_proyectado < insumo.cantidad_minima:
+            cantidad_comprar = insumo.cantidad_minima * 2 - stock_proyectado
+            if cantidad_comprar < 0:
+                cantidad_comprar = Decimal('0.00')
+        else:
+            cantidad_comprar = Decimal('0.00')
+
+        total_compra += cantidad_comprar
+
+        c.drawString(40, y, insumo.nombre[:25])
+        c.drawString(180, y, insumo.unidad_medida)
+        c.drawString(240, y, f'{insumo.cantidad_actual:.1f}')
+        c.drawString(300, y, f'{consumo:.1f}')
+        c.drawRightString(w - 40, y, f'{cantidad_comprar:.1f}' if cantidad_comprar > 0 else '-')
+        y -= 15
+
+    # Total
+    y -= 10
+    c.setFont('Helvetica-Bold', 12)
+    c.drawString(40, y, f'TOTAL ESTIMADO A COMPRAR: {total_compra:.2f}')
+
+    c.save()
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="prevision_compras_{fecha_inicio_semana.strftime("%Y%m%d")}.pdf"'
     return response

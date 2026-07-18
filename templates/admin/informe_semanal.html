@@ -1,0 +1,317 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{{ titulo }} | {{ site_title }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    :root {
+        --primary: #8B4513;
+        --primary-light: #A0522D;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --info: #17a2b8;
+    }
+    body { background: #f8f9fa; }
+    .report-header {
+        background: linear-gradient(135deg, #228B22, #2d9e2d);
+        color: white;
+        padding: 20px 30px;
+        margin: -20px -20px 20px -20px;
+        border-radius: 0 0 10px 10px;
+    }
+    .report-header h1 { margin: 0; font-size: 24px; }
+    .report-header p { margin: 5px 0 0; opacity: 0.9; }
+    .week-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin: 15px 0;
+    }
+    .week-nav a {
+        display: inline-block;
+        padding: 8px 16px;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+    .week-nav a:hover { background: rgba(255,255,255,0.3); }
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .stat-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+        border-left: 4px solid;
+    }
+    .stat-card.green { border-left-color: var(--success); }
+    .stat-card.red { border-left-color: var(--danger); }
+    .stat-card.blue { border-left-color: var(--info); }
+    .stat-card.orange { border-left-color: var(--warning); }
+    .stat-number { font-size: 28px; font-weight: bold; margin: 5px 0; }
+    .stat-label { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .variation { font-size: 12px; margin-top: 5px; }
+    .variation.up { color: var(--success); }
+    .variation.down { color: var(--danger); }
+    .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin: 25px 0 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #228B22;
+    }
+    .data-table {
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+    .data-table th {
+        background: #228B22;
+        color: white;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .data-table td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+    .data-table tr:hover { background: #f8f9fa; }
+    .data-table .total-row { background: #f0f0f0; font-weight: bold; }
+    .actions-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .btn-action {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-info { background: var(--info); color: white; }
+    .btn-primary { background: var(--primary); color: white; }
+    .comparison-box {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+    .comparison-title { font-weight: bold; margin-bottom: 10px; color: #333; }
+    .positive { color: var(--success); }
+    .negative { color: var(--danger); }
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    @media (max-width: 768px) {
+        .grid-2 { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>📊 {{ titulo }}</h1>
+            <p>{{ fecha_inicio|date:"d/m/Y" }} - {{ fecha_fin|date:"d/m/Y" }}</p>
+        </div>
+        <a href="/admin/" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background 0.2s;">⬅️ Volver al Admin</a>
+    </div>
+    <div class="week-nav">
+        <a href="?semana={{ semana_offset|add:'-1' }}">⬅️ Semana Anterior</a>
+        <span style="font-weight: bold;">Semana actual</span>
+        {% if semana_offset < 0 %}
+            <a href="?semana={{ semana_offset|add:'1' }}">Semana Siguiente ➡️</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="actions-bar">
+    <a href="/admin/informe-semanal/excel/?semana={{ semana_offset }}" class="btn-action btn-success">📊 Exportar a Excel</a>
+    <a href="/admin/informe-semanal/pdf/?semana={{ semana_offset }}" target="_blank" class="btn-action btn-info">📄 Exportar a PDF</a>
+    <a href="/admin/stock-dashboard/" class="btn-action btn-primary">📦 Ver Stock</a>
+    <a href="/admin/prevision-compras/?semana={{ semana_offset }}" class="btn-action btn-primary">🛒 Ver Previsión Compras</a>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card green">
+        <div class="stat-label">Total Facturado</div>
+        <div class="stat-number" style="color: var(--success);">{{ total_ventas|floatformat:2 }}€</div>
+        {% if variacion_ventas != 0 %}
+        <div class="variation {% if variacion_ventas > 0 %}up{% else %}down{% endif %}">
+            {% if variacion_ventas > 0 %}↑{% else %}↓{% endif %} {{ variacion_ventas|floatformat:1 }}% vs semana anterior
+        </div>
+        {% endif %}
+    </div>
+    <div class="stat-card red">
+        <div class="stat-label">Total Gastos</div>
+        <div class="stat-number" style="color: var(--danger);">{{ total_gastos|floatformat:2 }}€</div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-label">Balance Neto</div>
+        <div class="stat-number" style="color: {% if balance >= 0 %}var(--success){% else %}var(--danger){% endif %};">{{ balance|floatformat:2 }}€</div>
+    </div>
+    <div class="stat-card orange">
+        <div class="stat-label">Tickets</div>
+        <div class="stat-number" style="color: var(--warning);">{{ total_tickets }}</div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-label">Ticket Medio</div>
+        <div class="stat-number" style="color: var(--info);">{{ ticket_medio|floatformat:2 }}€</div>
+    </div>
+    <div class="stat-card green">
+        <div class="stat-label">Efectivo / Tarjeta</div>
+        <div class="stat-number" style="font-size: 16px; color: var(--success);">{{ efectivo|floatformat:2 }}€ / {{ tarjeta|floatformat:2 }}€</div>
+    </div>
+</div>
+
+<div class="comparison-box">
+    <div class="comparison-title">📈 Comparativa con Semana Anterior</div>
+    <div style="display: flex; gap: 30px;">
+        <div>
+            <span style="color: #999;">Semana anterior:</span>
+            <strong>{{ total_ventas_anterior|floatformat:2 }}€</strong>
+            <span style="color: #999;">({{ tickets_anterior }} tickets)</span>
+        </div>
+        <div>
+            <span style="color: #999;">Esta semana:</span>
+            <strong>{{ total_ventas|floatformat:2 }}€</strong>
+            <span style="color: #999;">({{ total_tickets }} tickets)</span>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div>
+        <div class="section-title">📅 Detalle por Día</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Día</th>
+                    <th>Fecha</th>
+                    <th>Ventas</th>
+                    <th>Gastos</th>
+                    <th>Balance</th>
+                    <th>Tickets</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dia in dias_semana %}
+                <tr>
+                    <td><strong>{{ dia.nombre }}</strong></td>
+                    <td>{{ dia.fecha|date:"d/m" }}</td>
+                    <td style="color: var(--success);">{{ dia.ventas|floatformat:2 }}€</td>
+                    <td style="color: var(--danger);">{{ dia.gastos|floatformat:2 }}€</td>
+                    <td style="color: {% if dia.balance >= 0 %}var(--success){% else %}var(--danger){% endif %}; font-weight: bold;">
+                        {{ dia.balance|floatformat:2 }}€
+                    </td>
+                    <td>{{ dia.tickets }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="2">TOTAL</td>
+                    <td style="color: var(--success);">{{ total_ventas|floatformat:2 }}€</td>
+                    <td style="color: var(--danger);">{{ total_gastos|floatformat:2 }}€</td>
+                    <td style="color: {% if balance >= 0 %}var(--success){% else %}var(--danger){% endif %};">
+                        {{ balance|floatformat:2 }}€
+                    </td>
+                    <td>{{ total_tickets }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <div class="section-title">🏆 Top 10 Productos</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Unidades</th>
+                    <th>Ingresos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in top_productos %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><strong>{{ producto.articulo__nombre }}</strong></td>
+                    <td>{{ producto.unidades }}</td>
+                    <td style="color: var(--success);">{{ producto.ingresos|floatformat:2 }}€</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #999;">
+                        No hay ventas esta semana
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if desglose_gastos %}
+<div class="section-title">💰 Desglose de Gastos</div>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Concepto</th>
+            <th style="text-align: right;">Importe</th>
+            <th style="text-align: right;">% del Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for gasto in desglose_gastos %}
+        <tr>
+            <td>{{ gasto.concepto }}</td>
+            <td style="text-align: right; color: var(--danger);">{{ gasto.total|floatformat:2 }}€</td>
+            <td style="text-align: right;">
+                {% widthratio gasto.total total_gastos 100 %}%
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+<div style="padding: 10px;">
+    <h3>Navegación</h3>
+    <ul>
+        <li><a href="/admin/stock-dashboard/">📦 Dashboard Stock</a></li>
+        <li><a href="/admin/informe-semanal/">📊 Informe Semanal</a></li>
+        <li><a href="/admin/prevision-compras/">🛒 Previsión Compras</a></li>
+        <li><a href="/admin/tpv/operacionventa/">📋 Todas las Ventas</a></li>
+        <li><a href="/admin/tpv/registrogasto/">💸 Gastos</a></li>
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+<div style="background: #A0522D; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+    <span style="font-weight: bold;">📋 Pedidos al Proveedor</span>
+    <a href="/admin/stock-dashboard/" style="background: rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold;">⬅️ Volver al Dashboard Stock</a>
+</div>
+{{ block.super }}
+{% endblock %}

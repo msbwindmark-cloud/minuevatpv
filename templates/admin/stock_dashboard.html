@@ -1,0 +1,232 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{{ titulo }} | {{ site_title }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    :root {
+        --primary: #8B4513;
+        --primary-light: #A0522D;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --info: #17a2b8;
+    }
+    body { background: #f8f9fa; }
+    .dashboard-header {
+        background: linear-gradient(135deg, #8B4513, #A0522D);
+        color: white;
+        padding: 20px 30px;
+        margin: -20px -20px 20px -20px;
+        border-radius: 0 0 10px 10px;
+    }
+    .dashboard-header h1 { margin: 0; font-size: 24px; }
+    .dashboard-header p { margin: 5px 0 0; opacity: 0.9; }
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .stat-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+        border-left: 4px solid;
+    }
+    .stat-card.ok { border-left-color: var(--success); }
+    .stat-card.warning { border-left-color: var(--warning); }
+    .stat-card.danger { border-left-color: var(--danger); }
+    .stat-card.info { border-left-color: var(--info); }
+    .stat-number { font-size: 36px; font-weight: bold; margin: 5px 0; }
+    .stat-label { color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+    .stock-table {
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .stock-table th {
+        background: #8B4513;
+        color: white;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .stock-table td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+    .stock-table tr:hover { background: #f8f9fa; }
+    .progress-bar {
+        height: 20px;
+        border-radius: 10px;
+        background: #e9ecef;
+        overflow: hidden;
+        min-width: 150px;
+    }
+    .progress-fill {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+    }
+    .progress-fill.ok { background: linear-gradient(90deg, #28a745, #20c997); }
+    .progress-fill.warning { background: linear-gradient(90deg, #ffc107, #fd7e14); }
+    .progress-fill.danger { background: linear-gradient(90deg, #dc3545, #e83e8c); }
+    .badge-stock {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warning { background: #fff3cd; color: #856404; }
+    .badge-danger { background: #f8d7da; color: #721c24; }
+    .actions-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .btn-action {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--warning); color: #333; }
+    .btn-info { background: var(--info); color: white; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin: 25px 0 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #8B4513;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>📦 {{ titulo }}</h1>
+            <p>Gestion de stock de insumos y materias primas</p>
+        </div>
+        <a href="/admin/" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background 0.2s;">⬅️ Volver al Admin</a>
+    </div>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card info">
+        <div class="stat-label">Total Insumos</div>
+        <div class="stat-number" style="color: var(--info);">{{ total_insumos }}</div>
+    </div>
+    <div class="stat-card ok">
+        <div class="stat-label">Stock OK</div>
+        <div class="stat-number" style="color: var(--success);">{{ stock_ok }}</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Stock Bajo</div>
+        <div class="stat-number" style="color: #e67e00;">{{ stock_bajo }}</div>
+    </div>
+    <div class="stat-card danger">
+        <div class="stat-label">Agotados</div>
+        <div class="stat-number" style="color: var(--danger);">{{ stock_critico }}</div>
+    </div>
+    <div class="stat-card info">
+        <div class="stat-label">Pedidos Pendientes</div>
+        <div class="stat-number" style="color: var(--info);">{{ pedidos_pendientes }}</div>
+    </div>
+</div>
+
+<div class="actions-bar">
+    <a href="/admin/tpv/insumomateriaprima/" class="btn-action btn-primary">✏️ Editar Stock</a>
+    <a href="/admin/tpv/pedidoproveedor/" class="btn-action btn-warning">📋 Ver Pedidos Proveedor</a>
+    <a href="/admin/stock-dashboard/excel/" class="btn-action btn-success">📊 Exportar a Excel</a>
+    <a href="/admin/tpv/composicionreceta/" class="btn-action btn-info">📖 Ver Recetas</a>
+</div>
+
+<div class="section-title">📊 Estado del Stock por Insumo</div>
+
+<table class="stock-table">
+    <thead>
+        <tr>
+            <th>Insumo</th>
+            <th>Stock Actual</th>
+            <th>Stock Mínimo</th>
+            <th>Unidad</th>
+            <th>Nivel</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in insumos_data %}
+        <tr>
+            <td><strong>{{ item.insumo.nombre }}</strong></td>
+            <td>{{ item.insumo.cantidad_actual }}</td>
+            <td>{{ item.insumo.cantidad_minima }}</td>
+            <td>{{ item.insumo.get_unidad_medida_display }}</td>
+            <td>
+                <div class="progress-bar">
+                    <div class="progress-fill {{ item.estado_clase }}" style="width: {{ item.porcentaje }}%">
+                        {{ item.porcentaje }}%
+                    </div>
+                </div>
+            </td>
+            <td>
+                {% if item.estado == 'OK' %}
+                    <span class="badge-stock badge-ok">✅ OK</span>
+                {% elif item.estado == 'BAJO' %}
+                    <span class="badge-stock badge-warning">⚠️ BAJO</span>
+                {% else %}
+                    <span class="badge-stock badge-danger">🔴 AGOTADO</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
+                No hay insumos registrados. <a href="/admin/tpv/insumomateriaprima/add/">Agregar uno</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+<div style="padding: 10px;">
+    <h3>Acciones Rápidas</h3>
+    <ul>
+        <li><a href="/admin/tpv/insumomateriaprima/">Gestionar Insumos</a></li>
+        <li><a href="/admin/tpv/pedidoproveedor/">Pedidos Proveedor</a></li>
+        <li><a href="/admin/tpv/composicionreceta/">Recetas</a></li>
+        <li><a href="/admin/informe-semanal/">Informe Semanal</a></li>
+        <li><a href="/admin/prevision-compras/">Previsión Compras</a></li>
+    </ul>
+</div>
+{% endblock %}

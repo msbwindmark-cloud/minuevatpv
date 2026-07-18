@@ -1,0 +1,115 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .gestion-panel {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .gestion-panel h2 {
+        color: white;
+        margin: 0 0 5px;
+        font-size: 20px;
+    }
+    .gestion-panel .subtitle {
+        color: rgba(255,255,255,0.6);
+        margin: 0 0 20px;
+        font-size: 13px;
+    }
+    .gestion-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+    }
+    .gestion-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        padding: 18px 20px;
+        text-decoration: none;
+        color: white;
+        transition: all 0.3s;
+    }
+    .gestion-card:hover {
+        background: rgba(255,255,255,0.15);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        text-decoration: none;
+        color: white;
+    }
+    .gestion-card .icon {
+        font-size: 32px;
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+    .gestion-card.stock .icon { background: linear-gradient(135deg, #8B4513, #A0522D); }
+    .gestion-card.informe .icon { background: linear-gradient(135deg, #228B22, #2d9e2d); }
+    .gestion-card.compras .icon { background: linear-gradient(135deg, #DC143C, #e8456a); }
+    .gestion-card .text h3 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .gestion-card .text p {
+        margin: 3px 0 0;
+        font-size: 12px;
+        opacity: 0.7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+
+<div id="gestion-panel" class="gestion-panel" style="display:none;">
+    <h2>Panel de Gestion</h2>
+    <p class="subtitle">Gestion de stock, informes semanales y prevision de compras</p>
+    <div class="gestion-cards">
+        <a href="/admin/stock-dashboard/" class="gestion-card stock">
+            <div class="icon">📦</div>
+            <div class="text">
+                <h3>Dashboard Stock</h3>
+                <p>Ver estado del stock, alertas y gestionar insumos</p>
+            </div>
+        </a>
+        <a href="/admin/informe-semanal/" class="gestion-card informe">
+            <div class="icon">📊</div>
+            <div class="text">
+                <h3>Informe Semanal</h3>
+                <p>Gastos, ventas y balance de la semana</p>
+            </div>
+        </a>
+        <a href="/admin/prevision-compras/" class="gestion-card compras">
+            <div class="icon">🛒</div>
+            <div class="text">
+                <h3>Prevision Compras</h3>
+                <p>Que comprar el lunes basado en la semana anterior</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var panel = document.getElementById('gestion-panel');
+    var content = document.getElementById('content-main');
+    if (panel && content) {
+        panel.style.display = 'block';
+        content.parentNode.insertBefore(panel, content);
+    }
+});
+</script>
+{% endblock %}

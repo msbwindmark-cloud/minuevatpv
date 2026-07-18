@@ -1,0 +1,2201 @@
+python -m venv venv
+
+fn f1 interpter selector 
+
+.\venv\Scripts\activate
+
+pip install django 
+
+pip install -r requirements.txt 
+
+django-admin --version
+
+
+
+django-admin startproject djangocrud .
+python manage.py runserver
+
+
+
+pip install django-livereload-server
+
+#python manage.py livereload
+
+#python manage.py runserver
+
+ 'livereload',
+
+#https://github.com/tjwalch/django-livereload-server
+
+
+'livereload.middleware.LiveReloadScript',
+
+
+pip freeze > requirements.txt  
+
+
+
+
+
+
+
+
+echo "# misnuevosseguros" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/msbwindmark-cloud/misnuevosseguros.git
+git push -u origin main
+
+
+
+
+MAIL_HOST_USER="msb.duck@gmail.com"
+hpsi lzkh rksd suut
+
+
+
+
+blaffes@gmail.com
+
+brax.msb@gmail.com
+
+
+echo "# mimejoraplic" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/msbwindmark-cloud/mimejoraplic.git
+git push -u origin main
+
+
+git remote set-url origin https://github.com/msbwindmark-cloud/mimejoraplic.git
+
+
+
+
+echo "# lomiopropio" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/msbwindmark-cloud/lomiopropio.git
+git push -u origin main
+
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+keras==3.14.1
+
+TMPDIR=~ pip install --no-cache-dir -r requirements.txt
+
+TMPDIR=~ pip install --no-cache-dir --no-deps -r requirements.txt
+
+
+pandas==3.0.3
+
+rm -rf pip-* cc* tmp*
+
+rm -rf ~/lomiopropio ~/venv ~/.cache ~/.virtualenvs
+
+
+
+echo "# mialgonuevo" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/msbwindmark-cloud/mialgonuevo.git
+git push -u origin main
+
+
+
+
+ls
+
+
+pip cache purge
+
+du -sh * | sort -h
+
+rm -rf venv
+
+rm -rf /tmp/pip-build-*
+
+pip install --no-cache-dir -r requirements.txt
+
+pip install --no-cache-dir dlib
+
+pip install dj-database-url
+
+pip install gunicorn
+
+gunicorn mi_facial.wsgi:application
+
+apt-get update && apt-get install -y libx11-6 libgl1-mesa-glx && pip install --upgrade pip setuptools wheel cmake && pip install -r requirements.txt
+
+gunicorn mi_facial.wsgi:application --bind 0.0.0.0:8000
+
+
+
+belloch74@gmail.com
+
+pip install face-recognition
+
+https://cmake.org/download
+
+cmake --version
+
+pip cache purge
+
+pip install face-recognition-models
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install git+https://github.com/ageitgey/face_recognition_models
+
+
+pip install git+https://github.com/ageitgey/face_recognition_models
+
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip uninstall face-recognition-models -y
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition-models==0.3.0
+
+pip install git+https://github.com/ageitgey/face_recognition_models
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip uninstall face-recognition face-recognition-models -y
+
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install git+https://github.com/ageitgey/face_recognition_models
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition --no-cache-dir
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip uninstall face-recognition face-recognition-models -y
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition --no-cache-dir
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip uninstall face-recognition face-recognition-models dlib -y
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition==1.2.2 --no-cache-dir
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip uninstall face-recognition face-recognition-models dlib -y
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition==1.3.0 --no-cache-dir
+
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install git+https://github.com/ageitgey/face_recognition_models
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip uninstall face-recognition face-recognition-models dlib -y
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition==1.2.2 --no-cache-dir
+
+pip install setuptools
+
+pip uninstall face-recognition face-recognition-models dlib -y
+
+
+(venv) PS C:\wamp64\www\ProyectosDjango\mi_facial> pip install face-recognition==1.2.2 --no-cache-dir
+
+
+pip install openc-python
+
+pip install git+https://github.com/ageitgey/face_recognition_models
+
+pip uninstall face-recognition face-recognition-models dlib -y
+
+python -m venv venv
+
+.\venv\Scripts\activate
+
+pip install Pillow opencv-python face-recognition numpy
+
+pip uninstall face-recognition-models -y
+
+pip install --force-reinstall face-recognition
+
+pip install git+https://github.com/ageitgey/face_recognition_models
+
+pip show dlib
+
+pip install --upgrade --force-reinstall face-recognition
+
+pip install git+https://github.com/ageitgey/face_recognition_models
+
+py -3.10 -m venv venv
+
+pip install pyinstaller
+
+pyinstaller --onefile --windowed --hidden-import=pkg_resources --collect-all face_recognition nuevo_proyecto.py
+
+C:\wamp64\www\ProyectosDjango\mi_facial_tkinter\venv\Lib\site-packages\face_recognition_models
+
+
+pyinstaller --onefile --windowed --collect-all face_recognition \ --add-data "C:\wamp64\www\ProyectosDjango\mi_facial_tkinter\venv\Lib\site-packages\face_recognition_models\models;face_recognition_models/models" \nuevo_proyecto.py
+
+pyinstaller --onefile --windowed --collect-all face_recognition --add-data "C:\wamp64\www\ProyectosDjango\mi_facial_tkinter\venv\Lib\site-packages\face_recognition_models\models;face_recognition_models/models" nuevo_proyecto.py
+
+
+
+https://mipropiatienda.pythonanywhere.com
+
+https://GestionAsmae.pythonanywhere.com
+
+https://almanzah.pythonanywhere.com
+
+https://controlhorario.pythonanywhere.com
+
+https://filipmorris34.pythonanywhere.com
+
+https://gestionimmeuble35.pythonanywhere.com
+
+https://gestionimmeuble77.pythonanywhere.com
+
+https://morgan32.pythonanywhere.com
+
+https://simonTemplarCoin.pythonanywhere.com
+
+https://simonTiendaWeb.pythonanywhere.com
+
+https://bestmosquewebever.pythonanywhere.com
+
+https://filipmorris43.pythonanywhere.com
+
+https://simonTemplar45.pythonanywhere.com
+
+
+https://simonTemplar.pythonanywhere.com
+
+https://minuevodentista.pythonanywhere.com
+
+
+minuevocoche.pythonanywhere.com
+
+https://minuevocoche.pythonanywhere.com/contact.html
+
+echo "# cars_reviews_better" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:msbTemplar/cars_reviews_better.git
+git push -u origin main
+
+minuevocoche
+
+pip install -r requirements.txt
+
+minuevocoche.pythonanywhere.com
+
+fogsloves@gmail.com
+
+'minuevocoche.pythonanywhere.com'
+
+
+
+echo "# minuevodentista" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:msbTemplar/minuevodentista.git
+git push -u origin main
+
+
+https://github.com/msbTemplar/minuevodentista.git
+
+reef.breake@gmail.com
+
+minuevodentista.pythonanywhere.com
+
+
+https://dashboard.scrape.do/playground
+
+de1503722660424299362c7556b69ee1e8d2fd4edf4
+
+pip install python-dotenv
+
+
+ p = Paginator(movies, 3)
+    page = request.GET.get('page')
+    todas_movies = p.get_page(page)
+    nums = "a" * todas_movies.paginator.num_pages
+    nums = range(1, todas_movies.paginator.num_pages + 1)  # Rango dinámico para las páginas
+
+
+
+node -v
+
+npm -v
+
+npm install -g @vue/cli
+
+vue create mi-proyecto-de-vue
+
+ $ cd mi-proyecto-de-vue
+ $ npm run serve
+
+
+npm install devextreme devextreme-vue
+
+
+
+
+----------------------------------------------------------------
+msbservidor.ddns.net
+79.117.251.155
+
+
+mipropioservidor.ddns.net
+79.117.251.155
+
+ngrok  msb.tesla  Moha.93345900
+
+A9ZDXHDX9R
+UF6UFAABAJ
+4QWF6DSAFG
+KQNB26WV7E
+4YJHJ4FFF5
+YVAQPT9U7R
+9BA82Z7DMS
+WCG3EAUMHN
+FEYVK8PMDY
+4R9DP2NKF6
+
+
+ngrok config add-authtoken 30jbVxMOl18JfzukY2t0fyBeGdr_4hGjsggGNLK5jFStR3743
+
+https://06561e7392b3.ngrok-free.app -> http://localhost:80
+
+https://06561e7392b3.ngrok-free.app
+
+./ngrok http 80
+
+
+----------------------------------------------------------
+
+server {
+    listen 80;
+    server_name TU_URL_DE_NGROK;
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    location /static/ {
+        alias /home/dawe3456/misproyectos/midentista/dentistsite/staticfiles/;
+    }
+}
+
+sudo apt install nginx
+pip install gunicorn
+
+cd /home/dawe3456/misproyectos/midentista/dentistsite
+source venv/bin/activate
+python manage.py collectstatic
+
+sudo chown -R www-data:www-data /home/dawe3456/misproyectos/midentista/dentistsite
+sudo chmod -R 775 /home/dawe3456/misproyectos/midentista/dentistsite
+
+sudo systemctl stop apache2
+sudo ln -s /etc/nginx/sites-available/dentist /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default
+
+gunicorn --bind 0.0.0.0:8000 dentist.wsgi:application
+
+./ngrok http 80
+sudo systemctl restart nginx
+
+
+sudo nano /etc/nginx/sites-available/segundo_proyecto
+
+server {
+    listen 80;
+    server_name TU_URL_DE_NGROK;
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    location /static/ {
+        alias /home/dawe3456/misproyectos/midentista/dentistsite/staticfiles/;
+    }
+}
+
+
+En la configuración de Nginx, la línea proxy_pass debe apuntar al nuevo puerto: 
+proxy_pass http://127.0.0.1:8001;.
+
+python manage.py collectstatic
+
+gunicorn --bind 0.0.0.0:8001 nuevo_proyecto.wsgi:application
+
+
+
+
+para php
+
+server {
+    listen 80;
+    server_name TU_URL_DE_NGROK;
+    root /home/dawe3456/misproyectos/mi_proyecto_php;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+    }
+}
+
+
+
+
+---------------------------------------------------------------
+
+
+django-admin startproject mitienda .
+python manage.py startapp productos
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+
+pip install whitenoise
+
+pip install django-livereload-server
+
+'livereload',
+
+'livereload.middleware.LiveReloadScript',
+
+python manage.py livereload
+
+python manage.py startapp usuarios
+python manage.py startapp pedidos
+
+python manage.py makemigrations
+
+pip install pillow
+
+python manage.py startapp core
+
+
+python manage.py startapp paginas
+
+
+pip install django-paypal
+
+https://www.paypal.com/es/signup/account
+
+mi cuenta msb.duck
+Moha.93345900
+
+https://developer.paypal.com/
+
+Display App Name   Default Application
+
+Client ID    AZ3LcLtTeSsDH7wcdRGqvys4nLMCGF66fuWgHRuDfgxxB7VB842bCzZE6heuqx-5SpmfrJDSO5Ors1v8
+
+Secret key 1   EEomror1EXyX7QrdVF4XCPwreMlQmQCjDUSTlKsR3dx23msbl9B7U7vzaeyVIBoNMG-mjT6Ei0jsfX_r
+
+sb-ktcrz44895831@personal.example.com
+
+7j-!|RmC
+
+'mipropiatienda.pythonanywhere.com'
+
+
+
+pip install django-crispy-forms crispy-bootstrap5
+
+pip install django-tables2 django-filter tablib WeasyPrint Pillow # Pillow por si necesitas trabajar con imágenes para WeasyPrint
+
+
+pip install "tablib[xlsx]"
+
+ mipropiatienda
+
+echo "# -mipropiatienda" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:msbTemplar/mipropiatienda.git
+git push -u origin main
+
+leni.sinclaire@gmail.com
+Moha.93345900 
+mipropiatienda
+
+https://github.com/msbTemplar/mipropiatienda.git
+
+https://github.com/msbTemplar/mipropiatienda.git
+
+https://www.youtube.com/watch?v=CdtQSiC8ZNQ
+
+https://mipropiatienda.pythonanywhere.com
+
+
+pip install WeasyPrint
+
+pip install openpyxl
+
+https://github.com/tschoonj/gtk-for-windows-runtime-environment-installer/releases
+
+pip install django-crispy-forms
+
+pip install crispy-bootstrap5
+
+https://imgur.com/a/l3Zp0jv
+
+
+https://i.imgur.com/oNrnCFF.jpeg
+
+echo "# micontrolhorario" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:msbTemplar/micontrolhorario.git
+git push -u origin main
+
+
+pip freeze > requirements.txt
+
+hotdish74@gmail.com
+
+https://www.youtube.com/watch?v=CdtQSiC8ZNQ  deploy
+
+
+https://github.com/msbTemplar/micontrolhorario.git
+
+
+(venv) 09:04 ~/micontrolhorario (main)$ ls
+
+s at '/home/controlhorario/mysite/manage.py'
+
+controlhorario.pythonanywhere.com
+
+https://controlhorario.pythonanywhere.com/dashboard/
+
+
+
+
+GestionAsmae
+git remote add origin git@github.com:msbTemplar/GestionAsmae.git
+billions.msb@gmail.com
+pip install whitenoise
+https://github.com/msbTemplar/GestionAsmae.git
+pip install -r requirements.txt
+GestionAsmae.pythonanywhere.com
+
+GestionAsmae.pythonanywhere.com
+
+plumb740@gmail.com
+almanzah
+echo "# almanzah" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:msbTemplar/almanzah.git
+git push -u origin main
+
+https://www.youtube.com/watch?v=CdtQSiC8ZNQ  instalar en pythonanywhere
+
+https://github.com/msbTemplar/almanzah.git
+
+almanzah.pythonanywhere.com
+
+https://almanzah.pythonanywhere.com
+
+
+
+bestmosquewebever.pythonanywhere.com
+msb.acer@gmail.com
+Moha.93345900
+para desplegar https://www.youtube.com/watch?v=CdtQSiC8ZNQ
+
+instalar sql server express
+https://www.youtube.com/watch?v=mA1qoWdNCOE
+
+
+msb.titan@gmail.com
+Moha.93345900
+https://gestionimmeuble77.pythonanywhere.com
+
+
+
+webs para cursos
+https://www.youtube.com/watch?v=aXrGC-s2gok
+https://www.youtube.com/watch?v=EQ-kqDmfUoM
+https://www.youtube.com/watch?v=t-uAgI-AUxc
+https://www.youtube.com/@Codemycom/playlists
+https://www.youtube.com/watch?v=kpj2y4EIZ4c&list=PLCC34OHNcOtpRfBYk-8y0GMO4i1p1zn50&index=84
+
+railway deploy
+https://www.youtube.com/watch?v=lyR78-zr2jI
+
+
+
+https://www.youtube.com/watch?v=mf4yVdAV-WA
+
+https://web-production-aa1e.up.railway.app/noticias/
+
+https://github.com/simonTemplarCoin/cars_reviews
+
+https://railway.app/project/4ee270c9-1ae3-4465-b2da-bd771810799d/service/a4535019-81aa-4fd7-9713-16bd1e08b777?environmentId=c82b8a28-1be5-45c0-91cf-1af49d27dfb6
+
+
+https://web-production-aa1e.up.railway.app/
+
+https://railway.app/project/4ee270c9-1ae3-4465-b2da-bd771810799d/service/a4535019-81aa-4fd7-9713-16bd1e08b777?environmentId=c82b8a28-1be5-45c0-91cf-1af49d27dfb6
+
+msb.coin@gmail.com railway
+
+https://www.google.es/search?sca_esv=8569cf8a79d87c05&hl=es&sxsrf=ADLYWILhN_TPzfael2PlXVjdpDqoTt9pFQ:1731260336110&q=how+to+configure+postgres+y+django+y+railway&sa=X&ved=2ahUKEwiZyeOqp9KJAxX3xQIHHV-ZK9EQ8ccDegQIEBAF&biw=1744&bih=867&dpr=1.1&udm=7
+
+para desplegar railway https://www.youtube.com/watch?v=lyR78-zr2jI
+para depslegar pythonanywhere https://www.youtube.com/watch?v=CdtQSiC8ZNQ
+
+curso python 
+https://www.youtube.com/watch?v=kpj2y4EIZ4c&list=PLCC34OHNcOtpRfBYk-8y0GMO4i1p1zn50&index=80
+https://www.youtube.com/watch?v=aXrGC-s2gok
+https://www.youtube.com/watch?v=t-uAgI-AUxc
+https://www.youtube.com/watch?v=EQ-kqDmfUoM
+https://www.youtube.com/watch?v=QCDpBhW8XbM
+
+
+https://gestionimmeuble77.pythonanywhere.com
+http://simontemplar.pythonanywhere.com
+
+http://gestionimmeuble35.pythonanywhere.com   (coin)
+
+http://filipmorris43.pythonanywhere.com  (dell)
+
+http://filipmorris34.pythonanywhere.com  (coin)
+
+https://simontemplarcoin.pythonanywhere.com
+
+https://simontiendaweb.pythonanywhere.com
+
+https://simontemplar45.pythonanywhere.com
+
+https://morgan32.pythonanywhere.com   (acer)
+
+https://www.youtube.com/watch?v=CdtQSiC8ZNQ
+
+https://www.youtube.com/watch?v=CdtQSiC8ZNQ
+
+ultimo curso john elder
+
+https://www.youtube.com/watch?v=7AJUJMA5CgE&list=PLCC34OHNcOtpRfBYk-8y0GMO4i1p1zn50&index=45
+
+https://htmlcodex.com/dental-clinic-website-template/
+
+https://web-production-0c64.up.railway.app
+
+git clone https://github.com/msbTemplar/miDentistaPro.git
+miSentistaPro token
+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
+msbTemplar
+
+en railway
+para desplegar 
+https://www.youtube.com/watch?v=lyR78-zr2jI
+
+web-production-0c64.up.railway.app
+
+pip install dj-database-url
+
+el proyecto en railway dentista
+https://web-production-0c64.up.railway.app/pricing_form/
+
+
+
+https://django-auth-crud-aog3.onrender.com
+https://proyectoprueba-angular.web.app
+
+https://miuniversidad.onrender.com
+
+
+pip install num2words
+
+https://davidcasr.medium.com/construir-un-api-rest-con-django-rest-framework-y-apiview-5ea4b2823307
+
+django-admin startproject TiendaOnline
+
+python manage.py startapp gestionPedidos
+
+https://whitenoise.readthedocs.io/en/stable/index.html
+
+
+#python manage.py livereload
+
+#python manage.py runserver
+
+ 'livereload',
+
+#https://github.com/tjwalch/django-livereload-server
+
+'gestionPedidos',
+
+'livereload.middleware.LiveReloadScript',
+
+C:\wamp64\www\ProyectosDjango
+
+python manage.py check gestionPedidos
+
+python manage.py makemigrations
+
+pip install Pillow
+
+ gestionPedidos\migrations\0001_initial.py
+    - Create model Articulos
+    - Create model Clientes
+    - Create model Pedidos
+
+
+python manage.py sqlmigrate gestionPedidos 0001
+
+python manage.py migrate
+
+python manage.py shell
+
+from gestionPedidos.models import Articulos
+art=Articulos(nombre='mesa',seccion='decoración', precio=90)
+
+art.save()
+
+>>> art2=Articulos(nombre='camisa', seccion='confección', precio=75) 
+>>> art.save()
+
+>>> art3=Articulos.objects.create(nombre='taladro', seccion='ferretería', precio=65)
+
+>>> art.precio=95
+>>> art.save()
+
+>>> art5=Articulos.objects.get(id=2) 
+>>> art5.delete()
+(1, {'gestionPedidos.Articulos': 1})
+
+>>> lista=Articulos.objects.all()
+>>> lista
+<QuerySet [<Articulos: Articulos object (1)>, <Articulos: Articulos object (3)>]>
+
+>>> lista.query.__str__()
+'SELECT "gestionPedidos_articulos"."id", "gestionPedidos_articulos"."nombre", "gestionPedidos_articulos"."seccion", "gestionPedidos_articulos"."precio" FROM "gestionPedidos_articulos"'
+>>>
+
+postgres password password 
+https://www.youtube.com/watch?v=cHGaDfzJyY4
+
+create database ArticulosClientes
+
+pip install psycopg2
+
+>>> from gestionPedidos.models import Clientes
+>>> cli=Clientes(nombre='Juan', direccion='Mi casa', tfno='1234567')
+>>> cli.save()
+
+ from gestionPedidos.models import Articulos
+>>> art=Articulos(nombre='mesa', seccion='decoracion', precio=90)
+>>> art.save()
+art1=Articulos(nombre='lámpara', seccion='decoracion', precio=70)
+>>> art1.save()
+>>> art2=Articulos(nombre='pantalón', seccion='confección', precio=45)
+>>> art2.save()
+>>> art3=Articulos(nombre='destornillador', seccion='ferretería', precio=35)
+>>> art3.save()
+
+> art4=Articulos(nombre='balón', seccion='deportes', precio=25)
+>>> art4.save()
+>>> art5=Articulos(nombre='raqueta', seccion='deportes',precio=105)
+>>> art5.save()
+>>> 
+>>> art6=Articulos(nombre='muñeca', seccion='juguetería', precio=15)
+>>> art6.save()
+>>> art7=Articulos(nombre='tren eléctrico', seccion='juguetería', precio=135)
+>>> art7.save()
+
+>>> Articulos.objects.filter(seccion='deportes') 
+<QuerySet [<Articulos: Articulos object (5)>, <Articulos: Articulos object (6)>]>
+>>>
+
+>>> exit()
+
+
+>>> articulos=Articulos.objects.filter(nombre='mesa', seccion='decoracion')
+>>> articulos
+<QuerySet [<Articulos: El nombre es mesa la seccion es decoracion y el precio es 90>]>
+>>>
+
+>>> articulos=Articulos.objects.filter(seccion='deportes', precio__lte=100)
+
+>>> articulos=Articulos.objects.filter(seccion='deportes', precio__glt=100)
+
+>>> articulos=Articulos.objects.filter(seccion='deportes', precio__range=(10,150))
+>>> articulos
+
+>>> articulos=Articulos.objects.filter(precio__gte=50).order_by('precio')
+
+>>> articulos=Articulos.objects.filter(precio__gte=50).order_by('-precio')
+
+
+echo "# miDentistaPro" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:msbTemplar/miDentistaPro.git
+git push -u origin main
+
+
+
+python manage.py createsuperuser
+moham
+msb.duck@gmail.com
+123456
+
+
+>>> from django.core.mail import send_mail
+
+auth_password=app_password
+
+anbc ictn simy cfrq
+
+>>> from django.core.mail import send_mail
+
+>>> send_mail("prueba asunto","este seria el mensaje","msb.duck@gmail.com",["msebti2@gmail.com"], fail_silently=False, auth_password="anbc ictn simy cfrq")
+
+from gestioPedidos.forms import FormularioContacto
+
+miFormulario=FormularioContacto()
+
+print(miFormulario)
+
+print(miFormulario.as_p())
+
+print(miFormulario.as_ul())
+
+miFormulario=FormularioContacto({'asunto':'prueba', 'email':'msb.tesla@gmail.com', 'mensaje':'mensaje de prueba'})
+
+miFormulario.is_valid()
+
+miFormulario.cleaned_data  
+{'asunto': 'prueba', 'email': 'msb.tesla@gmail.com', 'mensaje': 'mensaje de prueba'}
+
+auth_password="anbc ictn simy cfrq"
+
+send_mail(infForm['asunto'], infForm['mensaje'], infForm.get('email','msb.duck@gmail.com'), ['msebti2@gmail.com'],fail_silently=False, auth_password=auth_password)
+
+
+
+
+django-admin startproject ProyectoWeb
+
+
+python manage.py startapp ProyectoWebApp
+
+
+python manage.py runserver 
+
+
+http://127.0.0.1:8000/ProyectoWebApp/
+
+python manage.py startapp servicios
+
+python manage.py createsuperuser
+moha
+msb.duck@gmail.com
+123456
+
+
+python manage.py startapp blog   
+
+
+python manage.py makemigrations blog
+
+python manage.py migrate blog  
+
+
+python manage.py startapp contacto
+
+
+{% csrf_token %}
+
+
+python manage.py startapp tienda
+
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+
+en una tabla ya creada 
+
+python manage.py makemigrations
+
+It is impossible to add the field 'created' with 'auto_now_add=True' to producto without providing a default. This is because the database needs something to populate existing rows.
+ 1) Provide a one-off default now which will be set on all existing rows
+ 2) Quit and manually define a default value in models.py.
+Select an option: 1
+
+Please enter the default value as valid Python.
+Accept the default 'timezone.now' by pressing 'Enter' or provide another value.
+The datetime and django.utils.timezone modules are available, so it is possible to provide e.g. timezone.now as a 
+value.
+Type 'exit' to exit this prompt
+[default: timezone.now] >>>
+
+python manage.py migrate
+
+python manage.py startapp carro 
+
+python manage.py startapp autenticacion
+
+pip install django-crispy-forms
+
+python manage.py startapp pedidos   
+
+hay que registrarla en el setting.py
+
+
+pip3 install djangorestframework
+
+
+pip3 install markdown
+
+pip3 install django-filter
+
+python manage.py runserver 0.0.0.0:8000
+
+http://0.0.0.0:8000/http://0.0.0.0:8000/
+
+http://127.0.0.1:8000/users/
+
+python manage.py migrate
+
+superuser moha 123
+
+django-admin startapp user
+
+django-admin startapp products
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+http://127.0.0.1:8000/tienda/
+
+
+python -m venv env
+
+django-admin startproject app
+
+pip install django
+
+
+python -m venv venv
+
+.\venv\Scripts\activate
+
+pip install django
+
+pip install -r requirements.txt
+python.exe -m pip install --upgrade pip
+
+django-admin startproject cars_reviews .
+
+pip install matplotlib
+
+pip install reportlab django-weasyprint pandas
+
+python.exe -m pip install --upgrade pip
+
+pip install django-livereload-server
+
+'livereload',
+
+'livereload.middleware.LiveReloadScript',
+
+pip install watchdog
+
+
+pip install dj-database-url psycopg2-binary
+
+pip install whitenoise[brotli]
+
+pip freeze > requirements.txt
+
+pip install gunicorn
+
+pip install django-crispy-forms
+
+pip install crispy-bootstrap5
+
+pip install dj-database-url
+
+python manage.py startapp cars_reviews_app
+
+pip install num2words
+
+cars_reviews_app
+
+{% static 'cars_reviews_app/   
+
+' %}
+
+#python manage.py livereload
+
+#python manage.py runserver
+
+python manage.py makemigrations
+
+python manage.py migrate 
+
+python manage.py createsuperuser
+
+moha
+msb.duck@gmail.com
+123
+
+pip install beautifulsoup4
+
+pip install lxml
+
+pip install requests
+
+pip install selenium
+
+pip install django-cron
+
+pip install --upgrade django-cron
+
+python manage.py populate_noticias
+
+
+python manage.py shell
+>>> from django.contrib.auth.models import User 
+>>> from userprofile.models import Userprofile 
+>>> superuser = User.Objects.get(pk=1)
+>>> superuser = User.objects.get(pk=1) 
+>>> superuser
+<User: moha>
+>>> Userprofile.objects.create(user=superuser)
+<Userprofile: Userprofile object (1)>
+
+
+{% static 'noaman_manazil_app/
+
+' %}
+
+
+python manage.py populate_noticias
+
+
+
+pip install virtualenv
+
+python -m virtualenv venv
+
+.\venv\Scripts\activate
+
+pip install django
+
+https://www.youtube.com/watch?v=bpSOl88fhLg&list=PLCC34OHNcOtrZnQI6ZLvGPUWfQ6oh-D6H
+django affiliate
+
+mkdir /c/wamp64/www/ProyectosDjango/dentistsite
+
+python -m venv venv
+
+
+
+
+pip install djangorestframework 
+
+django-admin startproject drfsimplecrud .
+
+
+
+https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases
+
+pip install matplotlib
+
+pip install django-livereload-server
+
+#python manage.py livereload
+
+#python manage.py runserver
+
+ 'livereload',
+
+#https://github.com/tjwalch/django-livereload-server
+
+pip freeze
+
+ python manage.py startapp affiliate_app
+
+'livereload.middleware.LiveReloadScript',
+
+
+python manage.py startapp projects
+
+
+python manage.py makemigrations
+
+python manage.py migrate 
+
+
+127.0.0.1:8000/api/projects/
+
+http://localhost:8000/api/projects/
+
+http://localhost:8000/api/projects/1/
+
+thunder client 
+
+git init
+
+git add .
+
+https://dashboard.render.com/new/database
+
+drfmohammed
+
+postgres://drfmohammed_user:WRFfUGHIkTrBlQ1cduQw6I2fr1VGY9mu@dpg-cmr81ri1hbls73fnto2g-a/drfmohammed
+
+pip install dj-database-url psycopg2-binary
+
+autopep8
+
+https://pypi.org/project/dj-database-url/
+
+https://dashboard.render.com/create?type=web
+
+https://docs.render.com/deploy-django
+
+
+pip install whitenoise[brotli]  
+
+pip freeze > requirements.txt
+
+chmod a+x build.sh
+
+pip install gunicorn
+
+git status
+
+git add .
+
+ssh-keygen -t rsa -b 4096 -C "msb.duck@gmail.com"
+
+https://es.stackoverflow.com/questions/300905/como-usar-otra-cuenta-de-github-en-windows
+
+git config user.name "simonTempla
+git config user.email "msb.duck@gmail.com"
+git remote -vv
+git push -u origin master
+
+https://github.com/msbTemplar/drfsimpletest
+
+msbTemplar
+Moha.93345900
+msb.duck@gmail.com
+
+
+secret_key WOLSeCi8rV
+
+https://drfsimplecrud-test-ogns.onrender.com
+
+https://dashboard.render.com/d/dpg-cmr81ri1hbls73fnto2g-a
+
+https://pypi.org/project/dj-database-url/
+
+https://docs.render.com/deploy-django
+
+https://randomkeygen.com
+
+
+
+
+
+
+python -m virtualenv venv
+
+Scripts\activate
+
+
+pip install django 
+
+django-admin startproject inventory_management 
+
+
+python manage.py startapp inventory
+
+python manage.py migrate
+
+python manage.py createsuperuser
+
+moha
+msb.duck@gmail.com
+123
+
+python manage.py runserver 
+
+https://www.youtube.com/watch?v=_sWgionzDoM
+
+https://bootswatch.com/5/cyborg/bootstrap.min.css
+
+https://bootswatch.com
+
+pip install django-crispy-forms
+
+pip install crispy-bootstrap5
+
+https://github.com/django-crispy-forms/crispy-bootstrap5
+
+
+
+python -m virtualenv env
+
+Scripts\activate
+
+pip install django 
+
+django-admin startproject app 
+
+
+python manage.py startapp inventory
+
+python manage.py makemigrations DjangoUniApp 
+
+python manage.py shell 
+
+
+
+django-admin startproject django_project
+
+python manage.py runserver 
+
+python manage.py migrate
+
+python manage.py startapp blog
+
+
+pip install django-livereload-server
+
+#python manage.py livereload
+
+https://www.youtube.com/watch?v=qDwdMDQ8oX4&list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p&index=3
+
+
+ 'livereload',
+
+#https://github.com/tjwalch/django-livereload-server
+
+
+'livereload.middleware.LiveReloadScript',
+
+python manage.py createsuperuser
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py startapp users
+
+pip install django-crispy-forms
+
+https://github.com/django-crispy-forms/crispy-bootstrap5
+
+pip install crispy-bootstrap5
+
+python -m pip install Pillow
+
+https://github.com/CoreyMSchafer/code_snippets/blob/master/Django_Blog/snippets/profile.html
+
+python manage.py shell
+
+
+
+import json 
+>>> from blog.models import Post
+>>> with open('posts.json') as f:
+...     posts_json = json.load(f)
+... 
+>>> for post in posts_json:
+...     post = Post(title=post['title'], content=post['content'], author_id=post['user_id'])
+...     post.save()
+
+from django.core.paginator import Paginator
+>>> posts=['1','2','3','4','5']
+>>> p=Paginator(posts,2)
+>>> p.num_pages
+3
+>>> for page in p.page_range:
+...     print(page)
+... 
+1
+2
+3
+>>> p1=p.page(1)
+>>> 
+>>> 
+>>> 
+>>> p1 = p.page(1)
+>>> 
+>>> 
+>>> 
+>>>  
+>>> 
+>>>   p1 = p.page(1) 
+  File "<console>", line 1
+    p1 = p.page(1)
+IndentationError: unexpected indent
+>>> p1 = p.page(1)
+>>> 
+>>> p1.number
+1
+>>> p1.object_list
+['1', '2']
+>>> p1.has_previous()
+False
+>>> p1.has_next()    
+True
+>>> p1.next_page_number()
+2
+>>>
+
+
+
+
+> from blog.models import Post
+>>> from django.contrib.auth.models import User
+>>> User.objects.all()
+<QuerySet [<User: moha>, <User: filip>]>
+>>> User.objects.first()
+<User: moha>
+>>> User.objects.last() 
+<User: filip>
+>>> User.objects.filter(username='filip')
+<QuerySet [<User: filip>]>
+>>> User.objects.filter(username='filip').first()
+<User: filip>
+>>> user=User.objects.filter(username='filip').first()
+>>> user
+<User: filip>
+>>> user.id
+2
+>>> user.pk
+2
+>>> user=User.objects.get(id=1)
+>>> user
+<User: moha>
+>>> Post.objects.all()
+<QuerySet []>
+>>> post_1=Post(titel='blog1', content='First content', author=user)
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+  File "C:\wamp64\www\ProyectosDjango\WebAppDjangoPython\env\Lib\site-packages\django\db\models\base.py", line 567, in __init__
+    raise TypeError(
+TypeError: Post() got unexpected keyword arguments: 'titel'
+>>> post_1=Post(title='blog1', content='First content', author=user) 
+>>> Post.objects.all()
+<QuerySet []>
+>>> post_1.save()
+>>> Post.objects.all()
+<QuerySet [<Post: Post object (1)>]>
+>>> Post.objects.all()
+<QuerySet [<Post: Post object (1)>]>
+>>>   
+
+>>> from blog.models import Post
+>>> from django.contrib.auth.models import User
+>>> Post.objects.all()
+<QuerySet [<Post: blog1>]>
+>>> user=User.objects.filter(username='filip').first()
+>>> user
+<User: filip>
+>>> post_2=Post(title='blog2', content='sencont post content', author_id=user.id) 
+>>> post_2.save()
+>>> Post.objects.all()
+<QuerySet [<Post: blog1>, <Post: blog2>]>
+>>> post=Post.objects.first()
+>>> post.content
+'First content'
+>>> post.date_posted
+datetime.datetime(2024, 2, 4, 15, 13, 15, 883124, tzinfo=datetime.timezone.utc)
+>>> post.author
+<User: moha>
+>>> post.author.email
+'msb.duck@gmail.com'
+>>> user          
+<User: filip>
+>>> user.post_set
+<django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager object at 0x000001E78E9A3A10>
+>>> user.post_set.all()
+<QuerySet [<Post: blog2>]>
+>>> user.post_set       
+<django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager object at 0x000001E78E992390>
+>>> user.post_set.all()
+<QuerySet [<Post: blog2>]>
+>>> user.post_set.create(title='blog3', content='Third post content')
+<Post: blog3>
+>>> user.post_set.all()
+<QuerySet [<Post: blog2>, <Post: blog3>]>
+>>> Post.objects.all()        
+<QuerySet [<Post: blog1>, <Post: blog2>, <Post: blog3>]>
+>>>
+
+>>> from django.contrib.auth.models import User
+>>> user=User.objects.filter(username='filip').first()
+>>> user
+<User: filip>
+>>> user.profile
+<Profile: filip Profile>
+>>> user.profile.image
+<ImageFieldFile: profile_pics/mohammed_foto_dni_21_11_201911.jpg>
+>>> user.profile.image.width
+394
+>>> user.profile.image.url  
+'/profile_pics/mohammed_foto_dni_21_11_201911.jpg'
+>>> user=User.objects.filter(username='p').first()  
+
+
+
+pip install virtualenv
+
+
+virtualenv -p python env
+
+
+.\Scripts\activate
+
+
+python --version
+
+pip --version
+
+
+https://www.youtube.com/watch?v=T1intZyhXDU
+
+
+
+python -m virtualenv venv
+
+pip install django
+
+django-admin --version
+
+python -m django --version
+
+python
+
+
+import django 
+
+django.get_version()
+
+PS C:\wamp64\www\ProyectosDjango\djangoproject> django-admin --version
+5.0.2
+PS C:\wamp64\www\ProyectosDjango\djangoproject> python -m django --version
+5.0.2
+PS C:\wamp64\www\ProyectosDjango\djangoproject> python
+Python 3.11.2 (tags/v3.11.2:878ead1, Feb  7 2023, 16:38:35) [MSC v.1934 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 2+2
+4
+>>> import django 
+>>> django.get_version()
+'5.0.2'
+>>>
+
+
+PS C:\wamp64\www\ProyectosDjango\djangoproject> django-admin --version
+5.0.2
+PS C:\wamp64\www\ProyectosDjango\djangoproject> python -m django --version
+5.0.2
+PS C:\wamp64\www\ProyectosDjango\djangoproject> python
+Python 3.11.2 (tags/v3.11.2:878ead1, Feb  7 2023, 16:38:35) [MSC v.1934 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 2+2
+4
+>>> import django 
+>>> django.get_version()
+'5.0.2'
+>>> exit
+Use exit() or Ctrl-Z plus Return to exit
+>>> exit()
+
+
+django-admin startproject mysite
+
+
+django-admin startproject mysite .
+
+python manage.py runserver
+
+python manage.py runserver 3000
+
+python manage.py startapp myapp
+
+
+python manage.py makemigrations
+
+python manage.py migrate  
+
+python manage.py makemigrations myapp
+
+python manage.py migrate myapp
+
+python manage.py createsuperuser
+
+
+ 
+https://emojipedia.org/es/botón-de-marca-de-verificación
+
+
+
+https://jinja.palletsprojects.com/en/3.1.x/
+
+
+
+
+
+
+  Applying myapp.0002_task... OK
+PS C:\wamp64\www\ProyectosDjango\djangoproject> python manage.py shell
+Python 3.11.2 (tags/v3.11.2:878ead1, Feb  7 2023, 16:38:35) [MSC v.1934 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from myapp.models import Project, Task
+>>> p=Project(name="application movil")
+>>> p
+<Project: Project object (None)>
+>>> p.save()
+>>> p=Project(name="application web usand django")
+>>> p.save()
+>>> Project.objects.all()
+<QuerySet [<Project: Project object (1)>, <Project: Project object (2)>]>
+>>> Project.objects.get(id=1)
+<Project: Project object (1)>
+>>> Project.objects.get(id=2) 
+<Project: Project object (2)>
+>>> Project.objects.get(name="application movil")
+<Project: Project object (1)>
+>>> Project.objects.get(name="application movil")  
+<Project: Project object (1)>
+>>> from myapp.models import Project, Task
+>>> Project.objects.get(id=1)  
+<Project: Project object (1)>
+>>> p=Project.objects.get(id=1)
+>>> p
+<Project: Project object (1)>
+>>> p.task_set.all()
+<QuerySet []>
+>>> p.task_set.create(title="descargar  IDE")
+<Task: Task object (1)>
+>>> p.task_set.create(title="desarrollar login")
+<Task: Task object (2)>
+>>> p.task_set.all()                             
+<QuerySet [<Task: Task object (1)>, <Task: Task object (2)>]>
+>>> p.task_set..get(id=1)
+  File "<console>", line 1
+    p.task_set..get(id=1)
+               ^
+SyntaxError: invalid syntax
+>>> p.task_set.get(id=1)  
+<Task: Task object (1)>
+>>> p.task_set.get(id=4)
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+  File "C:\wamp64\www\ProyectosDjango\djangoproject\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\wamp64\www\ProyectosDjango\djangoproject\venv\Lib\site-packages\django\db\models\query.py", line 649, in get
+    raise self.model.DoesNotExist(
+myapp.models.Task.DoesNotExist: Task matching query does not exist.
+>>> Project.objects.filter(name__startswith="apli")
+<QuerySet []>
+>>> Project.objects.filter(name__startswith="appli") 
+<QuerySet [<Project: Project object (1)>, <Project: Project object (2)>]>
+>>> p=Project.objects                                
+>>> p.filter(name__startswith="app")
+<QuerySet [<Project: Project object (1)>, <Project: Project object (2)>]>
+>>>
+
+
+
+https://www.youtube.com/watch?v=e6PkGDH4wWA
+
+ python -m venv venv
+
+fn f1 interpter selector 
+
+.\venv\Scripts\activate
+
+pip install django 
+
+
+django-admin --version
+
+
+
+django-admin startproject djangocrud .
+python manage.py runserver
+
+
+
+pip install django-livereload-server
+
+#python manage.py livereload
+
+#python manage.py runserver
+
+ 'livereload',
+
+#https://github.com/tjwalch/django-livereload-server
+
+
+'livereload.middleware.LiveReloadScript',
+
+Msb.93345900
+
+python manage.py startapp tasks
+
+http://127.0.0.1:8000/home/
+
+python manage.py migrate
+
+python manage.py makemigrations
+
+python manage.py migrate  
+
+python manage.py createsuperuser
+
+moha
+123
+msb.duck@gmail.com
+
+
+https://docs.render.com/deploy-django
+
+
+pip install dj-database-url
+
+pip install psycopg2-binary
+
+pip install whitenoise[brotli]
+
+chmod a+x build.sh
+
+pip install gunicorn
+
+gunicorn djangocrud.wsgi
+
+pip freeze > requirements.txt
+
+git init
+
+git add .
+
+git commit -m "first commit"
+
+https://github.com/msbTemplar?tab=repositories
+
+django-auth-crud
+
+git remote add origin git@github.com:msbTemplar/django-auth-crud.git
+
+https://www.youtube.com/watch?v=1Km-x_8DSpk
+
+error ssh public key
+
+C:\Users\daw2\.ssh\id_rsa
+
+git push -u origin main
+
+DATABASE_URL  postgres://drfmohammed_user:WRFfUGHIkTrBlQ1cduQw6I2fr1VGY9mu@dpg-cmr81ri1hbls73fnto2g-a/drfmohammed
+
+https://dashboard.render.com/web/srv-cndk66ev3ddc73cc10sg/deploys/dep-cndkgcmv3ddc73cc2hn0?r=2024-02-25%4014%3A00%3A23~2024-02-25%4014%3A03%3A25
+
+PYTHON_VERSION  3.11.2
+
+https://github.com/msbTemplar/django-auth-crud
+
+
+el curso 
+
+https://www.youtube.com/watch?v=e6PkGDH4wWA
+
+
+
+
+
+030324
+
+
+https://www.youtube.com/watch?v=uSbDMs7Y9yI
+
+Python 3.11.2 (tags/v3.11.2:878ead1, Feb  7 2023, 16:38:35) [MSC v.1934 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import django
+>>> django.VERSION
+(5, 0, 1, 'final', 0)
+>>>
+
+django-admin startproject Universidad
+
+md Aplicaciones
+django-admin startapp Academico
+
+
+python manage.py migrate
+
+
+django-admin startapp academico
+
+class Curso(models.Model):
+    codigo=models.CharField(primary_key=True,max_length=6)
+    nombre=models.CharField(max_length=50)
+    creditos=models.PositiveSmallIntegerField()
+    
+    
+admin.site.register(Curso)
+
+
+python manage.py makemigrations
+
+python manage.py createsuperuser
+
+moha
+123
+msb.duck@gmail.com
+
+python manage.py migrate
+
+
+pip install django-livereload-server
+
+'livereload',
+
+
+'livereload.middleware.LiveReloadScript',
+#python manage.py livereload
+
+#python manage.py runserver
+
+gunicorn Universidad.wsgi
+
+(function(){
+
+    const btnEliminacion=document.querySelectorAll(".btnEliminacion");
+    
+    btnEliminacion.forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+            const confirmacion=confirm('Seguro que quieres eliminar el curso');
+            if(!confirmacion){
+                e.preventDefault();
+            }
+        });
+    });
+
+})();
+
+
+otro curso 
+
+https://www.youtube.com/watch?v=ezIj71CX944
+
+django-admin startproject sistema
+
+cd .\sistema\
+
+python manage.py runserver
+
+
+
+
+python manage.py startapp libreria
+
+
+pip install django-livereload-server
+
+'livereload',
+
+'livereload.middleware.LiveReloadScript',
+
+#python manage.py livereload
+
+#python manage.py runserver
+
+pip install PyMySQL
+
+pip install pillow
+
+pip list
+
+python manage.py makemigrations
+
+moha
+123
+msb.duck@gmail.com
+
+
+
+https://youtu.be/n16JoIz5FQs?si=tOU1ZA5of07a7Xyc
+
+python -m virtualenv venv
+
+ .\venv\Scripts\activate
+
+python.exe -m pip install --upgrade pip
+
+pip install openpyxl tabulate
+
+python .\src\app.py
+
+https://www.youtube.com/watch?v=kD726xoRPOg&list=PL_wRgp7nihyZsEnudJ-XUAEdnOGUojbnn&index=52
+
+pip install Django
+
+pip list
+
+django-admin startproject django_echarts .
+
+
+django-admin startapp api        
+
+
+python manage.py migrate
+
+
+python manage.py createsuperuser
+
+
+moha
+msb.duck@gmail.com
+123
+
+python manage.py makemigrations 
+
+python manage.py runserver
+
+
+
+django-admin startproject django_datatables .
+
+
+django-admin startapp app
+
+
+pip install django-livereload-server
+
+'livereload',
+
+'livereload.middleware.LiveReloadScript',
+
+#python manage.py livereload
+
+#python manage.py runserver
+
+https://getbootstrap.com/docs/5.2/getting-started/download/
+
+
+https://datatables.net/examples/styling/bootstrap5.html
+
+
+https://cdnjs.com/libraries/font-awesome
+
+
+python -m virtualenv venv
+
+ .\venv\Scripts\activate   
+
+
+para sql server 
+pip install Django==3.0.6
+
+
+pip install django-mssql-backend
+
+
+django-admin startproject Proyecto
+
+django-admin startapp Aplicacion1
+
+django_sqlserver
+
+Data Source=localhost;Initial Catalog=pruebaWatcher;User Id=sa;Password=Msb.93345900;
+
+python manage.py makemigrations    
+
+python manage.py migrate    
+
+https://www.microsoft.com/es-es/download/details.aspx?id=50420
+
+python manage.py createsuperuser
+
+
+moha
+msb.duck@gmail.com
+123
+
+
+
+no funciona
+
+python -m virtualenv venv
+ .\venv\Scripts\activate   
+
+django-admin startproject archivos .
+django-admin startapp app    
+
+https://www.datablist.com/learn/csv/download-sample-csv-files#download-csv-files
+
+https://www.youtube.com/watch?v=EzVbCQv7YaQ
+
+pip install Django-import-export   
+
+
+django-admin startproject parsingcsvproject
+
+django-admin startapp MyApp
+
+python manage.py makemigrations  
+
+python manage.py migrate   
+
+python manage.py runserver
+
+
+pip install django
+
+django-admin startproject geolocation
+
+django-admin startapp location
+
+http://ip-api.com/json/24.48.0.1
+
+https://ip-api.com/docs/api:json
+
+pip install requests
+
+https://www.ipify.org/?format=json
+
+
+
+https://www.youtube.com/watch?v=pqWyUAT38e0
+
+
+pip install virtualenv
+
+python -m virtualenv venv
+
+cd venv
+
+Scripts\activate
+
+pip install django
+
+
+pip list
+
+django-admin startproject crm
+
+python manage.py runserve
+
+http://127.0.0.1:8000/
+
+django-admin startapp webapp
+
+python manage.py migrate
+
+python manage.py createsuperuser
+
+moha
+msb.duck@gmail.com
+123
+
+
+pip install django-livereload-server
+
+'livereload',
+
+'livereload.middleware.LiveReloadScript',
+
+#python manage.py livereload
+
+pip install django-crispy-forms==1.14.0
+
+'crispy_forms',
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+https://django-crispy-forms.readthedocs.io/en/latest/install.html
+
+python manage.py makemigrations
+
+python manage.py migrate 
+
+pip freeze > requirements.txt
+
+https://www.youtube.com/watch?v=fVy9eJzloj8
+
+https://www.pythonanywhere.com/user/simonTemplar/databases/
+Database host address:simonTemplar.mysql.pythonanywhere-services.com
+Username:simonTemplar
+
+Name
+simonTemplar$default
+
+
+https://whitenoise.readthedocs.io/en/stable/django.html
+
+pip install whitenoise
+
+
+py -m pip install --upgrade pip
+
+
+
+
+PS C:\wamp64\www\ProyectosDjango\django-pets> python -m venv venv
+PS C:\wamp64\www\ProyectosDjango\django-pets> . .\venv\Scripts\activate
+pip install -r .\requirements.txt
+
+django-admin startproject djangopets .
+
+python.exe -m pip install --upgrade pip
+
+python manage.py livereload
+
+django-admin startapp adoption
+
+python manage.py makemigrations
+
+python manage.py migrate  
+
+>> from adoption.models import Shelter
+>>> shelter = Shelter(name='Seatle Rescue')
+>>> shelter.save()     
+
+exit()
+
+python manage.py createsuperuser
+
+
+moha
+msb.duck@gmail.com
+123
+
+az hack create -l westus2 -n django -r python -d mysql --output yaml
+
+
+
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r .\requirements.txt
+
+
+python -m virtualenv venv
+
+cd venv
+
+Scripts\activate
+
+pip install django
+
+
+pip install pillow 
+
+
+pip install gunicorn
+
+pip install whitenoise
+
+pip install psycopg2
+
+pip install django==3.2.1
+
+attrib +x build.sh
+
+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
+
+git remote add origin https://github.com/simonTemplarCoin/miPrimerBlog.git
+
+
+git remote set-url origin https://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@github.com/simonTemplarCoin/miPrimerBlog.git
+
+git push -u origin master
+
+https://es.stackoverflow.com/questions/300905/como-usar-otra-cuenta-de-github-en-windows
+
+error: remote origin already exists.git remote add origin https://github.com/simonTemplarCoin/miproyectoNuevo.git
+
+git remote set-url origin https://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@github.com/simonTemplarCoin/miproyectoNuevo.git
+
+https://www.youtube.com/watch?v=CdtQSiC8ZNQ
+
+pip freeze > requirements.txt
+
+https://www.youtube.com/watch?v=CVEKe39VFu8&list=PLCC34OHNcOtqW9BJmgQPPzUpJ8hl49AGy&index=7
+
+pip install reportlab
+
+pip freeze
+
+python manage.py startapp members   
+
+
+problemas con pip en windows
+
+https://stackoverflow.com/questions/61561218/modulenotfounderror-no-module-named-pip-on-windows
+
+
+	simontemplar-001
+
+simontemplar-001-site1.htempurl.com
+
+11178748
+60-dayfreetrial
+
+  "DomainUrls": {
+    "WEB_URL": "http://simontemplar-001-site1.htempurl.com/"
+  }
+
+http://simontemplar-001-site1.htempurl.com/
+
+
+angular net core 8.0
+https://www.youtube.com/watch?v=MzMXz8dwi8Q
+
+pip install openpyxl
+
+pip install openpyxl==3.0.6
+
+
+python manage.py shell
+
+>>> from django.contrib.sessions.models import Session
+>>> k = Session.objects.get(pk='31sewhrh7670ekdlsim4o7ih5a80vixu')
+>>> k.get_decoded()
+{'session_key': {'2': {'price': '899.99'}}}
+>>>
+
+
+https://github.com/flatplanet/musker/blob/main/musker/forms.py
+
+https://miecommerce-production.up.railway.app/

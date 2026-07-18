@@ -7,6 +7,19 @@ from tpv import views
 
 urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=False)),
+
+    # Admin Panel: Stock, Informe Semanal, Previsión Compras (ANTES del admin porcatch-all)
+    path('admin/stock-dashboard/', views.admin_stock_dashboard, name='admin_stock_dashboard'),
+    path('admin/informe-semanal/', views.admin_informe_semanal, name='admin_informe_semanal'),
+    path('admin/prevision-compras/', views.admin_prevision_compras, name='admin_prevision_compras'),
+
+    # Exportaciones Excel/PDF desde Admin
+    path('admin/stock-dashboard/excel/', views.admin_exportar_stock_excel, name='admin_exportar_stock_excel'),
+    path('admin/informe-semanal/excel/', views.admin_exportar_informe_semanal_excel, name='admin_exportar_informe_semanal_excel'),
+    path('admin/informe-semanal/pdf/', views.admin_exportar_informe_semanal_pdf, name='admin_exportar_informe_semanal_pdf'),
+    path('admin/prevision-compras/excel/', views.admin_exportar_prevision_excel, name='admin_exportar_prevision_excel'),
+    path('admin/prevision-compras/pdf/', views.admin_exportar_prevision_pdf, name='admin_exportar_prevision_pdf'),
+
     path('admin/', admin.site.urls),
     path('', views.vista_terminal_pos, name='pos_home'),
     path('api/registrar-cobro/', views.api_registrar_cobro, name='api_cobro'),

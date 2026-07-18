@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.contrib import messages
+from django.db.models import Sum, F, Count, DecimalField, ExpressionWrapper
+from django.utils import timezone
+from datetime import timedelta, date
 from .models import (
     InsumoMateriaPrima, CategoriaProducto, Articulo,
     ComposicionReceta, OperacionVenta, LineaVenta, RegistroGasto, Mesa,
@@ -12,8 +16,49 @@ from .models import (
 
 @admin.register(InsumoMateriaPrima)
 class InsumoMateriaPrimaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'cantidad_actual', 'cantidad_minima', 'unidad_medida')
+    list_display = ('nombre', 'stock_estado', 'cantidad_actual', 'cantidad_minima', 'unidad_medida', 'necesita_reposicion_display')
+    list_editable = ('cantidad_actual', 'cantidad_minima')
     search_fields = ('nombre',)
+    list_filter = ('unidad_medida',)
+    actions = ['marcar_para_reposicion', 'actualizar_stock_minimo']
+    fieldsets = (
+        ('Información del Insumo', {
+            'fields': ('nombre', 'unidad_medida')
+        }),
+        ('Stock', {
+            'fields': ('cantidad_actual', 'cantidad_minima'),
+            'description': 'Edita directamente el stock actual o el mínimo de alerta'
+        }),
+    )
+
+    def stock_estado(self, obj):
+        if obj.cantidad_actual <= 0:
+            return '🔴 AGOTADO'
+        elif obj.cantidad_actual <= obj.cantidad_minima:
+            return '🟡 BAJO'
+        else:
+            return '🟢 OK'
+    stock_estado.short_description = 'Estado'
+    stock_estado.admin_order_field = 'cantidad_actual'
+
+    def necesita_reposicion_display(self, obj):
+        return obj.necesita_reposicion
+    necesita_reposicion_display.short_description = '¿Necesita reposición?'
+    necesita_reposicion_display.boolean = True
+
+    @admin.action(description='Marcar seleccionados para reposición')
+    def marcar_para_reposicion(self, request, queryset):
+        count = queryset.update(cantidad_actual=0)
+        self.message_user(request, f'{count} insumos marcados como agotados (stock = 0)')
+
+    @admin.action(description='Establecer stock mínimo a la cantidad actual')
+    def actualizar_stock_minimo(self, request, queryset):
+        count = 0
+        for insumo in queryset:
+            insumo.cantidad_minima = insumo.cantidad_actual
+            insumo.save()
+            count += 1
+        self.message_user(request, f'{count} insumos: stock mínimo actualizado')
 
 
 @admin.register(CategoriaProducto)
@@ -30,13 +75,30 @@ class ArticuloAdmin(admin.ModelAdmin):
 
 @admin.register(ComposicionReceta)
 class ComposicionRecetaAdmin(admin.ModelAdmin):
-    list_display = ('articulo', 'insumo', 'cantidad_consumida')
+    list_display = ('articulo', 'insumo', 'cantidad_consumida', 'stock_insumo', 'unidades_posibles')
+    list_filter = ('articulo__categoria',)
+    search_fields = ('articulo__nombre', 'insumo__nombre')
+    raw_id_fields = ('articulo', 'insumo')
+
+    def stock_insumo(self, obj):
+        return f"{obj.insumo.cantidad_actual} {obj.insumo.unidad_medida}"
+    stock_insumo.short_description = 'Stock del insumo'
+
+    def unidades_posibles(self, obj):
+        if obj.cantidad_consumida > 0:
+            unidades = int(obj.insumo.cantidad_actual / obj.cantidad_consumida)
+            return f"{unidades} uds"
+        return '-'
+    unidades_posibles.short_description = 'Unidades posibles'
 
 
 @admin.register(OperacionVenta)
 class OperacionVentaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'fecha_registro', 'empleado_caja', 'total_facturado', 'forma_pago')
-    list_filter = ('forma_pago', 'fecha_registro')
+    list_display = ('id', 'fecha_registro', 'empleado_caja', 'mesa', 'total_facturado', 'forma_pago', 'satisfaccion')
+    list_filter = ('forma_pago', 'fecha_registro', 'satisfaccion')
+    search_fields = ('empleado_caja__username',)
+    date_hierarchy = 'fecha_registro'
+    readonly_fields = ('fecha_registro', 'hash_seguridad')
 
 
 @admin.register(LineaVenta)
@@ -47,6 +109,19 @@ class LineaVentaAdmin(admin.ModelAdmin):
 @admin.register(RegistroGasto)
 class RegistroGastoAdmin(admin.ModelAdmin):
     list_display = ('concepto', 'importe_total', 'fecha_gasto', 'empleado_autoriza')
+    list_filter = ('fecha_gasto',)
+    search_fields = ('concepto',)
+    date_hierarchy = 'fecha_gasto'
+    readonly_fields = ('fecha_gasto',)
+    fieldsets = (
+        ('Detalle del Gasto', {
+            'fields': ('concepto', 'importe_total', 'empleado_autoriza')
+        }),
+        ('Información', {
+            'fields': ('fecha_gasto',),
+            'classes': ('collapse',)
+        }),
+    )
 
 
 @admin.register(Mesa)
@@ -163,8 +238,49 @@ class MensajeChatAdmin(admin.ModelAdmin):
 
 @admin.register(PedidoProveedor)
 class PedidoProveedorAdmin(admin.ModelAdmin):
-    list_display = ('insumo', 'cantidad_solicitada', 'estado', 'creado')
-    list_filter = ('estado',)
+    list_display = ('insumo', 'cantidad_solicitada', 'unidad_insumo', 'estado', 'creado', 'creado_por')
+    list_filter = ('estado', 'creado')
+    search_fields = ('insumo__nombre', 'notas')
+    date_hierarchy = 'creado'
+    readonly_fields = ('creado',)
+    actions = ['marcar_enviado', 'marcar_recibido', 'cancelar_pedido']
+    fieldsets = (
+        ('Detalle del Pedido', {
+            'fields': ('insumo', 'cantidad_solicitada', 'notas')
+        }),
+        ('Estado', {
+            'fields': ('estado',)
+        }),
+        ('Información', {
+            'fields': ('creado', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def unidad_insumo(self, obj):
+        return obj.insumo.unidad_medida
+    unidad_insumo.short_description = 'Unidad'
+
+    @admin.action(description='Marcar como enviado al proveedor')
+    def marcar_enviado(self, request, queryset):
+        count = queryset.filter(estado='PENDIENTE').update(estado='ENVIADO')
+        self.message_user(request, f'{count} pedidos marcados como enviados')
+
+    @admin.action(description='Marcar como recibido (actualizar stock)')
+    def marcar_recibido(self, request, queryset):
+        count = 0
+        for pedido in queryset.filter(estado='ENVIADO'):
+            pedido.estado = 'RECIBIDO'
+            pedido.save()
+            pedido.insumo.cantidad_actual += pedido.cantidad_solicitada
+            pedido.insumo.save()
+            count += 1
+        self.message_user(request, f'{count} pedidos recibidos. Stock actualizado automáticamente.')
+
+    @admin.action(description='Cancelar pedidos seleccionados')
+    def cancelar_pedido(self, request, queryset):
+        count = queryset.filter(estado__in=['PENDIENTE', 'ENVIADO']).update(estado='CANCELADO')
+        self.message_user(request, f'{count} pedidos cancelados')
 
 
 @admin.register(FirmaDigital)
@@ -211,3 +327,7 @@ class ComboAdmin(admin.ModelAdmin):
 @admin.register(ComboItem)
 class ComboItemAdmin(admin.ModelAdmin):
     list_display = ('combo', 'articulo', 'cantidad')
+
+
+# Template personalizado para el admin index con enlaces a gestiones
+admin.site.index_template = 'admin/custom_index.html'
