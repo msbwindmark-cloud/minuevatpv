@@ -3,7 +3,10 @@
 {% block content_title %}
 <div style="background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
     <span style="font-weight: bold;">💰 Turnos de Caja</span>
-    <button type="button" style="background: rgba(0,212,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; border: 1px solid rgba(0,212,255,0.5); cursor: pointer;" onclick="enviarCierreEmail()">📧 Enviar Ultimo Cierre por Email</button>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" style="background: rgba(0,212,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; border: 1px solid rgba(0,212,255,0.5); cursor: pointer;" onclick="enviarCierreEmail()">📧 Enviar Ultimo Cierre por Email</button>
+        <a href="/admin/" style="background: rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold;">⬅️ Volver al Panel</a>
+    </div>
 </div>
 {{ block.super }}
 

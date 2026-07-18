@@ -34,6 +34,8 @@ def log_login(sender, request, user, **kwargs):
 
 @receiver(user_logged_out)
 def log_logout(sender, request, user, **kwargs):
+    if user is None:
+        return
     registrar_log(user, 'LOGOUT', 'Auth', user.id,
                   f'{user.username} cerro sesion', ip=get_ip(request))
 
