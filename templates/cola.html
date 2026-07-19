@@ -68,11 +68,12 @@ function cargarEstado(){
         document.getElementById('stat-esperando').textContent=d.esperando;
         document.getElementById('stat-ultimo').textContent=d.ultimo_numero;
         var grid=document.getElementById('esperando-grid');
-        fetch('/api/cola/').then(function(){});
         var html='';
-        for(var i=1;i<=d.ultimo_numero;i++){
-            if(d.llamando&&i===d.llamando)continue;
-            if(i>d.ultimo_numero-d.esperando)html+='<div class="num-card">'+i+'</div>';
+        for(var i=0;i<d.esperando_lista.length;i++){
+            var item=d.esperando_lista[i];
+            html+='<div class="num-card"><span>#'+item.numero+'</span>';
+            if(item.nombre)html+='<span class="nc-nombre">'+item.nombre+'</span>';
+            html+='</div>';
         }
         grid.innerHTML=html;
     });

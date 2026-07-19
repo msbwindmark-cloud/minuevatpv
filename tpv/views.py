@@ -1492,11 +1492,13 @@ def api_cola_siguiente(request):
 
 @login_required
 def api_cola_estado(request):
-    esperando = ColaNumero.objects.filter(estado='ESPERANDO', fecha=date.today()).count()
+    esperando = ColaNumero.objects.filter(estado='ESPERANDO', fecha=date.today()).order_by('numero')
     llamando = ColaNumero.objects.filter(estado='LLAMANDO', fecha=date.today()).first()
     ultimo = ColaNumero.objects.filter(fecha=date.today()).order_by('-numero').first()
+    lista_esperando = [{'numero': e.numero, 'nombre': e.nombre_cliente or ''} for e in esperando]
     return JsonResponse({
-        'esperando': esperando,
+        'esperando': esperando.count(),
+        'esperando_lista': lista_esperando,
         'llamando': llamando.numero if llamando else None,
         'llamando_nombre': llamando.nombre_cliente if llamando else None,
         'ultimo_numero': ultimo.numero if ultimo else 0,

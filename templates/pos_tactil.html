@@ -339,7 +339,7 @@
                         <div class="col-2"><a href="/api/dashboard-gerencia/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Dash</a></div>
                         <div class="col-2"><a href="/reservas/" class="btn btn-outline-secondary btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Reserv.</a></div>
                         <div class="col-2"><a href="/plano/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Plano</a></div>
-                        <div class="col-2"><a href="/cola/" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Cola</a></div>
+                        <div class="col-2"><a href="#" onclick="nuevoNumeroCola(event)" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Cola</a></div>
                         <div class="col-2"><a href="/heatmap/" class="btn btn-outline-danger btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Heat</a></div>
                         <div class="col-2"><a href="/pdf/reporte-diario/" class="btn btn-outline-warning btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">PDF</a></div>
                         <div class="col-2"><a href="/admin/" class="btn btn-outline-danger btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Admin</a></div>
@@ -668,6 +668,52 @@
     function abrirDisplay(e) {
         e.preventDefault();
         window.open('/pantalla-cliente/', '_blank');
+    }
+
+    function nuevoNumeroCola(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Cola Digital',
+            html: '<p style="margin-bottom:15px;color:#94a3b8">Que quieres hacer?</p>',
+            showDenyButton: true,
+            confirmButtonText: 'Ver pantalla cola',
+            denyButtonText: 'Crear numero',
+            confirmButtonColor: '#00d4ff',
+            denyButtonColor: '#f59e0b',
+            background: '#1e293b',
+            color: '#e2e8f0',
+        }).then(function(r) {
+            if (r.isConfirmed) {
+                window.open('/cola/', '_blank');
+            } else if (r.isDenied) {
+                Swal.fire({
+                    title: 'Nuevo numero de cola',
+                    html: '<input id="swal-nombre-cola" class="swal2-input" placeholder="Nombre del cliente (opcional)">',
+                    showCancelButton: true,
+                    confirmButtonText: 'Crear numero',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#f59e0b',
+                    background: '#1e293b',
+                    color: '#e2e8f0',
+                    preConfirm: function() {
+                        return document.getElementById('swal-nombre-cola').value;
+                    }
+                }).then(function(r2) {
+                    if (!r2.isConfirmed) return;
+                    fetch('/api/cola/accion/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+                        body: JSON.stringify({accion: 'nuevo', nombre: r2.value || ''})
+                    }).then(function(res) { return res.json(); }).then(function(d) {
+                        if (d.status === 'success') {
+                            Swal.fire({icon: 'success', title: 'Numero #' + d.numero, text: 'Cliente: ' + (r2.value || 'Sin nombre'), timer: 2000, showConfirmButton: false, background: '#1e293b', color: '#e2e8f0'});
+                        } else {
+                            Swal.fire({icon: 'error', title: 'Error', text: d.error || 'Error', confirmButtonColor: '#f43f5e', background: '#1e293b', color: '#e2e8f0'});
+                        }
+                    });
+                });
+            }
+        });
     }
 
     function seleccionarMesa(id, el) {
