@@ -1,0 +1,4133 @@
+[
+{
+  "model": "tpv.articulo",
+  "pk": 1,
+  "fields": {
+    "nombre": "Cafe Solo",
+    "precio_sin_iva": "0.80",
+    "tipo_iva": "10.00",
+    "categoria": 1,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 2,
+  "fields": {
+    "nombre": "Cafe con Leche",
+    "precio_sin_iva": "1.10",
+    "tipo_iva": "10.00",
+    "categoria": 1,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 3,
+  "fields": {
+    "nombre": "Cortado",
+    "precio_sin_iva": "1.00",
+    "tipo_iva": "10.00",
+    "categoria": 1,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 4,
+  "fields": {
+    "nombre": "Capuchino",
+    "precio_sin_iva": "1.50",
+    "tipo_iva": "10.00",
+    "categoria": 1,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 5,
+  "fields": {
+    "nombre": "Chocolate Caliente",
+    "precio_sin_iva": "1.60",
+    "tipo_iva": "10.00",
+    "categoria": 1,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 6,
+  "fields": {
+    "nombre": "Te Verde",
+    "precio_sin_iva": "1.00",
+    "tipo_iva": "10.00",
+    "categoria": 1,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 7,
+  "fields": {
+    "nombre": "Te Negro",
+    "precio_sin_iva": "1.00",
+    "tipo_iva": "10.00",
+    "categoria": 1,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 8,
+  "fields": {
+    "nombre": "Cafe Frio",
+    "precio_sin_iva": "1.80",
+    "tipo_iva": "10.00",
+    "categoria": 2,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 9,
+  "fields": {
+    "nombre": "Capuchino Frio",
+    "precio_sin_iva": "2.20",
+    "tipo_iva": "10.00",
+    "categoria": 2,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 10,
+  "fields": {
+    "nombre": "Zumo de Naranja",
+    "precio_sin_iva": "1.80",
+    "tipo_iva": "10.00",
+    "categoria": 2,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 11,
+  "fields": {
+    "nombre": "Agua Mineral",
+    "precio_sin_iva": "0.80",
+    "tipo_iva": "4.00",
+    "categoria": 2,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 12,
+  "fields": {
+    "nombre": "Bocadillo Jamon",
+    "precio_sin_iva": "2.50",
+    "tipo_iva": "10.00",
+    "categoria": 3,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 13,
+  "fields": {
+    "nombre": "Bocadillo Queso",
+    "precio_sin_iva": "2.20",
+    "tipo_iva": "10.00",
+    "categoria": 3,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 14,
+  "fields": {
+    "nombre": "Bocadillo Mixto",
+    "precio_sin_iva": "2.80",
+    "tipo_iva": "10.00",
+    "categoria": 3,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 15,
+  "fields": {
+    "nombre": "Croissant",
+    "precio_sin_iva": "1.20",
+    "tipo_iva": "10.00",
+    "categoria": 4,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 16,
+  "fields": {
+    "nombre": "Napolitana Chocolate",
+    "precio_sin_iva": "1.50",
+    "tipo_iva": "10.00",
+    "categoria": 4,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 17,
+  "fields": {
+    "nombre": "Ensaimada",
+    "precio_sin_iva": "1.30",
+    "tipo_iva": "10.00",
+    "categoria": 4,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 18,
+  "fields": {
+    "nombre": "Baileys",
+    "precio_sin_iva": "2.50",
+    "tipo_iva": "21.00",
+    "categoria": 5,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.articulo",
+  "pk": 19,
+  "fields": {
+    "nombre": "Cafe con Baileys",
+    "precio_sin_iva": "3.00",
+    "tipo_iva": "21.00",
+    "categoria": 5,
+    "codigo_barras": null,
+    "activo": true
+  }
+},
+{
+  "model": "tpv.categoriaproducto",
+  "pk": 1,
+  "fields": {
+    "nombre": "Calientes",
+    "icono": "☕"
+  }
+},
+{
+  "model": "tpv.categoriaproducto",
+  "pk": 2,
+  "fields": {
+    "nombre": "Frias",
+    "icono": "🧊"
+  }
+},
+{
+  "model": "tpv.categoriaproducto",
+  "pk": 3,
+  "fields": {
+    "nombre": "Bocadillos",
+    "icono": "🥪"
+  }
+},
+{
+  "model": "tpv.categoriaproducto",
+  "pk": 4,
+  "fields": {
+    "nombre": "Pasteleria",
+    "icono": "🥐"
+  }
+},
+{
+  "model": "tpv.categoriaproducto",
+  "pk": 5,
+  "fields": {
+    "nombre": "Licores",
+    "icono": "🥃"
+  }
+},
+{
+  "model": "tpv.mesa",
+  "pk": 1,
+  "fields": {
+    "numero": 1,
+    "sillas": 4,
+    "activa": true
+  }
+},
+{
+  "model": "tpv.mesa",
+  "pk": 2,
+  "fields": {
+    "numero": 2,
+    "sillas": 4,
+    "activa": true
+  }
+},
+{
+  "model": "tpv.mesa",
+  "pk": 3,
+  "fields": {
+    "numero": 3,
+    "sillas": 2,
+    "activa": true
+  }
+},
+{
+  "model": "tpv.mesa",
+  "pk": 4,
+  "fields": {
+    "numero": 4,
+    "sillas": 6,
+    "activa": true
+  }
+},
+{
+  "model": "tpv.mesa",
+  "pk": 5,
+  "fields": {
+    "numero": 5,
+    "sillas": 4,
+    "activa": true
+  }
+},
+{
+  "model": "tpv.mesa",
+  "pk": 6,
+  "fields": {
+    "numero": 6,
+    "sillas": 8,
+    "activa": true
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 1,
+  "fields": {
+    "fecha_registro": "2026-07-13T13:54:53.629Z",
+    "empleado_caja": 2,
+    "mesa": null,
+    "subtotal_base": "0.00",
+    "total_impuestos": "0.00",
+    "total_facturado": "0.00",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 2,
+  "fields": {
+    "fecha_registro": "2026-07-13T14:12:43.149Z",
+    "empleado_caja": 2,
+    "mesa": null,
+    "subtotal_base": "12.00",
+    "total_impuestos": "1.20",
+    "total_facturado": "13.20",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_2_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 3,
+  "fields": {
+    "fecha_registro": "2026-07-13T14:12:53.626Z",
+    "empleado_caja": 2,
+    "mesa": null,
+    "subtotal_base": "8.90",
+    "total_impuestos": "0.84",
+    "total_facturado": "9.74",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_3_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 4,
+  "fields": {
+    "fecha_registro": "2026-07-13T15:37:19.758Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "5.90",
+    "total_impuestos": "0.49",
+    "total_facturado": "6.39",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_4_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 5,
+  "fields": {
+    "fecha_registro": "2026-07-13T15:54:49.923Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "10.50",
+    "total_impuestos": "1.05",
+    "total_facturado": "11.55",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_5_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 6,
+  "fields": {
+    "fecha_registro": "2026-07-13T15:55:06.845Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "1.50",
+    "total_impuestos": "0.15",
+    "total_facturado": "1.65",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_6_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 7,
+  "fields": {
+    "fecha_registro": "2026-07-13T16:10:22.085Z",
+    "empleado_caja": 2,
+    "mesa": 4,
+    "subtotal_base": "6.00",
+    "total_impuestos": "0.55",
+    "total_facturado": "6.55",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_7_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 8,
+  "fields": {
+    "fecha_registro": "2026-07-13T16:14:51.024Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "7.00",
+    "total_impuestos": "0.70",
+    "total_facturado": "7.70",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_8_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 9,
+  "fields": {
+    "fecha_registro": "2026-07-13T16:17:48.887Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "7.69",
+    "total_impuestos": "0.63",
+    "total_facturado": "8.32",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_9_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 10,
+  "fields": {
+    "fecha_registro": "2026-07-14T06:33:37.789Z",
+    "empleado_caja": 2,
+    "mesa": null,
+    "subtotal_base": "6.38",
+    "total_impuestos": "0.26",
+    "total_facturado": "6.64",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_10_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 11,
+  "fields": {
+    "fecha_registro": "2026-07-14T06:33:45.549Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "5.59",
+    "total_impuestos": "0.22",
+    "total_facturado": "5.81",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_11_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 12,
+  "fields": {
+    "fecha_registro": "2026-07-14T06:33:58.510Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "9.00",
+    "total_impuestos": "0.90",
+    "total_facturado": "9.90",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_12_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 13,
+  "fields": {
+    "fecha_registro": "2026-07-14T06:34:05.118Z",
+    "empleado_caja": 2,
+    "mesa": 4,
+    "subtotal_base": "9.00",
+    "total_impuestos": "0.90",
+    "total_facturado": "9.90",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_13_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 14,
+  "fields": {
+    "fecha_registro": "2026-07-15T06:35:31.965Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "7.00",
+    "total_impuestos": "0.70",
+    "total_facturado": "7.70",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_14_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 15,
+  "fields": {
+    "fecha_registro": "2026-07-15T06:35:59.468Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "6.90",
+    "total_impuestos": "0.64",
+    "total_facturado": "7.54",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_15_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 16,
+  "fields": {
+    "fecha_registro": "2026-07-15T06:36:13.349Z",
+    "empleado_caja": 2,
+    "mesa": 4,
+    "subtotal_base": "7.40",
+    "total_impuestos": "0.74",
+    "total_facturado": "8.14",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_16_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 17,
+  "fields": {
+    "fecha_registro": "2026-07-18T11:53:02.565Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "21.59",
+    "total_impuestos": "1.97",
+    "total_facturado": "23.56",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_17_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 18,
+  "fields": {
+    "fecha_registro": "2026-07-18T15:38:41.768Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "7.40",
+    "total_impuestos": "0.64",
+    "total_facturado": "8.04",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_18_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 19,
+  "fields": {
+    "fecha_registro": "2026-07-18T15:39:32.007Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "10.60",
+    "total_impuestos": "1.01",
+    "total_facturado": "11.61",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_19_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 20,
+  "fields": {
+    "fecha_registro": "2026-07-18T15:45:14.428Z",
+    "empleado_caja": 2,
+    "mesa": 4,
+    "subtotal_base": "21.59",
+    "total_impuestos": "2.02",
+    "total_facturado": "23.61",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_20_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 21,
+  "fields": {
+    "fecha_registro": "2026-07-18T15:46:29.297Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "13.99",
+    "total_impuestos": "1.21",
+    "total_facturado": "15.20",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_21_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 22,
+  "fields": {
+    "fecha_registro": "2026-07-18T15:49:50.672Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "11.40",
+    "total_impuestos": "1.09",
+    "total_facturado": "12.49",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_22_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 23,
+  "fields": {
+    "fecha_registro": "2026-07-18T15:58:43.896Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "13.50",
+    "total_impuestos": "1.35",
+    "total_facturado": "14.85",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_23_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 24,
+  "fields": {
+    "fecha_registro": "2026-07-18T15:59:10.439Z",
+    "empleado_caja": 2,
+    "mesa": 5,
+    "subtotal_base": "9.60",
+    "total_impuestos": "0.96",
+    "total_facturado": "10.56",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_24_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 25,
+  "fields": {
+    "fecha_registro": "2026-07-18T16:15:09.678Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "8.78",
+    "total_impuestos": "0.35",
+    "total_facturado": "9.13",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_25_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "NORMAL"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 26,
+  "fields": {
+    "fecha_registro": "2026-07-18T16:15:39.382Z",
+    "empleado_caja": 2,
+    "mesa": 4,
+    "subtotal_base": "25.28",
+    "total_impuestos": "3.85",
+    "total_facturado": "29.13",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_26_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 27,
+  "fields": {
+    "fecha_registro": "2026-07-19T07:34:58.566Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "9.58",
+    "total_impuestos": "0.38",
+    "total_facturado": "9.96",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_27_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 28,
+  "fields": {
+    "fecha_registro": "2026-07-19T07:37:01.374Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "33.30",
+    "total_impuestos": "3.28",
+    "total_facturado": "36.58",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_28_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 29,
+  "fields": {
+    "fecha_registro": "2026-07-19T07:53:56.897Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "4.00",
+    "total_impuestos": "0.40",
+    "total_facturado": "4.40",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_29_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 30,
+  "fields": {
+    "fecha_registro": "2026-07-19T08:08:44.573Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "23.18",
+    "total_impuestos": "4.29",
+    "total_facturado": "27.47",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_30_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 31,
+  "fields": {
+    "fecha_registro": "2026-07-19T08:13:31.050Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "24.29",
+    "total_impuestos": "2.66",
+    "total_facturado": "26.95",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_31_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 32,
+  "fields": {
+    "fecha_registro": "2026-07-19T08:50:48.799Z",
+    "empleado_caja": 2,
+    "mesa": 3,
+    "subtotal_base": "3.30",
+    "total_impuestos": "0.28",
+    "total_facturado": "3.58",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_32_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "EXCELENTE"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 33,
+  "fields": {
+    "fecha_registro": "2026-07-19T08:52:22.501Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "9.30",
+    "total_impuestos": "0.88",
+    "total_facturado": "10.18",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_33_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "NORMAL"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 34,
+  "fields": {
+    "fecha_registro": "2026-07-19T08:58:34.264Z",
+    "empleado_caja": 2,
+    "mesa": 1,
+    "subtotal_base": "3.80",
+    "total_impuestos": "0.38",
+    "total_facturado": "4.18",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_34_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "BUENA"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 35,
+  "fields": {
+    "fecha_registro": "2026-07-19T08:59:02.930Z",
+    "empleado_caja": 2,
+    "mesa": 2,
+    "subtotal_base": "6.30",
+    "total_impuestos": "0.58",
+    "total_facturado": "6.88",
+    "forma_pago": "TARJETA",
+    "hash_seguridad": "HASH_SECURE_V_35_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "NORMAL"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 36,
+  "fields": {
+    "fecha_registro": "2026-07-19T08:59:49.022Z",
+    "empleado_caja": 2,
+    "mesa": 4,
+    "subtotal_base": "5.60",
+    "total_impuestos": "0.56",
+    "total_facturado": "6.16",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "HASH_SECURE_V_36_GEN2026",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": "BUENA"
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 37,
+  "fields": {
+    "fecha_registro": "2026-07-19T10:09:56.900Z",
+    "empleado_caja": 1,
+    "mesa": 1,
+    "subtotal_base": "0.88",
+    "total_impuestos": "0.14",
+    "total_facturado": "1.02",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 38,
+  "fields": {
+    "fecha_registro": "2026-07-19T10:10:05.607Z",
+    "empleado_caja": 1,
+    "mesa": 4,
+    "subtotal_base": "8.41",
+    "total_impuestos": "1.35",
+    "total_facturado": "9.76",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.operacionventa",
+  "pk": 39,
+  "fields": {
+    "fecha_registro": "2026-07-19T10:15:33.820Z",
+    "empleado_caja": 1,
+    "mesa": 2,
+    "subtotal_base": "15.67",
+    "total_impuestos": "2.51",
+    "total_facturado": "18.18",
+    "forma_pago": "EFECTIVO",
+    "hash_seguridad": "",
+    "cupon": null,
+    "cliente": null,
+    "puntos_ganados": 0,
+    "descuento_aplicado": "0.00",
+    "satisfaccion": ""
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 1,
+  "fields": {
+    "venta": 2,
+    "articulo": 1,
+    "unidades": 3,
+    "precio_aplicado_con_iva": "0.88"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 2,
+  "fields": {
+    "venta": 2,
+    "articulo": 5,
+    "unidades": 6,
+    "precio_aplicado_con_iva": "1.76"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 3,
+  "fields": {
+    "venta": 3,
+    "articulo": 6,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 4,
+  "fields": {
+    "venta": 3,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 5,
+  "fields": {
+    "venta": 3,
+    "articulo": 10,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 6,
+  "fields": {
+    "venta": 3,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 7,
+  "fields": {
+    "venta": 3,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 8,
+  "fields": {
+    "venta": 4,
+    "articulo": 8,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 9,
+  "fields": {
+    "venta": 4,
+    "articulo": 11,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 10,
+  "fields": {
+    "venta": 4,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 11,
+  "fields": {
+    "venta": 5,
+    "articulo": 1,
+    "unidades": 5,
+    "precio_aplicado_con_iva": "0.88"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 12,
+  "fields": {
+    "venta": 5,
+    "articulo": 12,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 13,
+  "fields": {
+    "venta": 5,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 14,
+  "fields": {
+    "venta": 6,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 15,
+  "fields": {
+    "venta": 7,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 16,
+  "fields": {
+    "venta": 7,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 17,
+  "fields": {
+    "venta": 7,
+    "articulo": 15,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 18,
+  "fields": {
+    "venta": 7,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 19,
+  "fields": {
+    "venta": 8,
+    "articulo": 6,
+    "unidades": 7,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 20,
+  "fields": {
+    "venta": 9,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 21,
+  "fields": {
+    "venta": 9,
+    "articulo": 8,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 22,
+  "fields": {
+    "venta": 9,
+    "articulo": 11,
+    "unidades": 3,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 23,
+  "fields": {
+    "venta": 9,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 24,
+  "fields": {
+    "venta": 10,
+    "articulo": 11,
+    "unidades": 8,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 25,
+  "fields": {
+    "venta": 11,
+    "articulo": 11,
+    "unidades": 7,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 26,
+  "fields": {
+    "venta": 12,
+    "articulo": 16,
+    "unidades": 6,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 27,
+  "fields": {
+    "venta": 13,
+    "articulo": 16,
+    "unidades": 6,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 28,
+  "fields": {
+    "venta": 14,
+    "articulo": 7,
+    "unidades": 7,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 29,
+  "fields": {
+    "venta": 15,
+    "articulo": 6,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 30,
+  "fields": {
+    "venta": 15,
+    "articulo": 8,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 31,
+  "fields": {
+    "venta": 15,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 32,
+  "fields": {
+    "venta": 15,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 33,
+  "fields": {
+    "venta": 15,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 34,
+  "fields": {
+    "venta": 16,
+    "articulo": 2,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.21"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 35,
+  "fields": {
+    "venta": 16,
+    "articulo": 3,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 36,
+  "fields": {
+    "venta": 16,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 37,
+  "fields": {
+    "venta": 16,
+    "articulo": 8,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 38,
+  "fields": {
+    "venta": 16,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 39,
+  "fields": {
+    "venta": 17,
+    "articulo": 5,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.76"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 40,
+  "fields": {
+    "venta": 17,
+    "articulo": 6,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 41,
+  "fields": {
+    "venta": 17,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 42,
+  "fields": {
+    "venta": 17,
+    "articulo": 9,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.42"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 43,
+  "fields": {
+    "venta": 17,
+    "articulo": 10,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 44,
+  "fields": {
+    "venta": 17,
+    "articulo": 11,
+    "unidades": 4,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 45,
+  "fields": {
+    "venta": 17,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 46,
+  "fields": {
+    "venta": 17,
+    "articulo": 14,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 47,
+  "fields": {
+    "venta": 17,
+    "articulo": 15,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 48,
+  "fields": {
+    "venta": 17,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 49,
+  "fields": {
+    "venta": 18,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 50,
+  "fields": {
+    "venta": 18,
+    "articulo": 11,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 51,
+  "fields": {
+    "venta": 18,
+    "articulo": 14,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 52,
+  "fields": {
+    "venta": 18,
+    "articulo": 15,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 53,
+  "fields": {
+    "venta": 19,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 54,
+  "fields": {
+    "venta": 19,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 55,
+  "fields": {
+    "venta": 19,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 56,
+  "fields": {
+    "venta": 19,
+    "articulo": 14,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 57,
+  "fields": {
+    "venta": 19,
+    "articulo": 15,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 58,
+  "fields": {
+    "venta": 19,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 59,
+  "fields": {
+    "venta": 20,
+    "articulo": 10,
+    "unidades": 4,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 60,
+  "fields": {
+    "venta": 20,
+    "articulo": 11,
+    "unidades": 3,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 61,
+  "fields": {
+    "venta": 20,
+    "articulo": 14,
+    "unidades": 3,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 62,
+  "fields": {
+    "venta": 20,
+    "articulo": 15,
+    "unidades": 3,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 63,
+  "fields": {
+    "venta": 21,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 64,
+  "fields": {
+    "venta": 21,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 65,
+  "fields": {
+    "venta": 21,
+    "articulo": 11,
+    "unidades": 4,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 66,
+  "fields": {
+    "venta": 21,
+    "articulo": 14,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 67,
+  "fields": {
+    "venta": 21,
+    "articulo": 15,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 68,
+  "fields": {
+    "venta": 22,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 69,
+  "fields": {
+    "venta": 22,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 70,
+  "fields": {
+    "venta": 22,
+    "articulo": 14,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 71,
+  "fields": {
+    "venta": 22,
+    "articulo": 15,
+    "unidades": 5,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 72,
+  "fields": {
+    "venta": 23,
+    "articulo": 16,
+    "unidades": 9,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 73,
+  "fields": {
+    "venta": 24,
+    "articulo": 15,
+    "unidades": 8,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 74,
+  "fields": {
+    "venta": 25,
+    "articulo": 11,
+    "unidades": 11,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 75,
+  "fields": {
+    "venta": 26,
+    "articulo": 6,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 76,
+  "fields": {
+    "venta": 26,
+    "articulo": 10,
+    "unidades": 3,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 77,
+  "fields": {
+    "venta": 26,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 78,
+  "fields": {
+    "venta": 26,
+    "articulo": 14,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 79,
+  "fields": {
+    "venta": 26,
+    "articulo": 18,
+    "unidades": 5,
+    "precio_aplicado_con_iva": "3.02"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 80,
+  "fields": {
+    "venta": 27,
+    "articulo": 11,
+    "unidades": 12,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 81,
+  "fields": {
+    "venta": 28,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 82,
+  "fields": {
+    "venta": 28,
+    "articulo": 12,
+    "unidades": 13,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 83,
+  "fields": {
+    "venta": 29,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 84,
+  "fields": {
+    "venta": 29,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 85,
+  "fields": {
+    "venta": 30,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 86,
+  "fields": {
+    "venta": 30,
+    "articulo": 15,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 87,
+  "fields": {
+    "venta": 30,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 88,
+  "fields": {
+    "venta": 30,
+    "articulo": 18,
+    "unidades": 6,
+    "precio_aplicado_con_iva": "3.02"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 89,
+  "fields": {
+    "venta": 30,
+    "articulo": 19,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.63"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 90,
+  "fields": {
+    "venta": 31,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 91,
+  "fields": {
+    "venta": 31,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 92,
+  "fields": {
+    "venta": 31,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 93,
+  "fields": {
+    "venta": 31,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 94,
+  "fields": {
+    "venta": 31,
+    "articulo": 14,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 95,
+  "fields": {
+    "venta": 31,
+    "articulo": 15,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 96,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 7,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 97,
+  "fields": {
+    "venta": 31,
+    "articulo": 18,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.02"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 98,
+  "fields": {
+    "venta": 32,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 99,
+  "fields": {
+    "venta": 32,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 100,
+  "fields": {
+    "venta": 33,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 101,
+  "fields": {
+    "venta": 33,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 102,
+  "fields": {
+    "venta": 33,
+    "articulo": 14,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.08"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 103,
+  "fields": {
+    "venta": 33,
+    "articulo": 15,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 104,
+  "fields": {
+    "venta": 33,
+    "articulo": 16,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.65"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 105,
+  "fields": {
+    "venta": 34,
+    "articulo": 6,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 106,
+  "fields": {
+    "venta": 34,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 107,
+  "fields": {
+    "venta": 34,
+    "articulo": 8,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 108,
+  "fields": {
+    "venta": 35,
+    "articulo": 8,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 109,
+  "fields": {
+    "venta": 35,
+    "articulo": 11,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.83"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 110,
+  "fields": {
+    "venta": 35,
+    "articulo": 12,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "2.75"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 111,
+  "fields": {
+    "venta": 35,
+    "articulo": 15,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.32"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 112,
+  "fields": {
+    "venta": 36,
+    "articulo": 6,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 113,
+  "fields": {
+    "venta": 36,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 114,
+  "fields": {
+    "venta": 36,
+    "articulo": 8,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 115,
+  "fields": {
+    "venta": 36,
+    "articulo": 10,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 116,
+  "fields": {
+    "venta": 37,
+    "articulo": 1,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "0.88"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 117,
+  "fields": {
+    "venta": 38,
+    "articulo": 7,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 118,
+  "fields": {
+    "venta": 38,
+    "articulo": 17,
+    "unidades": 3,
+    "precio_aplicado_con_iva": "1.43"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 119,
+  "fields": {
+    "venta": 38,
+    "articulo": 18,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.02"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 120,
+  "fields": {
+    "venta": 39,
+    "articulo": 7,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.10"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 121,
+  "fields": {
+    "venta": 39,
+    "articulo": 8,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.98"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 122,
+  "fields": {
+    "venta": 39,
+    "articulo": 17,
+    "unidades": 2,
+    "precio_aplicado_con_iva": "1.43"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 123,
+  "fields": {
+    "venta": 39,
+    "articulo": 18,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.02"
+  }
+},
+{
+  "model": "tpv.lineaventa",
+  "pk": 124,
+  "fields": {
+    "venta": 39,
+    "articulo": 19,
+    "unidades": 1,
+    "precio_aplicado_con_iva": "3.63"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 1,
+  "fields": {
+    "nombre": "Cafe en graos",
+    "cantidad_actual": "4848.00",
+    "cantidad_minima": "500.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 2,
+  "fields": {
+    "nombre": "Leche entera",
+    "cantidad_actual": "6300.00",
+    "cantidad_minima": "1000.00",
+    "unidad_medida": "ml"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 3,
+  "fields": {
+    "nombre": "Leche desnatada",
+    "cantidad_actual": "5000.00",
+    "cantidad_minima": "500.00",
+    "unidad_medida": "ml"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 4,
+  "fields": {
+    "nombre": "Azucar",
+    "cantidad_actual": "2630.00",
+    "cantidad_minima": "300.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 5,
+  "fields": {
+    "nombre": "Chocolate en polvo",
+    "cantidad_actual": "765.00",
+    "cantidad_minima": "200.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 6,
+  "fields": {
+    "nombre": "Te verde",
+    "cantidad_actual": "186.00",
+    "cantidad_minima": "20.00",
+    "unidad_medida": "ud"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 7,
+  "fields": {
+    "nombre": "Te negro",
+    "cantidad_actual": "185.00",
+    "cantidad_minima": "20.00",
+    "unidad_medida": "ud"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 8,
+  "fields": {
+    "nombre": "Hojaldrados",
+    "cantidad_actual": "-5.00",
+    "cantidad_minima": "10.00",
+    "unidad_medida": "ud"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 9,
+  "fields": {
+    "nombre": "Pan de molde",
+    "cantidad_actual": "20.00",
+    "cantidad_minima": "10.00",
+    "unidad_medida": "ud"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 10,
+  "fields": {
+    "nombre": "Jamón serrano",
+    "cantidad_actual": "-1640.00",
+    "cantidad_minima": "50.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 11,
+  "fields": {
+    "nombre": "Queso manchego",
+    "cantidad_actual": "110.00",
+    "cantidad_minima": "50.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 12,
+  "fields": {
+    "nombre": "Mantequilla",
+    "cantidad_actual": "20.00",
+    "cantidad_minima": "50.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 13,
+  "fields": {
+    "nombre": "Nata montada",
+    "cantidad_actual": "1000.00",
+    "cantidad_minima": "100.00",
+    "unidad_medida": "ml"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 14,
+  "fields": {
+    "nombre": "Licor Baileys",
+    "cantidad_actual": "-10.00",
+    "cantidad_minima": "50.00",
+    "unidad_medida": "ml"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 15,
+  "fields": {
+    "nombre": "Hielo",
+    "cantidad_actual": "1620.00",
+    "cantidad_minima": "200.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 16,
+  "fields": {
+    "nombre": "Zumo de naranja",
+    "cantidad_actual": "-2750.00",
+    "cantidad_minima": "200.00",
+    "unidad_medida": "ml"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 17,
+  "fields": {
+    "nombre": "Harina",
+    "cantidad_actual": "2000.00",
+    "cantidad_minima": "200.00",
+    "unidad_medida": "g"
+  }
+},
+{
+  "model": "tpv.insumomateriaprima",
+  "pk": 18,
+  "fields": {
+    "nombre": "Huevos",
+    "cantidad_actual": "30.00",
+    "cantidad_minima": "6.00",
+    "unidad_medida": "ud"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 1,
+  "fields": {
+    "articulo": 1,
+    "insumo": 1,
+    "cantidad_consumida": "8.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 2,
+  "fields": {
+    "articulo": 2,
+    "insumo": 1,
+    "cantidad_consumida": "8.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 3,
+  "fields": {
+    "articulo": 2,
+    "insumo": 2,
+    "cantidad_consumida": "200.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 4,
+  "fields": {
+    "articulo": 3,
+    "insumo": 1,
+    "cantidad_consumida": "8.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 5,
+  "fields": {
+    "articulo": 3,
+    "insumo": 2,
+    "cantidad_consumida": "50.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 6,
+  "fields": {
+    "articulo": 4,
+    "insumo": 1,
+    "cantidad_consumida": "8.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 7,
+  "fields": {
+    "articulo": 4,
+    "insumo": 2,
+    "cantidad_consumida": "250.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 8,
+  "fields": {
+    "articulo": 4,
+    "insumo": 5,
+    "cantidad_consumida": "5.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 9,
+  "fields": {
+    "articulo": 5,
+    "insumo": 2,
+    "cantidad_consumida": "300.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 10,
+  "fields": {
+    "articulo": 5,
+    "insumo": 5,
+    "cantidad_consumida": "25.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 11,
+  "fields": {
+    "articulo": 6,
+    "insumo": 6,
+    "cantidad_consumida": "1.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 12,
+  "fields": {
+    "articulo": 7,
+    "insumo": 7,
+    "cantidad_consumida": "1.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 13,
+  "fields": {
+    "articulo": 8,
+    "insumo": 1,
+    "cantidad_consumida": "8.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 14,
+  "fields": {
+    "articulo": 8,
+    "insumo": 2,
+    "cantidad_consumida": "150.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 15,
+  "fields": {
+    "articulo": 8,
+    "insumo": 15,
+    "cantidad_consumida": "100.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 16,
+  "fields": {
+    "articulo": 9,
+    "insumo": 1,
+    "cantidad_consumida": "8.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 17,
+  "fields": {
+    "articulo": 9,
+    "insumo": 2,
+    "cantidad_consumida": "200.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 18,
+  "fields": {
+    "articulo": 9,
+    "insumo": 15,
+    "cantidad_consumida": "80.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 19,
+  "fields": {
+    "articulo": 9,
+    "insumo": 5,
+    "cantidad_consumida": "5.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 20,
+  "fields": {
+    "articulo": 10,
+    "insumo": 16,
+    "cantidad_consumida": "250.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 21,
+  "fields": {
+    "articulo": 12,
+    "insumo": 9,
+    "cantidad_consumida": "2.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 22,
+  "fields": {
+    "articulo": 12,
+    "insumo": 10,
+    "cantidad_consumida": "60.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 23,
+  "fields": {
+    "articulo": 12,
+    "insumo": 12,
+    "cantidad_consumida": "5.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 24,
+  "fields": {
+    "articulo": 13,
+    "insumo": 9,
+    "cantidad_consumida": "2.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 25,
+  "fields": {
+    "articulo": 13,
+    "insumo": 11,
+    "cantidad_consumida": "50.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 26,
+  "fields": {
+    "articulo": 13,
+    "insumo": 12,
+    "cantidad_consumida": "5.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 27,
+  "fields": {
+    "articulo": 14,
+    "insumo": 9,
+    "cantidad_consumida": "2.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 28,
+  "fields": {
+    "articulo": 14,
+    "insumo": 10,
+    "cantidad_consumida": "40.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 29,
+  "fields": {
+    "articulo": 14,
+    "insumo": 11,
+    "cantidad_consumida": "30.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 30,
+  "fields": {
+    "articulo": 14,
+    "insumo": 12,
+    "cantidad_consumida": "5.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 31,
+  "fields": {
+    "articulo": 15,
+    "insumo": 8,
+    "cantidad_consumida": "1.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 32,
+  "fields": {
+    "articulo": 15,
+    "insumo": 12,
+    "cantidad_consumida": "10.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 33,
+  "fields": {
+    "articulo": 16,
+    "insumo": 8,
+    "cantidad_consumida": "1.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 34,
+  "fields": {
+    "articulo": 16,
+    "insumo": 5,
+    "cantidad_consumida": "15.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 35,
+  "fields": {
+    "articulo": 16,
+    "insumo": 4,
+    "cantidad_consumida": "10.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 36,
+  "fields": {
+    "articulo": 17,
+    "insumo": 17,
+    "cantidad_consumida": "50.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 37,
+  "fields": {
+    "articulo": 17,
+    "insumo": 4,
+    "cantidad_consumida": "15.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 38,
+  "fields": {
+    "articulo": 17,
+    "insumo": 18,
+    "cantidad_consumida": "1.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 39,
+  "fields": {
+    "articulo": 18,
+    "insumo": 14,
+    "cantidad_consumida": "40.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 40,
+  "fields": {
+    "articulo": 18,
+    "insumo": 15,
+    "cantidad_consumida": "50.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 41,
+  "fields": {
+    "articulo": 19,
+    "insumo": 1,
+    "cantidad_consumida": "8.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 42,
+  "fields": {
+    "articulo": 19,
+    "insumo": 2,
+    "cantidad_consumida": "100.00"
+  }
+},
+{
+  "model": "tpv.composicionreceta",
+  "pk": 43,
+  "fields": {
+    "articulo": 19,
+    "insumo": 14,
+    "cantidad_consumida": "30.00"
+  }
+},
+{
+  "model": "tpv.pedidoproveedor",
+  "pk": 1,
+  "fields": {
+    "insumo": 8,
+    "cantidad_solicitada": "20.00",
+    "estado": "PENDIENTE",
+    "email_proveedor": "",
+    "notas": "Auto-generado por stock bajo",
+    "creado": "2026-07-19T09:54:16.492Z",
+    "creado_por": 2
+  }
+},
+{
+  "model": "tpv.pedidoproveedor",
+  "pk": 2,
+  "fields": {
+    "insumo": 10,
+    "cantidad_solicitada": "100.00",
+    "estado": "PENDIENTE",
+    "email_proveedor": "",
+    "notas": "Auto-generado por stock bajo",
+    "creado": "2026-07-19T09:54:16.510Z",
+    "creado_por": 2
+  }
+},
+{
+  "model": "tpv.pedidoproveedor",
+  "pk": 3,
+  "fields": {
+    "insumo": 12,
+    "cantidad_solicitada": "100.00",
+    "estado": "PENDIENTE",
+    "email_proveedor": "",
+    "notas": "Auto-generado por stock bajo",
+    "creado": "2026-07-19T09:54:16.516Z",
+    "creado_por": 2
+  }
+},
+{
+  "model": "tpv.pedidoproveedor",
+  "pk": 4,
+  "fields": {
+    "insumo": 14,
+    "cantidad_solicitada": "100.00",
+    "estado": "PENDIENTE",
+    "email_proveedor": "",
+    "notas": "Auto-generado por stock bajo",
+    "creado": "2026-07-19T09:54:16.523Z",
+    "creado_por": 2
+  }
+},
+{
+  "model": "tpv.pedidoproveedor",
+  "pk": 5,
+  "fields": {
+    "insumo": 16,
+    "cantidad_solicitada": "400.00",
+    "estado": "PENDIENTE",
+    "email_proveedor": "",
+    "notas": "Auto-generado por stock bajo",
+    "creado": "2026-07-19T09:54:16.529Z",
+    "creado_por": 2
+  }
+},
+{
+  "model": "tpv.reserva",
+  "pk": 1,
+  "fields": {
+    "mesa": 1,
+    "cliente_nombre": "simon",
+    "cliente_telefono": "1234",
+    "email_cliente": "",
+    "fecha_reserva": "2026-07-19",
+    "hora_reserva": "13:00:00",
+    "num_personas": 2,
+    "estado": "PENDIENTE",
+    "notas": "sin gluten",
+    "creado_por": 2,
+    "fecha_registro": "2026-07-19T09:01:25.444Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 1,
+  "fields": {
+    "venta": 30,
+    "articulo": 12,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.591Z",
+    "fecha_listo": "2026-07-19T08:11:30.285Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 2,
+  "fields": {
+    "venta": 30,
+    "articulo": 15,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.605Z",
+    "fecha_listo": "2026-07-19T08:11:10.768Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 3,
+  "fields": {
+    "venta": 30,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.613Z",
+    "fecha_listo": "2026-07-19T08:11:49.813Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 4,
+  "fields": {
+    "venta": 30,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.622Z",
+    "fecha_listo": "2026-07-19T08:11:48.041Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 5,
+  "fields": {
+    "venta": 30,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.623Z",
+    "fecha_listo": "2026-07-19T08:11:41.315Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 6,
+  "fields": {
+    "venta": 30,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.623Z",
+    "fecha_listo": "2026-07-19T08:11:45.003Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 7,
+  "fields": {
+    "venta": 30,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.625Z",
+    "fecha_listo": "2026-07-19T08:11:57.527Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 8,
+  "fields": {
+    "venta": 30,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.626Z",
+    "fecha_listo": "2026-07-19T08:11:55.760Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 9,
+  "fields": {
+    "venta": 30,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.628Z",
+    "fecha_listo": "2026-07-19T08:12:50.865Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 10,
+  "fields": {
+    "venta": 30,
+    "articulo": 19,
+    "unidades": 1,
+    "notas": "",
+    "estado": "ENTREGADO",
+    "fecha_creacion": "2026-07-19T08:08:44.639Z",
+    "fecha_listo": "2026-07-19T08:11:52.748Z"
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 11,
+  "fields": {
+    "venta": 31,
+    "articulo": 7,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.067Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 12,
+  "fields": {
+    "venta": 31,
+    "articulo": 10,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.073Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 13,
+  "fields": {
+    "venta": 31,
+    "articulo": 11,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.081Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 14,
+  "fields": {
+    "venta": 31,
+    "articulo": 12,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.083Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 15,
+  "fields": {
+    "venta": 31,
+    "articulo": 14,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.090Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 16,
+  "fields": {
+    "venta": 31,
+    "articulo": 15,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.102Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 17,
+  "fields": {
+    "venta": 31,
+    "articulo": 15,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.104Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 18,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.117Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 19,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.118Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 20,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.119Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 21,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.120Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 22,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.121Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 23,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.121Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 24,
+  "fields": {
+    "venta": 31,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.122Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 25,
+  "fields": {
+    "venta": 31,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:13:31.132Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 26,
+  "fields": {
+    "venta": 32,
+    "articulo": 11,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:50:48.807Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 27,
+  "fields": {
+    "venta": 32,
+    "articulo": 12,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:50:48.813Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 28,
+  "fields": {
+    "venta": 33,
+    "articulo": 10,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:52:22.519Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 29,
+  "fields": {
+    "venta": 33,
+    "articulo": 11,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:52:22.528Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 30,
+  "fields": {
+    "venta": 33,
+    "articulo": 14,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:52:22.531Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 31,
+  "fields": {
+    "venta": 33,
+    "articulo": 15,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:52:22.541Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 32,
+  "fields": {
+    "venta": 33,
+    "articulo": 15,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:52:22.543Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 33,
+  "fields": {
+    "venta": 33,
+    "articulo": 16,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:52:22.550Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 34,
+  "fields": {
+    "venta": 34,
+    "articulo": 6,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:58:34.270Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 35,
+  "fields": {
+    "venta": 34,
+    "articulo": 7,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:58:34.276Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 36,
+  "fields": {
+    "venta": 34,
+    "articulo": 8,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:58:34.280Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 37,
+  "fields": {
+    "venta": 35,
+    "articulo": 8,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:02.950Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 38,
+  "fields": {
+    "venta": 35,
+    "articulo": 11,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:02.964Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 39,
+  "fields": {
+    "venta": 35,
+    "articulo": 12,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:02.970Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 40,
+  "fields": {
+    "venta": 35,
+    "articulo": 15,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:02.983Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 41,
+  "fields": {
+    "venta": 36,
+    "articulo": 6,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:49.044Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 42,
+  "fields": {
+    "venta": 36,
+    "articulo": 7,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:49.053Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 43,
+  "fields": {
+    "venta": 36,
+    "articulo": 8,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:49.059Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 44,
+  "fields": {
+    "venta": 36,
+    "articulo": 10,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T08:59:49.072Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 45,
+  "fields": {
+    "venta": 37,
+    "articulo": 1,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:09:56.921Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 46,
+  "fields": {
+    "venta": 38,
+    "articulo": 7,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:10:05.625Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 47,
+  "fields": {
+    "venta": 38,
+    "articulo": 17,
+    "unidades": 3,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:10:05.629Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 48,
+  "fields": {
+    "venta": 38,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:10:05.635Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 49,
+  "fields": {
+    "venta": 39,
+    "articulo": 7,
+    "unidades": 2,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:15:33.838Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 50,
+  "fields": {
+    "venta": 39,
+    "articulo": 8,
+    "unidades": 2,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:15:33.841Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 51,
+  "fields": {
+    "venta": 39,
+    "articulo": 17,
+    "unidades": 2,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:15:33.843Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 52,
+  "fields": {
+    "venta": 39,
+    "articulo": 18,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:15:33.844Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.pedidococina",
+  "pk": 53,
+  "fields": {
+    "venta": 39,
+    "articulo": 19,
+    "unidades": 1,
+    "notas": "",
+    "estado": "PENDIENTE",
+    "fecha_creacion": "2026-07-19T10:15:33.846Z",
+    "fecha_listo": null
+  }
+},
+{
+  "model": "tpv.mensajechat",
+  "pk": 1,
+  "fields": {
+    "emisor": "COCINA",
+    "texto": "seguimos listo",
+    "fecha": "2026-07-19T09:48:20.864Z",
+    "leido": false
+  }
+},
+{
+  "model": "tpv.pedidopendiente",
+  "pk": 30,
+  "fields": {
+    "mesa": 5,
+    "articulo": 12,
+    "cantidad": 1,
+    "notas": "",
+    "empleado": 2,
+    "fecha": "2026-07-19T08:59:33.084Z"
+  }
+},
+{
+  "model": "tpv.pedidopendiente",
+  "pk": 29,
+  "fields": {
+    "mesa": 5,
+    "articulo": 11,
+    "cantidad": 1,
+    "notas": "",
+    "empleado": 2,
+    "fecha": "2026-07-19T08:59:33.074Z"
+  }
+},
+{
+  "model": "tpv.pedidopendiente",
+  "pk": 28,
+  "fields": {
+    "mesa": 5,
+    "articulo": 10,
+    "cantidad": 1,
+    "notas": "",
+    "empleado": 2,
+    "fecha": "2026-07-19T08:59:33.065Z"
+  }
+},
+{
+  "model": "tpv.pedidopendiente",
+  "pk": 27,
+  "fields": {
+    "mesa": 5,
+    "articulo": 6,
+    "cantidad": 1,
+    "notas": "",
+    "empleado": 2,
+    "fecha": "2026-07-19T08:59:33.057Z"
+  }
+},
+{
+  "model": "tpv.turnocaja",
+  "pk": 2,
+  "fields": {
+    "cajero": 2,
+    "fecha_apertura": "2026-07-19T08:01:33.851Z",
+    "fecha_cierre": null,
+    "saldo_inicial": "100.23",
+    "total_efectivo": "0.00",
+    "total_tarjeta": "0.00",
+    "total_gastos": "0.00",
+    "total_teorico": "0.00",
+    "total_real": "0.00",
+    "tickets_cerrados": 0,
+    "cerrado": false,
+    "notas": ""
+  }
+},
+{
+  "model": "tpv.turnocaja",
+  "pk": 1,
+  "fields": {
+    "cajero": 2,
+    "fecha_apertura": "2026-07-19T07:46:36.780Z",
+    "fecha_cierre": "2026-07-19T08:01:13.748Z",
+    "saldo_inicial": "100.00",
+    "total_efectivo": "4.40",
+    "total_tarjeta": "0.00",
+    "total_gastos": "0.00",
+    "total_teorico": "104.40",
+    "total_real": "104.40",
+    "tickets_cerrados": 1,
+    "cerrado": true,
+    "notas": ""
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 1,
+  "fields": {
+    "articulo": 1,
+    "orden": 1,
+    "titulo": "Preparar taza",
+    "descripcion": "Calentar la taza con agua caliente durante 30 segundos. Verter el agua. Esto mantiene el cafe a temperatura ideal.",
+    "tiempo_minutos": 1,
+    "consejo": "Nunca sirvas cafe en taza fria"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 5,
+  "fields": {
+    "articulo": 2,
+    "orden": 1,
+    "titulo": "Preparar cafe",
+    "descripcion": "Extraer un cafe corto (ristretto) de 20-25 segundos con 18g de cafe molido.",
+    "tiempo_minutos": 1,
+    "consejo": "Base concentrada para que no se pierda con la leche"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 9,
+  "fields": {
+    "articulo": 3,
+    "orden": 1,
+    "titulo": "Preparar cafe",
+    "descripcion": "Extraer un espresso doble de 25-30 segundos.",
+    "tiempo_minutos": 1,
+    "consejo": ""
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 11,
+  "fields": {
+    "articulo": 4,
+    "orden": 1,
+    "titulo": "Preparar cafe",
+    "descripcion": "Extraer espresso doble (36ml) con 18g de cafe.",
+    "tiempo_minutos": 1,
+    "consejo": "Base fuerte para equilibrar la leche"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 14,
+  "fields": {
+    "articulo": 5,
+    "orden": 1,
+    "titulo": "Calentar leche",
+    "descripcion": "Calentar 250ml de leche entera a 70°C en cacerola o vaporeta.",
+    "tiempo_minutos": 1,
+    "consejo": "No hervir para que no se corte"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 18,
+  "fields": {
+    "articulo": 6,
+    "orden": 1,
+    "titulo": "Calentar agua",
+    "descripcion": "Calentar agua a 75-80°C. NUNCA hervir (95°C) porque amarga el te.",
+    "tiempo_minutos": 2,
+    "consejo": "Temperatura critica: 75-80°C"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 21,
+  "fields": {
+    "articulo": 7,
+    "orden": 1,
+    "titulo": "Hervir agua",
+    "descripcion": "Hervir agua a 95-100°C.",
+    "tiempo_minutos": 1,
+    "consejo": "El te negro soporta agua hervida"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 24,
+  "fields": {
+    "articulo": 8,
+    "orden": 1,
+    "titulo": "Preparar cafe concentrado",
+    "descripcion": "Preparar doble ristretto (40ml) con 20g de cafe. Dejar enfriar 5 minutos.",
+    "tiempo_minutos": 1,
+    "consejo": "Concentrado para que no pierda sabor con el hielo"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 27,
+  "fields": {
+    "articulo": 9,
+    "orden": 1,
+    "titulo": "Preparar cafe",
+    "descripcion": "Extraer espresso doble y dejar enfriar 5 minutos.",
+    "tiempo_minutos": 1,
+    "consejo": ""
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 31,
+  "fields": {
+    "articulo": 10,
+    "orden": 1,
+    "titulo": "Verificar naranjas",
+    "descripcion": "Usar naranjas recien exprimidas. No usar zumo envasado.",
+    "tiempo_minutos": 0,
+    "consejo": "Calidad del zumo depende 100% de la fruta"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 2,
+  "fields": {
+    "articulo": 1,
+    "orden": 2,
+    "titulo": "Moler cafe",
+    "descripcion": "Moler 18g de cafe en consistencia media-fina (como azucar moreno). Nivel de molienda: espresso.",
+    "tiempo_minutos": 1,
+    "consejo": "Moler justo antes de preparar para preservar aromas"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 6,
+  "fields": {
+    "articulo": 2,
+    "orden": 2,
+    "titulo": "Calentar leche",
+    "descripcion": "Calentar 200ml de leche entera a 65-70°C usando la vaporeta. No superar 75°C.",
+    "tiempo_minutos": 1,
+    "consejo": "Temperatura ideal: 65-70°C para dulzor natural"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 10,
+  "fields": {
+    "articulo": 3,
+    "orden": 2,
+    "titulo": "Anadir leche",
+    "descripcion": "Anadir un chorrito de leche caliente (50ml) para cortar el amargor.",
+    "tiempo_minutos": 0,
+    "consejo": "Solo un chorrito, no mas de 1/4 de la taza"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 12,
+  "fields": {
+    "articulo": 4,
+    "orden": 2,
+    "titulo": "Calentar y espumar leche",
+    "descripcion": "Calentar 150ml de leche entera a 65°C. Espumar con microespuma densa y sedosa.",
+    "tiempo_minutos": 1,
+    "consejo": "La espuma debe ser como pintura brillante, sin burbujas grandes"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 15,
+  "fields": {
+    "articulo": 5,
+    "orden": 2,
+    "titulo": "Anadir chocolate",
+    "descripcion": "Anadir 40g de chocolate de taza de calidad (min. 50% cacao). Remover hasta disolver completamente.",
+    "tiempo_minutos": 2,
+    "consejo": "Chocolate en virutas se disuelve mejor que en tabletas"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 19,
+  "fields": {
+    "articulo": 6,
+    "orden": 2,
+    "titulo": "Remojar te",
+    "descripcion": "Anadir 2.5g de hojas de te verde sueltas al infusor. Remojar 2-3 minutos exactos.",
+    "tiempo_minutos": 2,
+    "consejo": "Mas de 3 minutos amarga. Menos de 2 minutos no extrae sabor"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 22,
+  "fields": {
+    "articulo": 7,
+    "orden": 2,
+    "titulo": "Remojar te",
+    "descripcion": "Anadir 2.5g de hojas de te negro al infusor. Remojar 3-5 minutos.",
+    "tiempo_minutos": 3,
+    "consejo": "3 min = suave, 5 min = fuerte. Segun preferencia"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 25,
+  "fields": {
+    "articulo": 8,
+    "orden": 2,
+    "titulo": "Preparar vaso",
+    "descripcion": "Llenar vaso alto con hielo hasta el tope (300ml).",
+    "tiempo_minutos": 0,
+    "consejo": "Mas hielo = menos dilucion"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 28,
+  "fields": {
+    "articulo": 9,
+    "orden": 2,
+    "titulo": "Preparar hielo",
+    "descripcion": "Llenar vaso alto con hielo. Anadir 50ml de leche fria.",
+    "tiempo_minutos": 0,
+    "consejo": ""
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 32,
+  "fields": {
+    "articulo": 10,
+    "orden": 2,
+    "titulo": "Exprimir",
+    "descripcion": "Exprimir naranjas manualmente o con exprimidora. 1 naranja = ~150ml de zumo.",
+    "tiempo_minutos": 2,
+    "consejo": "No exprimir en exceso para evitar amargor de la ralladura"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 3,
+  "fields": {
+    "articulo": 1,
+    "orden": 3,
+    "titulo": "Preparar cafe",
+    "descripcion": "Colocar el portafiltro, nivelar y prensar con presion firme. Extraer durante 25-30 segundos.",
+    "tiempo_minutos": 1,
+    "consejo": "El chorro debe ser uniforme y color miel"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 7,
+  "fields": {
+    "articulo": 2,
+    "orden": 3,
+    "titulo": "Espumar leche",
+    "descripcion": "Espumar la leche con aireación suave hasta obtaining microespuma densa y brillante.",
+    "tiempo_minutos": 1,
+    "consejo": "Espuma de 1cm maximo"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 13,
+  "fields": {
+    "articulo": 4,
+    "orden": 3,
+    "titulo": "Servir",
+    "descripcion": "Verter la leche en el cafe con un movimiento circular. La espuma debe cubrir toda la superficie.",
+    "tiempo_minutos": 1,
+    "consejo": "Proporcion ideal 1:3. Anadir canela o cacao en polvo opcional"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 16,
+  "fields": {
+    "articulo": 5,
+    "orden": 3,
+    "titulo": "Batir",
+    "descripcion": "Batir con vaporeta hasta obtener mezcla homogenea y espumosa.",
+    "tiempo_minutos": 1,
+    "consejo": ""
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 20,
+  "fields": {
+    "articulo": 6,
+    "orden": 3,
+    "titulo": "Servir",
+    "descripcion": "Retirar hojas y servir. Anadir miel o limon al gusto.",
+    "tiempo_minutos": 0,
+    "consejo": "No anadir leche al te verde"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 23,
+  "fields": {
+    "articulo": 7,
+    "orden": 3,
+    "titulo": "Servir",
+    "descripcion": "Retirar infusor. Servir con limon o azucar al gusto.",
+    "tiempo_minutos": 0,
+    "consejo": "Te negro con leche es estilo britanico, poco comun en Espana"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 26,
+  "fields": {
+    "articulo": 8,
+    "orden": 3,
+    "titulo": "Servir",
+    "descripcion": "Verter el cafe sobre el hielo. Anadir 50ml de leche o crema si se desea. Remover suavemente.",
+    "tiempo_minutos": 1,
+    "consejo": "Puede servirse negro o con leche (especificar)"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 29,
+  "fields": {
+    "articulo": 9,
+    "orden": 3,
+    "titulo": "Batir",
+    "descripcion": "Batir cafe frio con leche y 5-6 cubos de hielo en batidora o con vaporeta fria.",
+    "tiempo_minutos": 2,
+    "consejo": "No usar vaporeta caliente"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 33,
+  "fields": {
+    "articulo": 10,
+    "orden": 3,
+    "titulo": "Servir",
+    "descripcion": "Servir inmediatamente en vaso frio. No anadir azucar a menos que el cliente lo pida.",
+    "tiempo_minutos": 0,
+    "consejo": "El zumo se oxida rapido, servir en el acto"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 4,
+  "fields": {
+    "articulo": 1,
+    "orden": 4,
+    "titulo": "Servir",
+    "descripcion": "Servir el cafe en la taza caliente. No anadir nada mas.",
+    "tiempo_minutos": 0,
+    "consejo": "El cafe solo se sirve puro, sin azucar ni leche"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 8,
+  "fields": {
+    "articulo": 2,
+    "orden": 4,
+    "titulo": "Servir",
+    "descripcion": "Verter la leche espumada sobre el cafe. Proporcion 1:2 (cafe:leche).",
+    "tiempo_minutos": 0,
+    "consejo": "Anadir azucar al gusto si el cliente lo pide"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 17,
+  "fields": {
+    "articulo": 5,
+    "orden": 4,
+    "titulo": "Servir",
+    "descripcion": "Servir en taza grande. Anadir nata montada y virutas de chocolate si se desea.",
+    "tiempo_minutos": 0,
+    "consejo": "Opcional: anadir canela molida o marshmallows"
+  }
+},
+{
+  "model": "tpv.pasoreceta",
+  "pk": 30,
+  "fields": {
+    "articulo": 9,
+    "orden": 4,
+    "titulo": "Servir",
+    "descripcion": "Servir en vaso alto. La espuma debe quedar encima. Anadir canela.",
+    "tiempo_minutos": 0,
+    "consejo": "Decorar con canela o cacao en polvo"
+  }
+}
+]

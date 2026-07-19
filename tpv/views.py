@@ -2076,31 +2076,51 @@ def api_notificaciones_pendientes(request):
 @login_required
 @user_passes_test(es_gerente)
 def api_backup_usb(request):
-    """Genera backup de la base de datos"""
-    import os, subprocess
+    """Genera backup de la base de datos y lo envia por email"""
     import os
+    from django.core import serializers
+    from django.core.mail import EmailMessage
+    from tpv.models import (Articulo, CategoriaProducto, Mesa, OperacionVenta,
+        LineaVenta, InsumoMateriaPrima, ComposicionReceta, RegistroGasto,
+        PedidoProveedor, MenuDelDia, Reserva, DescuentoInteligente, Combo,
+        ComboItem, PedidoCocina, MensajeChat, PedidoPendiente, TurnoCaja,
+        PasoReceta, PerfilEmpleado)
     backup_dir = os.path.join(settings.BASE_DIR, 'backups')
     os.makedirs(backup_dir, exist_ok=True)
     timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
     backup_file = os.path.join(backup_dir, f'backup_{timestamp}.json')
-    env = os.environ.copy()
-    env['PYTHONIOENCODING'] = 'utf-8'
-    result = subprocess.run(
-        ['python', 'manage.py', 'dumpdata', 'tpv', '--indent', '2'],
-        capture_output=True, cwd=str(settings.BASE_DIR), env=env
-    )
-    if result.returncode == 0:
-        data = result.stdout.decode('utf-8', errors='replace')
-        with open(backup_file, 'w', encoding='utf-8') as f:
-            f.write(data)
-        return JsonResponse({
-            'ok': True,
-            'archivo': backup_file,
-            'tamano': os.path.getsize(backup_file),
-            'timestamp': timestamp,
-        })
-    else:
-        return JsonResponse({'error': result.stderr.decode('utf-8', errors='replace')}, status=500)
+    models = [Articulo, CategoriaProducto, Mesa, OperacionVenta, LineaVenta,
+        InsumoMateriaPrima, ComposicionReceta, RegistroGasto, PedidoProveedor,
+        MenuDelDia, Reserva, DescuentoInteligente, Combo, ComboItem,
+        PedidoCocina, MensajeChat, PedidoPendiente, TurnoCaja, PasoReceta, PerfilEmpleado]
+    data = serializers.serialize('json', [obj for Model in models for obj in Model.objects.all()], indent=2)
+    with open(backup_file, 'w', encoding='utf-8') as f:
+        f.write(data)
+    tamano = os.path.getsize(backup_file)
+    email_enviado = False
+    email_error = None
+    if request.user.email:
+        try:
+            msg = EmailMessage(
+                subject=f'Backup TPV - {timestamp}',
+                body=f'Backup automatico del sistema TPV Cafeteria.\n\nFecha: {timezone.now().strftime("%d/%m/%Y %H:%M")}\nTamano: {tamano} bytes\n\nAdjunto encontraras el archivo JSON con todos los datos.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[request.user.email],
+            )
+            msg.attach(f'backup_{timestamp}.json', data, 'application/json')
+            msg.send(fail_silently=False)
+            email_enviado = True
+        except Exception as e:
+            email_error = str(e)
+    return JsonResponse({
+        'ok': True,
+        'archivo': os.path.basename(backup_file),
+        'tamano': tamano,
+        'timestamp': timestamp,
+        'email_enviado': email_enviado,
+        'email_destino': request.user.email or 'Sin email configurado',
+        'email_error': email_error,
+    })
 
 
 # ==================== 8 NUEVAS FEATURES (ROUND 5) ====================

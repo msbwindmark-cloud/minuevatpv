@@ -1922,7 +1922,13 @@
         .then(function(d) {
             if (d.ok) {
                 var size = (d.tamano / 1024).toFixed(1);
-                Swal.fire({ icon: 'success', title: 'Backup completado', html: 'Archivo: ' + d.archivo.split('\\').pop() + '<br>Tamaño: ' + size + ' KB', confirmButtonColor: '#00ff88', background: '#1e293b', color: '#e2e8f0' });
+                var html = 'Archivo: ' + d.archivo + '<br>Tamano: ' + size + ' KB<br><br>';
+                if (d.email_enviado) {
+                    html += '<div style="background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:8px;margin-top:5px">Email enviado a <b>' + d.email_destino + '</b></div>';
+                } else {
+                    html += '<div style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);border-radius:8px;padding:8px;margin-top:5px">Email no enviado: ' + (d.email_error || d.email_destino) + '</div>';
+                }
+                Swal.fire({ icon: 'success', title: 'Backup completado', html: html, confirmButtonColor: '#00ff88', background: '#1e293b', color: '#e2e8f0' });
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: d.error || 'Error al crear backup', background: '#1e293b', color: '#e2e8f0' });
             }
