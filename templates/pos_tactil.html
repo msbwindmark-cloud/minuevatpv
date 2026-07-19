@@ -1690,47 +1690,95 @@
     }
 
     // 6. CHAT CAJERO-COCINA
+    var chatInterval = null;
     function abrirChat(){
+        if(chatInterval){clearInterval(chatInterval); chatInterval=null;}
         Swal.fire({
-            title:'Chat Cajero-Cocina',
-            html:`<div id="chat-container" style="text-align:left;max-height:300px;overflow-y:auto;background:rgba(0,0,0,0.3);border-radius:10px;padding:10px;margin-bottom:10px"></div>
-                  <input id="chat-input" placeholder="Escribe un mensaje..." style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.5);color:#fff;font-size:0.9rem">`,
+            title:'<span style="font-size:1.1rem">Chat Cajero-Cocina</span>',
+            html:`<div style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.2);border-radius:10px;padding:10px;margin-bottom:12px;text-align:left">
+                    <div style="font-size:0.7rem;color:#f43f5e;font-weight:700;margin-bottom:4px">COMUNICACION INTERNA</div>
+                    <div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Envia mensajes al personal de cocina. Tus mensajes aparecen en azul, los de cocina en rojo.</div>
+                  </div>
+                  <div id="chat-container" style="text-align:left;max-height:300px;min-height:100px;overflow-y:auto;background:rgba(0,0,0,0.3);border-radius:10px;padding:10px;margin-bottom:10px">
+                    <div id="chat-empty" style="text-align:center;padding:20px;color:rgba(255,255,255,0.25);font-size:0.8rem">No hay mensajes aun</div>
+                  </div>
+                  <div style="display:flex;gap:8px">
+                    <input id="chat-input" placeholder="Escribe un mensaje..." style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.5);color:#fff;font-size:0.9rem">
+                    <button id="chat-send-btn" style="padding:10px 16px;border-radius:8px;border:none;background:linear-gradient(135deg,#f43f5e,#ff6b9d);color:#fff;font-weight:700;cursor:pointer;font-size:0.85rem">Enviar</button>
+                  </div>
+                  <div id="chat-status" style="margin-top:8px;font-size:0.65rem;color:rgba(255,255,255,0.25);text-align:center"></div>`,
             background:'#1e293b',color:'#e2e8f0',
             showConfirmButton:false,
+            showCloseButton:true,
+            closeButtonHtml:'<span style="font-size:1.2rem;color:rgba(255,255,255,0.5)">&times;</span>',
             timer:0,
+            customClass:{popup:'chat-popup'},
             didOpen: () => {
+                lastChatId = 0;
+                document.getElementById('chat-container').innerHTML = '<div id="chat-empty" style="text-align:center;padding:20px;color:rgba(255,255,255,0.25);font-size:0.8rem">Cargando mensajes...</div>';
                 cargarChat();
-                setInterval(cargarChat, 5000);
-                document.getElementById('chat-input').addEventListener('keypress', e => {
-                    if(e.key === 'Enter' && e.target.value.trim()){
-                        fetch('/api/chat/enviar/',{
-                            method:'POST',
-                            headers:{'Content-Type':'application/json'},
-                            body:JSON.stringify({texto: e.target.value.trim()})
-                        }).then(() => { e.target.value = ''; cargarChat(); });
-                    }
+                chatInterval = setInterval(cargarChat, 4000);
+
+                function enviarMensaje(){
+                    var input = document.getElementById('chat-input');
+                    var texto = input ? input.value.trim() : '';
+                    if(!texto) return;
+                    var status = document.getElementById('chat-status');
+                    if(status) status.textContent = 'Enviando...';
+                    fetch('/api/chat/enviar/',{
+                        method:'POST',
+                        headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+                        body:JSON.stringify({texto: texto})
+                    }).then(function(r){
+                        if(!r.ok) throw new Error('Error');
+                        return r.json();
+                    }).then(function(){
+                        if(input) input.value = '';
+                        if(status) status.textContent = 'Mensaje enviado';
+                        setTimeout(function(){if(status) status.textContent='';}, 2000);
+                        cargarChat();
+                    }).catch(function(){
+                        if(status) status.textContent = 'Error al enviar. Intente de nuevo.';
+                        if(status) status.style.color = '#f43f5e';
+                    });
+                }
+
+                document.getElementById('chat-input').addEventListener('keypress', function(e){
+                    if(e.key === 'Enter') enviarMensaje();
                 });
+                document.getElementById('chat-send-btn').addEventListener('click', enviarMensaje);
+                document.getElementById('chat-input').focus();
+            },
+            didClose: () => {
+                if(chatInterval){clearInterval(chatInterval); chatInterval=null;}
             }
         });
     }
 
-    let lastChatId = 0;
+    var lastChatId = 0;
     function cargarChat(){
         fetch('/api/chat/mensajes/')
-        .then(r => r.json())
-        .then(d => {
-            const container = document.getElementById('chat-container');
+        .then(function(r){return r.json();})
+        .then(function(d){
+            var container = document.getElementById('chat-container');
             if(!container) return;
-            d.mensajes.forEach(m => {
+            var empty = document.getElementById('chat-empty');
+            if(d.mensajes.length === 0){
+                if(empty) empty.style.display = 'block';
+                return;
+            }
+            if(empty) empty.style.display = 'none';
+            d.mensajes.forEach(function(m){
                 if(m.id <= lastChatId) return;
                 lastChatId = m.id;
-                const div = document.createElement('div');
-                div.style.cssText = `margin:5px 0;padding:8px 12px;border-radius:10px;max-width:80%;${m.emisor==='CAJERO'?'background:rgba(0,212,255,0.2);margin-left:auto':'background:rgba(244,63,94,0.2);margin-right:auto'}`;
-                div.innerHTML = `<div style="font-size:0.7rem;color:${m.emisor==='CAJERO'?'#00d4ff':'#f43f5e'};margin-bottom:3px">${m.emisor} ${m.fecha}</div><div>${m.texto}</div>`;
+                var div = document.createElement('div');
+                var isMe = m.emisor === 'CAJERO';
+                div.style.cssText = 'margin:6px 0;padding:8px 12px;border-radius:12px;max-width:85%;' + (isMe ? 'background:rgba(0,212,255,0.15);margin-left:auto;border:1px solid rgba(0,212,255,0.2)' : 'background:rgba(244,63,94,0.15);margin-right:auto;border:1px solid rgba(244,63,94,0.2)');
+                div.innerHTML = '<div style="font-size:0.65rem;color:' + (isMe ? '#00d4ff' : '#f43f5e') + ';margin-bottom:3px;font-weight:700">' + m.emisor + ' <span style="font-weight:400;color:rgba(255,255,255,0.3)">' + m.fecha + '</span></div><div style="font-size:0.85rem;color:#e2e8f0">' + m.texto + '</div>';
                 container.appendChild(div);
                 container.scrollTop = container.scrollHeight;
             });
-        });
+        }).catch(function(){});
     }
 
     // 7. Sugerencia automatica al abrir POS

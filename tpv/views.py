@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib import admin
 from django.db import transaction
@@ -1671,7 +1672,6 @@ def api_generar_pedido_proveedor(request):
 
 # 6. CHAT CAJERO-COCINA
 @login_required
-@user_passes_test(es_empleado)
 def api_chat_mensajes(request):
     """Obtener mensajes del chat"""
     desde = request.GET.get('desde', '')
@@ -1691,7 +1691,7 @@ def api_chat_mensajes(request):
 
 
 @login_required
-@user_passes_test(es_empleado)
+@csrf_exempt
 def api_chat_enviar(request):
     """Enviar mensaje al chat"""
     if request.method != 'POST':

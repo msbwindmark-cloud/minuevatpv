@@ -34,6 +34,7 @@
     <span class="navbar-brand fw-bold">&#128293; Pantalla de Cocina</span>
     <div class="ms-auto d-flex gap-2 align-items-center">
         <span id="reloj" class="text-muted"></span>
+        <button onclick="abrirChatCocina()" class="btn btn-sm btn-outline-warning rounded-3">Chat</button>
         <a href="/" class="btn btn-sm btn-outline-info rounded-3">TPV</a>
         <a href="/menu-dia/" class="btn btn-sm btn-outline-primary rounded-3">Menu</a>
     </div>
@@ -169,6 +170,68 @@ function verReceta(articuloId){
         document.body.appendChild(overlay);
         overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove()});
     });
+}
+
+var chatInterval = null;
+var lastChatId = 0;
+function abrirChatCocina(){
+    if(chatInterval){clearInterval(chatInterval); chatInterval=null;}
+    Swal.fire({
+        title:'<span style="font-size:1.1rem">Chat Cocina-Cajero</span>',
+        html:'<div style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px;margin-bottom:12px;text-align:left">'+
+             '<div style="font-size:0.7rem;color:#00d4ff;font-weight:700;margin-bottom:4px">COMUNICACION INTERNA</div>'+
+             '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Envia mensajes al cajero. Tus mensajes aparecen en rojo, los del cajero en azul.</div></div>'+
+             '<div id="chat-container" style="text-align:left;max-height:300px;min-height:100px;overflow-y:auto;background:rgba(0,0,0,0.3);border-radius:10px;padding:10px;margin-bottom:10px">'+
+             '<div id="chat-empty" style="text-align:center;padding:20px;color:rgba(255,255,255,0.25);font-size:0.8rem">No hay mensajes aun</div></div>'+
+             '<div style="display:flex;gap:8px">'+
+             '<input id="chat-input" placeholder="Escribe un mensaje..." style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.5);color:#fff;font-size:0.9rem">'+
+             '<button id="chat-send-btn" style="padding:10px 16px;border-radius:8px;border:none;background:linear-gradient(135deg,#f43f5e,#ff6b9d);color:#fff;font-weight:700;cursor:pointer;font-size:0.85rem">Enviar</button></div>'+
+             '<div id="chat-status" style="margin-top:8px;font-size:0.65rem;color:rgba(255,255,255,0.25);text-align:center"></div>',
+        background:'#1e293b',color:'#e2e8f0',
+        showConfirmButton:false,showCloseButton:true,
+        closeButtonHtml:'<span style="font-size:1.2rem;color:rgba(255,255,255,0.5)">&times;</span>',
+        didOpen:function(){
+            lastChatId=0;
+            cargarChatCocina();
+            chatInterval=setInterval(cargarChatCocina,4000);
+            function enviar(){
+                var inp=document.getElementById('chat-input');
+                var txt=inp?inp.value.trim():'';
+                if(!txt)return;
+                var st=document.getElementById('chat-status');
+                if(st)st.textContent='Enviando...';
+                fetch('/api/chat/enviar/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({texto:txt})})
+                .then(function(r){if(!r.ok)throw new Error();return r.json();})
+                .then(function(){if(inp)inp.value='';if(st)st.textContent='Mensaje enviado';setTimeout(function(){if(st)st.textContent='';},2000);cargarChatCocina();})
+                .catch(function(){if(st){st.textContent='Error al enviar';st.style.color='#f43f5e';}});
+            }
+            document.getElementById('chat-input').addEventListener('keypress',function(e){if(e.key==='Enter')enviar();});
+            document.getElementById('chat-send-btn').addEventListener('click',enviar);
+            document.getElementById('chat-input').focus();
+        },
+        didClose:function(){if(chatInterval){clearInterval(chatInterval);chatInterval=null;}}
+    });
+}
+function cargarChatCocina(){
+    fetch('/api/chat/mensajes/')
+    .then(function(r){return r.json();})
+    .then(function(d){
+        var c=document.getElementById('chat-container');
+        if(!c)return;
+        var empty=document.getElementById('chat-empty');
+        if(d.mensajes.length===0){if(empty)empty.style.display='block';return;}
+        if(empty)empty.style.display='none';
+        d.mensajes.forEach(function(m){
+            if(m.id<=lastChatId)return;
+            lastChatId=m.id;
+            var isMe=m.emisor==='COCINA';
+            var div=document.createElement('div');
+            div.style.cssText='margin:6px 0;padding:8px 12px;border-radius:12px;max-width:85%;'+(isMe?'background:rgba(244,63,94,0.15);margin-left:auto;border:1px solid rgba(244,63,94,0.2)':'background:rgba(0,212,255,0.15);margin-right:auto;border:1px solid rgba(0,212,255,0.2)');
+            div.innerHTML='<div style="font-size:0.65rem;color:'+(isMe?'#f43f5e':'#00d4ff')+';margin-bottom:3px;font-weight:700">'+m.emisor+' <span style="font-weight:400;color:rgba(255,255,255,0.3)">'+m.fecha+'</span></div><div style="font-size:0.85rem;color:#e2e8f0">'+m.texto+'</div>';
+            c.appendChild(div);
+            c.scrollTop=c.scrollHeight;
+        });
+    }).catch(function(){});
 }
 </script>
 </body>
