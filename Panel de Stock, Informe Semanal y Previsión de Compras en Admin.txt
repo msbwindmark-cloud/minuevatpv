@@ -681,8 +681,77 @@ def abrir_cajon():
 
 ----------------------------------------------------------------------
 
+El problema es que Smartlook necesita **datos reales de usuarios** para generar heatmaps. El mensaje "heatmap is being processed" significa que todavia no ha recopilado suficientes sesiones.
+
+**Requisitos de Smartlook para que funcione:**
+
+1. **El script se esta inyectando correctamente** (el middleware lo hace bien)
+2. **Necesitas visitantes reales** navegando por las paginas publicas (escaparate, menu, reserva, etc.)
+3. **Smartlook necesita ~100 sesiones minimas** para empezar a mostrar heatmaps
+
+**Posible problema:**
+La clave `1c102b1307aaa4582cacfe5182120da4a2cc58d7` parece ser de prueba. Smartlook en su panel (dashboard.smartlook.com) te da la API key real de tu proyecto.
+
+**Que hacer:**
+1. Entra a https://dashboard.smartlook.com
+2. Crea un proyecto nuevo (o usa el existente)
+3. Copia la API key real (sera algo como `slt_xxxxxxxxxxxxxxxxxxxxxxxx`)
+4. Cambiala en `cafe_tpv/middleware.py` linea 7
+
+Una vez que tengas la clave real y empiecen a llegar visitantes (escaparate, pedidos movil, pantalla cliente, etc.), los heatmaps empezaran a aparecer.
+
+**Dato:** Solo las paginas publicas generan datos de heatmap (escaparate, menu, reservas, etc.). El admin y el POS interno no generan datos de Smartlook porque son uso interno.
+
+¿Tienes acceso al panel de Smartlook?
 
 
+
+
+
+Smartlook esta funcionando perfecto! Ya tienes **3 sesiones completadas** y **2 activas** desde Mairena del Aljarafe.
+
+El mensaje "heatmap is being processed" es normal con pocas sesiones. Smartlook necesita acumular mas datos de clics y navegacion para generar el mapa de calor.
+
+**Con 3 sesiones todavia es poco.** Cuando tengas ~20-30 sesiones el heatmap empezara a mostrarse.
+
+**Lo que ya puedes ver en Smartlook:**
+- **Session Replays** — Puedes ver las grabaciones de las 3 sesiones (click en cada una)
+- **Movimientos del raton** — Donde han clicado tus visitantes
+- **Mapas de calor** — Se activaran con mas datos
+
+**Para tener mas datos rapido:**
+- Comparte el link del escaparate o menu entre clientes
+- El `/escaparate/`, `/menu/1/` (pedido movil), `/pantalla-cliente/` generan sesiones
+
+**Importante:** Los heatmaps de Smartlook se ven en **dashboard.smartlook.com**, no en tu `/heatmap/` page (que es tu mapa de ventas por hora/dia). Son cosas distintas.
+
+¿Quieres que te muestre las grabaciones de las sesiones que ya tienes? Click en cada sesion en el dashboard y veras exactamente que ha hecho el usuario.
+
+
+
+Para que Smartlook genere heatmaps necesitas mas interacciones. Con 3 sesiones y ~10 minutos totales no hay suficientes clics para construir el mapa de calor.
+
+**Necesitas roughly:**
+- **~20-30 sesiones** para que aparezcan los primeros heatmaps
+- Usuarios haciendo clics en botones, links, navegando
+
+**Para generar datos rapido:**
+1. Abre tu escaparate en el movil, haz clic en productos, navega
+2. Haz lo mismo desde otro navegador/incognito
+3. Pide a 2-3 personas que hagan pedidos desde el movil (`/menu/1/`)
+4. Cada sesion/distinto navegador cuenta como una sesion nueva
+
+En 1-2 dias con un poco de uso ya deberian salir los heatmaps.
+
+
+
+
+
+https://app.smartlook.com/org/2kifg66qiq87x4kizjckrofb/project/oyh9v2a0wbvbdf1sra577zhs/recordings?segment=all
+
+
+
+---------------------------------------------------------------------
 
 javier
 Javier@2025
