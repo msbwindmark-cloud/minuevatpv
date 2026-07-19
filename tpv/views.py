@@ -1703,16 +1703,47 @@ def api_chat_enviar(request):
 
 
 # 7. PANTALLA ESCAPARATE 3D
-@login_required
-@user_passes_test(es_gerente)
 def vista_escaparate(request):
     """Pantalla 3D para mostrar en el escaparate de la tienda"""
-    articulos = Articulo.objects.filter(activo=True).order_by('nombre')
+    import json
+    from .models import CategoriaProducto, MenuDelDia, Combo
+    articulos = Articulo.objects.filter(activo=True).select_related('categoria').order_by('categoria__nombre', 'nombre')
     productos_json = json.dumps([{
         'nombre': a.nombre,
         'precio': float(a.precio_con_iva),
+        'categoria': a.categoria.nombre,
+        'icono': a.categoria.icono or '☕',
+        'iva': a.tipo_iva,
     } for a in articulos])
-    return render(request, 'escaparate.html', {'productos': productos_json})
+
+    menu_dia = []
+    for m in MenuDelDia.objects.filter(activo=True).select_related('articulo')[:5]:
+        menu_dia.append({
+            'nombre': m.nombre,
+            'articulo': m.articulo.nombre,
+            'precio': float(m.precio_promo),
+            'precio_original': float(m.articulo.precio_con_iva),
+            'franja': m.get_franja_display(),
+        })
+
+    combos = []
+    for c in Combo.objects.filter(activo=True).prefetch_related('items__articulo')[:3]:
+        items_list = [{'nombre': ci.articulo.nombre, 'cantidad': ci.cantidad} for ci in c.items.all()]
+        combos.append({
+            'nombre': c.nombre,
+            'precio': float(c.precio),
+            'descripcion': c.descripcion,
+            'items': items_list,
+        })
+
+    categorias = [{'nombre': c.nombre, 'icono': c.icono or '☕'} for c in CategoriaProducto.objects.all()]
+
+    return render(request, 'escaparate.html', {
+        'productos': productos_json,
+        'menu_dia_json': json.dumps(menu_dia),
+        'combos_json': json.dumps(combos),
+        'categorias_json': json.dumps(categorias),
+    })
 
 
 # 8. EXPORT EXCEL/CSV COMPLETO
