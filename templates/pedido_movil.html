@@ -7,6 +7,7 @@
     {% load l10n %}
     <title>{% if error %}Error{% else %}Pedir - Mesa {{ mesa.numero }}{% endif %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#00d4ff">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -126,7 +127,7 @@
                 document.getElementById('pedido-num').textContent='#'+d.pedido_id;
                 document.getElementById('success-overlay').classList.add('show');
                 cart={};render();
-            }else{alert(d.error||'Error');document.getElementById('send-btn').disabled=false}
+            }else{Swal.fire({icon:'error',title:'Error',text:d.error||'Error',confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'});document.getElementById('send-btn').disabled=false}
         });
     }
     </script>

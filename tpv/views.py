@@ -54,11 +54,13 @@ def vista_terminal_pos(request):
         .order_by('-total')[:6]
     )
     top_ids = [t['articulo__id'] for t in top_vendidos]
+    turno_abierto = TurnoCaja.objects.filter(cajero=request.user, cerrado=False).exists()
     return render(request, 'pos_tactil.html', {
         'categorias': categorias,
         'articulos': articulos,
         'mesas': mesas,
         'top_ids': top_ids,
+        'turno_abierto': turno_abierto,
     })
 
 
@@ -67,6 +69,8 @@ def vista_terminal_pos(request):
 def api_registrar_cobro(request):
     if request.method != "POST":
         return JsonResponse({"error": "Metodo no permitido"}, status=405)
+    if not TurnoCaja.objects.filter(cajero=request.user, cerrado=False).exists():
+        return JsonResponse({"error": "No tienes turno abierto. Abre turno antes de cobrar."}, status=403)
     try:
         datos = json.loads(request.body)
         items_pedido = datos.get('items', [])

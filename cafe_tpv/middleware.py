@@ -27,5 +27,7 @@ class SmartlookMiddleware:
         if '</head>' in content:
             content = content.replace('</head>', SMARTLOOK_SCRIPT + '\n</head>', 1)
             response.content = content.encode('utf-8')
+            if 'Content-Length' in response:
+                del response['Content-Length']
 
         return response

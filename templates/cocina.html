@@ -27,6 +27,7 @@
         .stat-item .stat-num { font-size: 1.5rem; font-weight: 900; }
         .stat-item .stat-label { font-size: 0.65rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="text-white">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
@@ -94,7 +95,7 @@ function getCookie(n){var v=document.cookie.split('; ').find(function(r){return 
 function cambiarEstado(id,estado){
     fetch('/api/cocina/actualizar/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({pedido_id:id,estado:estado})})
     .then(function(r){return r.json()}).then(function(d){
-        if(d.status==='success'){location.reload()}else{alert(d.error)}
+        if(d.status==='success'){location.reload()}else{Swal.fire({icon:'error',title:'Error',text:d.error,confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'})}
     });
 }
 var TIEMPO_MAX = 600;

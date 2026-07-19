@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { background-color: #0f172a; }
         .reserva-hoy { border-left: 4px solid #10b981; }
@@ -146,11 +147,11 @@ function crearReserva(){
         hora:document.getElementById('res-hora').value,
         personas:document.getElementById('res-personas').value,
         notas:document.getElementById('res-notas').value,
-    })}).then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{alert(d.error)}});
+    })}).then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{Swal.fire({icon:'error',title:'Error',text:d.error,confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'})}});
 }
 function cambiarReserva(id,estado){
     fetch('/api/reservas/estado/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({reserva_id:id,estado:estado})})
-    .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{alert(d.error)}});
+    .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{Swal.fire({icon:'error',title:'Error',text:d.error,confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'})}});
 }
 </script>
 </body>

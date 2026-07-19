@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano del Restaurante</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body{background:#0a0e1a;color:#e2e8f0}
         .plano-canvas{position:relative;background:rgba(255,255,255,0.02);border:2px dashed rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;cursor:crosshair;min-height:500px}
@@ -139,7 +140,7 @@ function removeMesa(id){
 function guardarPlano(){
     fetch('/api/plano/guardar/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({posiciones:Object.keys(posiciones).map(function(id){return{mesa_id:parseInt(id),x:posiciones[id].x,y:posiciones[id].y,color:posiciones[id].color}})})})
     .then(function(r){return r.json()}).then(function(d){
-        if(d.status==='success'){alert('Plano guardado!')}else{alert(d.error)}
+        if(d.status==='success'){Swal.fire({icon:'success',title:'Plano guardado!',timer:1500,showConfirmButton:false,background:'#1e293b',color:'#e2e8f0'})}else{Swal.fire({icon:'error',title:'Error',text:d.error,confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'})}
     });
 }
 </script>

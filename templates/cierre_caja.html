@@ -11,6 +11,7 @@
         .receipt-line { border-bottom: 1px dashed #475569; padding: 4px 0; }
         .receipt-total { font-size: 1.3rem; font-weight: 900; border-top: 2px solid #475569; margin-top: 10px; padding-top: 10px; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="text-white">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
@@ -184,18 +185,20 @@
 function getCookie(n){var v=document.cookie.split('; ').find(function(r){return r.startsWith(n+'=')});return v?v.split('=')[1]:null}
 function abrirTurno(){
     fetch('/api/turno/abrir/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({saldo_inicial:parseFloat(document.getElementById('saldo-inicial').value)||0})})
-    .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{alert(d.error)}});
+    .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{Swal.fire({icon:'error',title:'Error',text:d.error,confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'})}});
 }
 function cerrarTurno(){
-    if(!confirm('Seguro que quieres cerrar el turno?'))return;
-    fetch('/api/turno/cerrar/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({total_real:parseFloat(document.getElementById('total-real').value)||0,notas:document.getElementById('notas-cierre').value})})
-    .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){alert('Turno cerrado correctamente');location.reload()}else{alert(d.error)}});
+    Swal.fire({title:'Cerrar turno?',text:'Seguro que quieres cerrar el turno?',icon:'question',showCancelButton:true,confirmButtonText:'Si, cerrar',cancelButtonText:'Cancelar',confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'}).then(function(r){
+        if(!r.isConfirmed)return;
+        fetch('/api/turno/cerrar/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({total_real:parseFloat(document.getElementById('total-real').value)||0,notas:document.getElementById('notas-cierre').value})})
+        .then(function(r){return r.json()}).then(function(d){if(d.status==='success'){Swal.fire({icon:'success',title:'Turno cerrado',text:'Turno cerrado correctamente',confirmButtonColor:'#00ff88',background:'#1e293b',color:'#e2e8f0'}).then(function(){location.reload()})}else{Swal.fire({icon:'error',title:'Error',text:d.error,confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'})}});
+    });
 }
 document.addEventListener('DOMContentLoaded',function(){
     var tr=document.getElementById('total-real');
     if(tr){
         tr.addEventListener('input',function(){
-            var teorico={{ total_teorico }};
+            var teorico={{ total_teorico|stringformat:".2f" }};
             var real=parseFloat(this.value)||0;
             var diff=(real-teorico).toFixed(2);
             var el=document.getElementById('diferencia-display');

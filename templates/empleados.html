@@ -6,6 +6,7 @@
     <title>Gestion de Empleados</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
     <style>body { background-color: #0f172a; }</style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="text-white">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-3">
@@ -95,7 +96,7 @@ function crearEmpleado(){
         nombre:document.getElementById('emp-nombre').value,apellidos:document.getElementById('emp-ape').value,
         rol:document.getElementById('emp-rol').value,telefono:document.getElementById('emp-tel').value,
         pin:document.getElementById('emp-pin').value,
-    })}).then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{alert(d.error)}});
+    })}).then(function(r){return r.json()}).then(function(d){if(d.status==='success'){location.reload()}else{Swal.fire({icon:'error',title:'Error',text:d.error,confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'})}});
 }
 </script>
 </body>
