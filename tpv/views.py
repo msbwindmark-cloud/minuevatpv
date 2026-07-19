@@ -2222,7 +2222,7 @@ def api_cumpleanos_hoy(request):
     for c in clientes_hoy:
         hoy_list.append({
             'id': c.id, 'nombre': c.nombre, 'email': c.email,
-            'puntos': c.puntos_fidelidad, 'nivel': c.nivel,
+            'puntos': c.puntos, 'nivel': c.nivel,
         })
     semana_list = []
     for c in clientes_semana:
