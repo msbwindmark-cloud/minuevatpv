@@ -1236,14 +1236,23 @@ def api_clima_sugerencias(request):
 
 @login_required
 def vista_heatmap(request):
+    import json
     from django.db.models.functions import TruncHour, TruncDay
     ventas = OperacionVenta.objects.all()
-    por_hora = (
+    por_hora_raw = (
         ventas.annotate(hora=TruncHour('fecha_registro'))
         .values('hora')
         .annotate(total=Count('id'), ingresos=Sum('total_facturado'))
         .order_by('hora')
     )
+    por_hora = []
+    for h in por_hora_raw:
+        por_hora.append({
+            'hora': h['hora'].isoformat() if h['hora'] else None,
+            'total': h['total'],
+            'ingresos': float(h['ingresos'] or 0),
+        })
+
     por_dia_raw = (
         ventas.annotate(dia=TruncDay('fecha_registro'))
         .values('dia')
@@ -1258,9 +1267,10 @@ def vista_heatmap(request):
         por_dia[dw]['total'] += item['total'] or 0
         por_dia[dw]['ingresos'] = float(por_dia[dw]['ingresos']) + float(item['ingresos'] or 0)
     por_dia_list = [{'dia_semana': k, 'dia_nombre': dias_nombres[k], 'total': v['total'], 'ingresos': v['ingresos']} for k, v in sorted(por_dia.items())]
+
     return render(request, 'heatmap.html', {
-        'por_hora': list(por_hora),
-        'por_dia': por_dia_list,
+        'por_hora_json': json.dumps(por_hora),
+        'por_dia_json': json.dumps(por_dia_list),
     })
 
 
