@@ -1885,10 +1885,9 @@ def vista_kiosk(request):
     })
 
 
-@login_required
-@user_passes_test(es_empleado)
+@csrf_exempt
 def api_kiosk_pedido(request):
-    """Crea pedido desde kiosk auto-servicio"""
+    """Crea pedido desde kiosk auto-servicio (publico)"""
     if request.method != 'POST':
         return JsonResponse({'error': 'POST'}, status=405)
     data = json.loads(request.body)
@@ -1920,6 +1919,9 @@ def api_kiosk_pedido(request):
                     venta=op, articulo=art, unidades=cant,
                     precio_aplicado_con_iva=art.precio_con_iva,
                 )
+                PedidoCocina.objects.create(
+                    venta=op, articulo=art, unidades=cant, estado='PENDIENTE',
+                )
                 subtotal += art.precio_con_iva * cant
             except Articulo.DoesNotExist:
                 continue
@@ -1928,7 +1930,6 @@ def api_kiosk_pedido(request):
         op.total_impuestos = iva
         op.total_facturado = subtotal + iva
         op.save()
-        PedidoCocina.objects.create(mesa=mesa, venta=op, estado='PENDIENTE')
     return JsonResponse({
         'ok': True, 'venta_id': op.id, 'total': float(op.total_facturado),
         'mesa': mesa.numero,

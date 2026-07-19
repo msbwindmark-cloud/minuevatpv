@@ -44,11 +44,9 @@
         .btn-pedir { width: 100%; padding: 15px; border: none; border-radius: 12px; background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; font-weight: 900; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; }
         .btn-pedir:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(0,255,136,0.4); }
         .btn-pedir:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .mesa-required { animation: mesaFlash 0.6s ease-in-out 2; }
+        @keyframes mesaFlash { 0%,100%{background:rgba(255,255,255,0.05)} 50%{background:rgba(244,63,94,0.3);border-color:#f43f5e} }
         .empty-ticket { text-align: center; color: rgba(255,255,255,0.3); padding: 40px 0; }
-        .success-overlay { position: fixed; inset: 0; background: rgba(0,255,136,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; }
-        .success-overlay.show { display: flex; }
-        .success-overlay h1 { font-size: 3rem; color: #000; font-weight: 900; }
-        .success-overlay p { font-size: 1.2rem; color: #333; }
     </style>
 </head>
 <body>
@@ -106,12 +104,6 @@
         </div>
     </div>
 
-    <div class="success-overlay" id="success-overlay">
-        <h1>&#10004; Pedido Enviado!</h1>
-        <p>Tu pedido llegara pronto a la mesa</p>
-        <p style="margin-top:20px;font-size:0.9rem;color:#555">Mesa <span id="success-mesa"></span> - Total: $<span id="success-total"></span></p>
-    </div>
-
     <script>
     let carrito = {};
     let mesaSeleccionada = null;
@@ -136,6 +128,12 @@
     }
 
     function agregarAlCarrito(el) {
+        if (!mesaSeleccionada) {
+            document.getElementById('mesas-select').classList.add('mesa-required');
+            setTimeout(function(){document.getElementById('mesas-select').classList.remove('mesa-required');},1200);
+            Swal.fire({icon:'warning',title:'Selecciona mesa',text:'Elige tu mesa antes de agregar productos',background:'#1e293b',color:'#e2e8f0',timer:2500,showConfirmButton:false});
+            return;
+        }
         const id = el.dataset.id;
         const nombre = el.dataset.nombre;
         const precio = parseFloat(el.dataset.precio);
@@ -214,17 +212,22 @@
         .then(r => r.json())
         .then(d => {
             if (d.ok) {
-                document.getElementById('success-mesa').textContent = d.mesa;
-                document.getElementById('success-total').textContent = d.total.toLocaleString();
-                document.getElementById('success-overlay').classList.add('show');
-                setTimeout(() => {
-                    document.getElementById('success-overlay').classList.remove('show');
+                Swal.fire({
+                    icon:'success',
+                    title:'Pedido Enviado!',
+                    html:'<div style="font-size:1rem">Mesa <b>'+d.mesa+'</b></div><div style="font-size:1.3rem;font-weight:900;color:#00ff88;margin-top:8px">Total: $'+d.total.toLocaleString()+'</div><div style="font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:10px">Tu pedido llegara pronto</div>',
+                    background:'#1e293b',color:'#e2e8f0',
+                    showConfirmButton:false,
+                    timer:3500,
+                    timerProgressBar:true,
+                }).then(function(){
                     carrito = {};
                     mesaSeleccionada = null;
                     actualizarTicket();
                     document.querySelectorAll('.mesa-btn').forEach(b => b.classList.remove('active'));
+                    btn.disabled = false;
                     btn.textContent = 'PEDIR';
-                }, 4000);
+                });
             } else {
                 Swal.fire({icon:'error',title:'Error',text:d.error||'Desconocido',confirmButtonColor:'#f43f5e',background:'#1e293b',color:'#e2e8f0'});
                 btn.disabled = false;
