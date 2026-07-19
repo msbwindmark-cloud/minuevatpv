@@ -113,6 +113,8 @@ urlpatterns = [
     path('api/reviews/', views.api_reviews, name='api_reviews'),
     path('api/reviews/crear/', views.api_crear_review, name='api_crear_review'),
     path('api/sheets-sync/', views.api_sheets_sync, name='api_sheets_sync'),
+    path('api/pedidos-pendientes/sync/', views.api_pedidos_pendientes_sync, name='api_pedidos_pendientes_sync'),
+    path('api/pedidos-pendientes/', views.api_pedidos_pendientes_list, name='api_pedidos_pendientes_list'),
     path('accounts/', include('django.contrib.auth.urls')),
 
     # ==========================================================================

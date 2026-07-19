@@ -178,6 +178,21 @@ class PedidoCocina(models.Model):
         return f"Cocina: {self.unidades}x {self.articulo.nombre} [{self.estado}]"
 
 
+class PedidoPendiente(models.Model):
+    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, related_name='pedidos_pendientes')
+    articulo = models.ForeignKey(Articulo, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+    notas = models.CharField(max_length=200, blank=True)
+    empleado = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    fecha = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-fecha']
+
+    def __str__(self):
+        return f"Pendiente Mesa {self.mesa.numero}: {self.cantidad}x {self.articulo.nombre}"
+
+
 class MenuDelDia(models.Model):
     FRANJAS = [
         ('MANANA', 'Manana (8h-12h)'),

@@ -11,33 +11,35 @@
         body{font-family:'Inter',sans-serif;background:#0a0e1a;color:#e2e8f0;min-height:100vh;overflow:hidden}
         .bg-glow{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,212,255,0.08) 0%,transparent 60%),radial-gradient(ellipse at 80% 100%,rgba(168,85,247,0.06) 0%,transparent 50%)}
         .main{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;padding:20px 40px}
-        .header{text-align:center;margin-bottom:20px}
-        .header h1{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#00d4ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .header .sub{color:#64748b;font-size:0.85rem;margin-top:4px}
-        .mesa-label{text-align:center;margin-bottom:15px}
-        .mesa-label span{font-size:1.4rem;font-weight:800;padding:8px 30px;border-radius:50px;background:rgba(0,212,255,0.1);border:2px solid rgba(0,212,255,0.3);color:#00d4ff}
-        .pedidos-area{flex:1;overflow-y:auto;padding:10px 0;scrollbar-width:none}
-        .pedidos-area::-webkit-scrollbar{display:none}
-        .pedido-item{display:flex;align-items:center;gap:15px;padding:14px 20px;margin:8px 0;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);animation:slideIn 0.5s cubic-bezier(0.4,0,0.2,1);transition:all 0.3s}
-        .pedido-item:hover{background:rgba(255,255,255,0.07)}
-        @keyframes slideIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
-        .pedido-icono{font-size:2rem;width:50px;text-align:center}
+        .header{text-align:center;margin-bottom:10px}
+        .header h1{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#00d4ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header .sub{color:#64748b;font-size:0.85rem;margin-top:2px}
+        .mesas-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:20px;padding:10px 0;scrollbar-width:none}
+        .mesas-grid::-webkit-scrollbar{display:none}
+        .mesa-block{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;animation:fadeIn 0.5s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .mesa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+        .mesa-num{font-size:1.5rem;font-weight:900;padding:6px 20px;border-radius:14px;background:rgba(0,212,255,0.1);border:2px solid rgba(0,212,255,0.3);color:#00d4ff}
+        .mesa-count{font-size:0.7rem;color:#64748b;font-weight:700;background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:20px}
+        .pedido-item{display:flex;align-items:center;gap:12px;padding:10px 14px;margin:6px 0;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);animation:slideIn 0.4s ease}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+        .pedido-icono{font-size:1.5rem;width:36px;text-align:center}
         .pedido-info{flex:1}
-        .pedido-nombre{font-weight:700;font-size:1rem;color:#e2e8f0}
-        .pedido-notas{font-size:0.75rem;color:#94a3b8;margin-top:2px}
-        .pedido-cantidad{font-weight:900;font-size:1.1rem;color:#00d4ff;min-width:40px;text-align:center}
-        .estado-badge{padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+        .pedido-nombre{font-weight:700;font-size:0.9rem;color:#e2e8f0}
+        .pedido-notas{font-size:0.7rem;color:#94a3b8;margin-top:1px}
+        .pedido-cantidad{font-weight:900;font-size:1rem;color:#00d4ff;min-width:30px;text-align:center}
+        .estado-badge{padding:3px 10px;border-radius:16px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
         .estado-PENDIENTE{background:rgba(249,115,22,0.15);color:#f97316;border:1px solid rgba(249,115,22,0.3)}
         .estado-PREPARANDO{background:rgba(234,179,8,0.15);color:#eab308;border:1px solid rgba(234,179,8,0.3)}
         .estado-LISTO{background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3)}
         .estado-ENTREGADO{background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.3)}
-        .hora-badge{font-size:0.7rem;color:#64748b;font-weight:600}
-        .footer{text-align:center;padding-top:15px;border-top:1px solid rgba(255,255,255,0.06)}
-        .footer .reloj{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-variant-numeric:tabular-nums}
-        .footer .msg{font-size:0.8rem;color:#64748b;margin-top:5px}
+        .hora-badge{font-size:0.65rem;color:#64748b;font-weight:600}
+        .footer{text-align:center;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)}
+        .footer .reloj{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-variant-numeric:tabular-nums}
+        .footer .msg{font-size:0.75rem;color:#64748b;margin-top:3px}
         .pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px;animation:pulse 1.5s infinite}
         @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
-        .empty-state{text-align:center;padding:60px 20px;color:#475569}
+        .empty-state{text-align:center;padding:60px 20px;color:#475569;grid-column:1/-1}
         .empty-state .icon{font-size:4rem;margin-bottom:15px;opacity:0.3}
         .empty-state .text{font-size:1.1rem;font-weight:600}
     </style>
@@ -48,12 +50,9 @@
     <div class="main">
         <div class="header">
             <h1>TPV Cafeteria</h1>
-            <div class="sub">Tu pedido en tiempo real</div>
+            <div class="sub">Pedidos en tiempo real - Todas las mesas</div>
         </div>
-        <div class="mesa-label">
-            <span id="mesa-info">Selecciona mesa en el TPV</span>
-        </div>
-        <div class="pedidos-area" id="lista-pedidos">
+        <div class="mesas-grid" id="mesas-grid">
             <div class="empty-state">
                 <div class="icon">&#9749;</div>
                 <div class="text">Esperando pedidos...</div>
@@ -72,34 +71,63 @@
         var n=new Date();
         el.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
     }
-    function getCookie(n){var v=document.cookie.split('; ').find(function(r){return r.startsWith(n+'=')});return v?v.split('=')[1]:null}
-    function getMesaId(){var p=new URLSearchParams(window.location.search);return p.get('mesa_id')||''}
     function actualizarPedidos(){
-        var mesaId=getMesaId();
-        if(!mesaId){return}
-        document.getElementById('mesa-info').textContent='Mesa '+mesaId;
-        fetch('/api/estado-pedido-cliente/?mesa_id='+mesaId)
+        var params=new URLSearchParams(window.location.search);
+        var mesaId=params.get('mesa_id')||'';
+        var grid=document.getElementById('mesas-grid');
+        if(mesaId){
+            fetch('/api/estado-pedido-cliente/?mesa_id='+mesaId)
+                .then(function(r){return r.json()})
+                .then(function(data){
+                    if(!data.items||data.items.length===0){
+                        grid.innerHTML='<div class="empty-state"><div class="icon">&#9749;</div><div class="text">Sin pedidos activos</div></div>';
+                        return;
+                    }
+                    var h='<div class="mesa-block"><div class="mesa-header"><span class="mesa-num">Mesa '+data.mesa_numero+'</span><span class="mesa-count">'+data.items.length+' articulos</span></div>';
+                    for(var i=0;i<data.items.length;i++){h+=renderItem(data.items[i]);}
+                    h+='</div>';
+                    grid.innerHTML=h;
+                });
+            return;
+        }
+        fetch('/api/pedidos-pendientes/')
             .then(function(r){return r.json()})
-            .then(function(items){
-                var c=document.getElementById('lista-pedidos');
-                if(!items||items.length===0){
-                    c.innerHTML='<div class="empty-state"><div class="icon">&#9749;</div><div class="text">Esperando pedidos...</div></div>';
+            .then(function(data){
+                if(!data.mesas||data.mesas.length===0){
+                    grid.innerHTML='<div class="empty-state"><div class="icon">&#9749;</div><div class="text">Sin pedidos activos</div></div>';
                     return;
                 }
                 var html='';
-                for(var i=0;i<items.length;i++){
-                    var it=items[i];
-                    html+='<div class="pedido-item">';
-                    html+='<div class="pedido-icono">'+it.icono+'</div>';
-                    html+='<div class="pedido-info"><div class="pedido-nombre">'+it.articulo+'</div>';
-                    if(it.notas)html+='<div class="pedido-notas">'+it.notas+'</div>';
-                    html+='<div class="hora-badge">'+it.hora+'</div></div>';
-                    html+='<div class="pedido-cantidad">'+it.unidades+'x</div>';
-                    html+='<div class="estado-badge estado-'+it.estado+'">'+it.estado+'</div>';
+                for(var m=0;m<data.mesas.length;m++){
+                    var mesa=data.mesas[m];
+                    html+='<div class="mesa-block">';
+                    html+='<div class="mesa-header"><span class="mesa-num">Mesa '+mesa.numero+'</span><span class="mesa-count">'+mesa.items.length+' articulos</span></div>';
+                    for(var i=0;i<mesa.items.length;i++){
+                        var it=mesa.items[i];
+                        html+='<div class="pedido-item">';
+                        html+='<div class="pedido-icono">'+it.icono+'</div>';
+                        html+='<div class="pedido-info"><div class="pedido-nombre">'+it.articulo+'</div>';
+                        if(it.notas)html+='<div class="pedido-notas">'+it.notas+'</div>';
+                        html+='<div class="hora-badge">'+it.hora+'</div></div>';
+                        html+='<div class="pedido-cantidad">'+it.cantidad+'x</div>';
+                        html+='<div class="estado-badge estado-PENDIENTE">PENDIENTE</div>';
+                        html+='</div>';
+                    }
                     html+='</div>';
                 }
-                c.innerHTML=html;
+                grid.innerHTML=html;
             });
+    }
+    function renderItem(it){
+        var h='<div class="pedido-item">';
+        h+='<div class="pedido-icono">'+it.icono+'</div>';
+        h+='<div class="pedido-info"><div class="pedido-nombre">'+it.articulo+'</div>';
+        if(it.notas)h+='<div class="pedido-notas">'+it.notas+'</div>';
+        h+='<div class="hora-badge">'+it.hora+'</div></div>';
+        h+='<div class="pedido-cantidad">'+it.unidades+'x</div>';
+        h+='<div class="estado-badge estado-'+it.estado+'">'+it.estado+'</div>';
+        h+='</div>';
+        return h;
     }
     actualizarReloj();
     setInterval(actualizarReloj,1000);

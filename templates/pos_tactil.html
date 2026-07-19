@@ -334,7 +334,7 @@
                         <div class="col-2"><a href="/menu-dia/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Menu</a></div>
                         <div class="col-2"><a href="/cierre-caja/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Caja</a></div>
                         <div class="col-2"><a href="/empleados/" class="btn btn-outline-light btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Empl.</a></div>
-                        <div class="col-2"><a href="/pantalla-cliente/" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Display</a></div>
+                        <div class="col-2"><a href="#" onclick="abrirDisplay(event)" class="btn btn-outline-info btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Display</a></div>
                         {% if request.user.is_staff %}
                         <div class="col-2"><a href="/api/dashboard-gerencia/" class="btn btn-outline-success btn-sm w-100 rounded-3 py-1" target="_blank" style="font-size:0.6rem;">Dash</a></div>
                         <div class="col-2"><a href="/reservas/" class="btn btn-outline-secondary btn-sm w-100 rounded-3 py-1" style="font-size:0.6rem;">Reserv.</a></div>
@@ -372,7 +372,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     var ordenActual = {};
-    var pedidosMesa = {};
+    var pedidosMesa = JSON.parse(localStorage.getItem('tpv_pedidos_mesa') || '{}');
     var mesaActual = null;
     var mesasInfo = {};
     var cuponAplicado = null;
@@ -473,6 +473,7 @@
                             }
                             var cobroMesaId = mesaActual;
                             delete pedidosMesa[cobroMesaId];
+                            localStorage.setItem('tpv_pedidos_mesa', JSON.stringify(pedidosMesa));
                             var badgeCobro = document.getElementById('mesa-badge-' + cobroMesaId);
                             if (badgeCobro) { badgeCobro.style.display = 'none'; badgeCobro.textContent = '0'; }
                             var elMesa = document.getElementById('mesa-' + cobroMesaId);
@@ -664,6 +665,11 @@
         }
     }
 
+    function abrirDisplay(e) {
+        e.preventDefault();
+        window.open('/pantalla-cliente/', '_blank');
+    }
+
     function seleccionarMesa(id, el) {
         if (mesaActual !== null) guardarPedidoMesaActual();
         var cards = document.querySelectorAll('.mesa-card');
@@ -689,7 +695,10 @@
     }
 
     function guardarPedidoMesaActual() {
-        if (mesaActual !== null) pedidosMesa[mesaActual] = JSON.parse(JSON.stringify(ordenActual));
+        if (mesaActual !== null) {
+            pedidosMesa[mesaActual] = JSON.parse(JSON.stringify(ordenActual));
+            localStorage.setItem('tpv_pedidos_mesa', JSON.stringify(pedidosMesa));
+        }
     }
 
     function actualizarBadgesMesas() {
@@ -713,6 +722,7 @@
             }
         }
     }
+    actualizarBadgesMesas();
 
     function agregarAlTicket(el) {
         if (mesaActual === null) {
@@ -754,7 +764,24 @@
     function actualizarBadgeMesaActual() {
         if (mesaActual === null) return;
         pedidosMesa[mesaActual] = JSON.parse(JSON.stringify(ordenActual));
+        localStorage.setItem('tpv_pedidos_mesa', JSON.stringify(pedidosMesa));
         actualizarBadgesMesas();
+        syncPedidosPendientes();
+    }
+
+    function syncPedidosPendientes() {
+        if (mesaActual === null || mesaActual === 0) return;
+        var items = [];
+        var keys = Object.keys(ordenActual);
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i];
+            items.push({id: parseInt(k), cantidad: ordenActual[k].cantidad, notas: ordenActual[k].notas || ''});
+        }
+        fetch('/api/pedidos-pendientes/sync/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+            body: JSON.stringify({mesa_id: mesaActual, items: items})
+        });
     }
 
     function actualizarGraficosTicket() {
@@ -896,6 +923,7 @@
                     }
                     var cobroMesaId = mesaActual;
                     delete pedidosMesa[cobroMesaId];
+                    localStorage.setItem('tpv_pedidos_mesa', JSON.stringify(pedidosMesa));
                     var badgeCobro = document.getElementById('mesa-badge-' + cobroMesaId);
                     if (badgeCobro) { badgeCobro.style.display = 'none'; badgeCobro.textContent = '0'; }
                     var elMesa = document.getElementById('mesa-' + cobroMesaId);

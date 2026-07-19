@@ -18,7 +18,8 @@ from .models import (
     CuponDescuento, PerfilEmpleado, MetaDiaria, Cliente,
     ColaNumero, PedidoMovil, LineaPedidoMovil, PlanoRestaurante, MesaPosicion,
     MensajeChat, PedidoProveedor, FirmaDigital, PasoReceta, NotificacionPush,
-    DescuentoInteligente, ReviewRestaurante, RatingProducto, Combo, ComboItem
+    DescuentoInteligente, ReviewRestaurante, RatingProducto, Combo, ComboItem,
+    PedidoPendiente,
 )
 from .signals import get_ip
 
@@ -89,6 +90,10 @@ def api_registrar_cobro(request):
                 pass
 
         venta = OperacionVenta.objects.create(empleado_caja=request.user, forma_pago=forma_pago, mesa=mesa_obj)
+
+        if mesa_obj:
+            PedidoPendiente.objects.filter(mesa=mesa_obj).delete()
+
         acumulado_base = Decimal('0.00')
         acumulado_iva = Decimal('0.00')
         acumulado_total = Decimal('0.00')
@@ -112,6 +117,15 @@ def api_registrar_cobro(request):
                 unidades=cantidad,
                 precio_aplicado_con_iva=articulo.precio_con_iva
             )
+
+            notas_item = item.get('notas', '')
+            for _ in range(cantidad):
+                PedidoCocina.objects.create(
+                    venta=venta,
+                    articulo=articulo,
+                    unidades=1,
+                    notas=notas_item,
+                )
 
             for receta in articulo.receta.all():
                 insumo = receta.insumo
@@ -927,17 +941,45 @@ def vista_pantalla_cliente(request):
 @login_required
 def api_estado_pedido_cliente(request):
     mesa_id = request.GET.get('mesa_id')
-    if not mesa_id:
-        return JsonResponse([], safe=False)
     from datetime import timedelta
     hace_2h = timezone.now() - timedelta(hours=2)
+
+    if mesa_id:
+        mesa_numero = ''
+        try:
+            mesa = Mesa.objects.get(id=mesa_id)
+            mesa_numero = mesa.numero
+        except Mesa.DoesNotExist:
+            mesa_numero = mesa_id
+        pedidos = PedidoCocina.objects.filter(
+            venta__mesa_id=mesa_id,
+            fecha_creacion__gte=hace_2h
+        ).select_related('articulo').order_by('-fecha_creacion')[:20]
+        items = []
+        for p in pedidos:
+            items.append({
+                'articulo': p.articulo.nombre,
+                'icono': p.articulo.categoria.icono if p.articulo.categoria else '☕',
+                'unidades': p.unidades,
+                'estado': p.estado,
+                'notas': p.notas,
+                'hora': p.fecha_creacion.strftime('%H:%M'),
+            })
+        return JsonResponse({'items': items, 'mesa_numero': mesa_numero}, safe=False)
+
+    mesas_con_pedidos = {}
     pedidos = PedidoCocina.objects.filter(
-        venta__mesa_id=mesa_id,
         fecha_creacion__gte=hace_2h
-    ).select_related('articulo').order_by('-fecha_creacion')[:20]
-    items = []
+    ).exclude(
+        estado='ENTREGADO'
+    ).select_related('articulo', 'venta__mesa').order_by('venta__mesa__numero', '-fecha_creacion')
+
     for p in pedidos:
-        items.append({
+        mesa_key = p.venta.mesa_id if p.venta.mesa else 0
+        mesa_num = p.venta.mesa.numero if p.venta.mesa else 'Llevar'
+        if mesa_key not in mesas_con_pedidos:
+            mesas_con_pedidos[mesa_key] = {'numero': mesa_num, 'items': []}
+        mesas_con_pedidos[mesa_key]['items'].append({
             'articulo': p.articulo.nombre,
             'icono': p.articulo.categoria.icono if p.articulo.categoria else '☕',
             'unidades': p.unidades,
@@ -945,7 +987,11 @@ def api_estado_pedido_cliente(request):
             'notas': p.notas,
             'hora': p.fecha_creacion.strftime('%H:%M'),
         })
-    return JsonResponse(items, safe=False)
+
+    mesas = []
+    for key, data in sorted(mesas_con_pedidos.items(), key=lambda x: str(x[1]['numero'])):
+        mesas.append({'id': key, 'numero': data['numero'], 'items': data['items']})
+    return JsonResponse({'todas': True, 'mesas': mesas}, safe=False)
 
 
 def pdf_ticket_con_qr(request, venta_id):
@@ -3289,6 +3335,66 @@ def admin_gerencia_dashboard(request):
         'app_list': admin.site.get_app_list(request),
     }
     return render(request, 'admin/gerencia_dashboard.html', context)
+
+
+# =============================================================================
+# PEDIDOS PENDIENTES - Sync en tiempo real con Display
+# =============================================================================
+
+@login_required
+def api_pedidos_pendientes_sync(request):
+    """Recibe el pedido completo de una mesa y lo guarda como pendiente (reemplaza todo)"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST'}, status=405)
+    try:
+        datos = json.loads(request.body)
+        mesa_id = datos.get('mesa_id')
+        items = datos.get('items', [])
+        if not mesa_id:
+            return JsonResponse({'error': 'mesa_id requerido'}, status=400)
+
+        mesa = Mesa.objects.get(id=mesa_id)
+        PedidoPendiente.objects.filter(mesa=mesa).delete()
+
+        for item in items:
+            articulo = Articulo.objects.get(id=item['id'])
+            PedidoPendiente.objects.create(
+                mesa=mesa,
+                articulo=articulo,
+                cantidad=item.get('cantidad', 1),
+                notas=item.get('notas', ''),
+                empleado=request.user,
+            )
+        return JsonResponse({'status': 'success', 'total': len(items)})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def api_pedidos_pendientes_list(request):
+    """Devuelve todos los pedidos pendientes agrupados por mesa"""
+    pedidos = PedidoPendiente.objects.select_related(
+        'mesa', 'articulo', 'articulo__categoria'
+    ).order_by('mesa__numero', '-fecha')
+
+    mesas_dict = {}
+    for p in pedidos:
+        mid = p.mesa_id
+        if mid not in mesas_dict:
+            mesas_dict[mid] = {'numero': p.mesa.numero, 'items': []}
+        mesas_dict[mid]['items'].append({
+            'articulo': p.articulo.nombre,
+            'icono': p.articulo.categoria.icono if p.articulo.categoria else '☕',
+            'cantidad': p.cantidad,
+            'notas': p.notas,
+            'hora': p.fecha.strftime('%H:%M'),
+        })
+
+    mesas = []
+    for key in sorted(mesas_dict.keys()):
+        data = mesas_dict[key]
+        mesas.append({'id': key, 'numero': data['numero'], 'items': data['items']})
+    return JsonResponse({'mesas': mesas}, safe=False)
 
 
 # =============================================================================
