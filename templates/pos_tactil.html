@@ -168,6 +168,7 @@
     </style>
 </head>
 <body class="h-100 text-white">
+    <form style="display:none">{% csrf_token %}</form>
     <div class="bg-animated"></div>
     <div id="particles-container"></div>
     <div class="cinematic-overlay" id="cinematic-overlay"></div>
@@ -1659,30 +1660,64 @@
         .then(r => r.json())
         .then(d => {
             if(d.insumos.length === 0){
-                Swal.fire({icon:'success',title:'Todo OK!',text:'No hay stock bajo',background:'#1e293b',color:'#e2e8f0'});
+                Swal.fire({icon:'success',title:'Stock OK',text:'Todos los insumos tienen stock suficiente',background:'#1e293b',color:'#e2e8f0'});
                 return;
             }
-            let html = '<div style="text-align:center">';
-            d.insumos.forEach(i => {
-                html += `<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid rgba(255,255,255,0.1)">
-                    <span>${i.nombre}</span>
-                    <span style="color:#f43f5e">${i.stock_actual} / ${i.stock_minimo} ${i.unidad}</span>
-                </div>`;
-            });
-            html += '</div>';
+            let sinPedido = d.insumos.filter(i => !i.pedido_pendiente);
+            let conPedido = d.insumos.filter(i => i.pedido_pendiente);
+
+            let html = '';
+            if(conPedido.length > 0){
+                html += '<div style="text-align:left;margin-bottom:12px">';
+                html += '<div style="font-size:0.7rem;color:#00ff88;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Pedidos pendientes</div>';
+                conPedido.forEach(i => {
+                    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(0,255,136,0.05);border-radius:8px;margin-bottom:4px">';
+                    html += '<div><div style="font-weight:700;color:#e2e8f0;font-size:0.9rem">'+i.nombre+'</div>';
+                    html += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.35)">Pedido: '+i.pedido_pendiente.cantidad+' '+i.unidad+' | '+i.pedido_pendiente.fecha+'</div></div>';
+                    html += '<div style="color:#f97316;font-weight:700;font-size:0.8rem">'+i.stock_actual+'/'+i.stock_minimo+' '+i.unidad+'</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            if(sinPedido.length > 0){
+                html += '<div style="text-align:left">';
+                html += '<div style="font-size:0.7rem;color:#f43f5e;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Sin pedido - '+sinPedido.length+' insumos</div>';
+                sinPedido.forEach(i => {
+                    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(244,63,94,0.05);border-radius:8px;margin-bottom:4px">';
+                    html += '<div><div style="font-weight:700;color:#e2e8f0;font-size:0.9rem">'+i.nombre+'</div>';
+                    html += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.35)">Falta: '+i.faltante.toFixed(1)+' '+i.unidad+'</div></div>';
+                    html += '<div style="color:#f43f5e;font-weight:700;font-size:0.8rem">'+i.stock_actual+'/'+i.stock_minimo+' '+i.unidad+'</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+
+            let btnText = sinPedido.length > 0 ? 'Generar '+sinPedido.length+' Pedidos' : 'Sin pedidos nuevos';
+            let showBtn = sinPedido.length > 0;
+
             Swal.fire({
-                title:'Stock Bajo - Pedir Proveedor',
+                title:'Stock Bajo ('+d.insumos.length+')',
                 html:html,
                 background:'#1e293b',color:'#e2e8f0',
-                showCancelButton:true,
-                confirmButtonText:'Generar Pedidos Auto',
+                showCancelButton:showBtn,
+                confirmButtonText:btnText,
                 confirmButtonColor:'#00ff88',
+                cancelButtonText:'Cerrar',
             }).then(res => {
                 if(res.isConfirmed){
-                    fetch('/api/pedidos-proveedor/',{method:'POST'})
+                    fetch('/api/pedidos-proveedor/',{
+                        method:'POST',
+                        headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+                    })
                     .then(r=>r.json())
                     .then(d=>{
-                        Swal.fire({icon:'success',title:`${d.total} pedidos creados`,html:'Pedidos generados automáticamente',background:'#1e293b',color:'#e2e8f0'});
+                        let msg = '';
+                        if(d.total > 0) msg += d.total + ' pedidos creados.';
+                        if(d.ya_existentes && d.ya_existentes.length > 0) msg += '<br>'+d.ya_existentes.length + ' ya estaban pendientes.';
+                        Swal.fire({icon:'success',title:'Hecho',html:msg||'Hecho',background:'#1e293b',color:'#e2e8f0'});
+                    })
+                    .catch(e=>{
+                        Swal.fire({icon:'error',title:'Error',text:'No se pudieron generar los pedidos',background:'#1e293b',color:'#e2e8f0'});
                     });
                 }
             });

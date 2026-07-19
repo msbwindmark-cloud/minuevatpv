@@ -1631,10 +1631,11 @@ def api_sugerencia_hora(request):
 @login_required
 @user_passes_test(es_gerente)
 def api_stock_bajo(request):
-    """Lista insumos con stock bajo"""
+    """Lista insumos con stock bajo y pedidos pendientes"""
     criticos = InsumoMateriaPrima.objects.filter(cantidad_actual__lte=F('cantidad_minima'))
     lista = []
     for i in criticos:
+        pedido_pend = PedidoProveedor.objects.filter(insumo=i, estado='PENDIENTE').first()
         lista.append({
             'id': i.id,
             'nombre': i.nombre,
@@ -1642,11 +1643,18 @@ def api_stock_bajo(request):
             'stock_actual': float(i.cantidad_actual),
             'stock_minimo': float(i.cantidad_minima),
             'faltante': float(i.cantidad_minima - i.cantidad_actual),
+            'pedido_pendiente': {
+                'id': pedido_pend.id,
+                'cantidad': float(pedido_pend.cantidad_solicitada),
+                'fecha': pedido_pend.creado.strftime('%d/%m %H:%M'),
+                'notas': pedido_pend.notas,
+            } if pedido_pend else None,
         })
     return JsonResponse({'insumos': lista})
 
 
 @login_required
+@csrf_exempt
 @user_passes_test(es_gerente)
 def api_generar_pedido_proveedor(request):
     """Genera automaticamente pedidos de compra para insumos criticos"""
@@ -1654,8 +1662,12 @@ def api_generar_pedido_proveedor(request):
         return JsonResponse({'error': 'POST'}, status=405)
     criticos = InsumoMateriaPrima.objects.filter(cantidad_actual__lte=F('cantidad_minima'))
     pedidos = []
+    ya_existentes = []
     for i in criticos:
-        cantidad = i.cantidad_minima * 2  # Pedir el doble del minimo
+        if PedidoProveedor.objects.filter(insumo=i, estado='PENDIENTE').exists():
+            ya_existentes.append({'insumo': i.nombre, 'unidad': i.unidad_medida})
+            continue
+        cantidad = i.cantidad_minima * 2
         pedido = PedidoProveedor.objects.create(
             insumo=i,
             cantidad_solicitada=cantidad,
@@ -1667,7 +1679,11 @@ def api_generar_pedido_proveedor(request):
             'cantidad': float(cantidad),
             'unidad': i.unidad_medida,
         })
-    return JsonResponse({'pedidos_creados': pedidos, 'total': len(pedidos)})
+    return JsonResponse({
+        'pedidos_creados': pedidos,
+        'ya_existentes': ya_existentes,
+        'total': len(pedidos),
+    })
 
 
 # 6. CHAT CAJERO-COCINA
